@@ -479,6 +479,14 @@
 
 <script src="info_data.js"></script>
 <script>
+  // ---- 클라우드 동기화 허브 (Firebase 모듈이 연결) ----
+  window.LucaHub = {
+    _cbs: [], _save: null,
+    onState(kind, applyFn){ this._cbs.push({kind, applyFn}); },
+    save(kind, id, val){ if(this._save) this._save(kind, id, val); },
+    push(state){ this._cbs.forEach(c=>{ if(state[c.kind]) c.applyFn(state[c.kind]); }); }
+  };
+
   // ---- 탭 전환 ----
   const nav = document.getElementById('nav');
   nav.addEventListener('click', e=>{
@@ -584,8 +592,9 @@
       list.innerHTML = html || `<div class="gear-hint" style="text-align:center;padding:34px 0">해당 항목이 없어요.</div>`;
       list.querySelectorAll('.pchk').forEach(chk=>chk.addEventListener('change',e=>{
         const k = e.target.closest('.prow').dataset.id;
-        if(e.target.checked) have[k]=true; else delete have[k];
+        have[k] = e.target.checked;
         localStorage.setItem(KEY, JSON.stringify(have));
+        window.LucaHub.save('gear', k, e.target.checked);
         if(filter==='need') render(); else e.target.closest('.prow').classList.toggle('have', e.target.checked);
         stats();
       }));
@@ -608,6 +617,11 @@
       b.classList.add('active'); filter = b.dataset.f; render();
     });
     render(); stats();
+    window.LucaHub.onState('gear', g => {
+      have = Object.assign({}, have, g);
+      localStorage.setItem(KEY, JSON.stringify(have));
+      render(); stats();
+    });
   })();
 
   // ---- 건강 관리 데이터 (일본 기준) ----
@@ -695,8 +709,9 @@
       list.innerHTML=html||`<div class="gear-hint" style="text-align:center;padding:34px 0">해당 항목이 없어요.</div>`;
       list.querySelectorAll('.pchk').forEach(chk=>chk.addEventListener('change',e=>{
         const k=e.target.closest('.prow').dataset.id;
-        if(e.target.checked)done[k]=true;else delete done[k];
+        done[k]=e.target.checked;
         localStorage.setItem(KEY,JSON.stringify(done));
+        window.LucaHub.save('health', k, e.target.checked);
         if(filter==='todo')render();else e.target.closest('.prow').classList.toggle('have',e.target.checked);
         stats();
       }));
@@ -727,6 +742,11 @@
       b.classList.add('active');filter=b.dataset.f;render();
     });
     render();stats();
+    window.LucaHub.onState('health', h => {
+      done = Object.assign({}, done, h);
+      localStorage.setItem(KEY, JSON.stringify(done));
+      render(); stats();
+    });
   })();
 
   // ---- 지식·정보 (개념 사전) ----
@@ -800,6 +820,29 @@
     searchEl.addEventListener('input', e=>{ q = e.target.value.trim().toLowerCase(); render(); });
     render();
   })();
+</script>
+<script type="module">
+  // ---- Firebase 실시간 동기화 (체크 상태를 모든 기기에 즉시 반영) ----
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
+  import { getFirestore, doc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
+  const firebaseConfig = {
+    apiKey: "AIzaSyCW3PnwOzKJhR24O-wH4pZLmYfxcvzMk2A",
+    authDomain: "luca-2ec6c.firebaseapp.com",
+    projectId: "luca-2ec6c",
+    storageBucket: "luca-2ec6c.firebasestorage.app",
+    messagingSenderId: "174572149580",
+    appId: "1:174572149580:web:c47b6e1fb0c147aba74de9"
+  };
+  try {
+    const db = getFirestore(initializeApp(firebaseConfig));
+    const ref = doc(db, "luca", "state");
+    window.LucaHub._save = (kind, id, val) =>
+      setDoc(ref, { [kind]: { [id]: !!val } }, { merge: true }).catch(e => console.warn('cloud save', e));
+    onSnapshot(ref, snap => {
+      const d = snap.data() || {};
+      window.LucaHub.push({ gear: d.gear || {}, health: d.health || {} });
+    }, e => console.warn('cloud sync', e));
+  } catch (e) { console.warn('firebase init', e); }
 </script>
 </body>
 </html>
