@@ -37,7 +37,7 @@
   }
   *{box-sizing:border-box;margin:0;padding:0}
   body{
-    font-family:"Apple SD Gothic Neo","Pretendard",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    font-family:"Apple SD Gothic Neo","Hiragino Sans","Pretendard",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
     background:
       radial-gradient(900px 480px at 85% -8%, var(--bg-tint-a), transparent 60%),
       radial-gradient(760px 460px at -8% 4%, var(--bg-tint-b), transparent 58%),
@@ -48,6 +48,10 @@
     min-height:100vh;
   }
   .wrap{max-width:1080px;margin:0 auto;padding:30px 20px 80px}
+
+  /* ---------- language toggle ---------- */
+  body[data-lang="ja"] [data-only="ko"]{display:none!important}
+  body[data-lang="ko"] [data-only="ja"]{display:none!important}
 
   /* ---------- Hero ---------- */
   .hero{
@@ -71,6 +75,13 @@
     border:1px solid var(--line);color:var(--ink-soft)}
   .tag.ice{color:#2f86bd;background:var(--info-bg);border-color:var(--info-line)}
   .hero .spacer{flex:1}
+  .hero-right{display:flex;flex-direction:column;align-items:flex-end;gap:11px;position:relative;z-index:1}
+  .langsw{display:inline-flex;background:#eef3f8;border:1px solid var(--line);
+    border-radius:999px;padding:3px;gap:2px;box-shadow:var(--shadow-sm)}
+  .langsw button{font:inherit;font-size:12.5px;font-weight:700;cursor:pointer;border:none;
+    background:transparent;color:var(--ink-soft);padding:5px 14px;border-radius:999px;transition:.15s}
+  .langsw button:hover{color:var(--ink)}
+  .langsw button.active{background:#fff;color:var(--accent);box-shadow:var(--shadow-sm)}
   .dday{
     text-align:center;background:linear-gradient(135deg,#f3f9ff,#eaf3fc);
     border:1px solid var(--info-line);border-radius:15px;padding:14px 22px;min-width:132px
@@ -229,46 +240,53 @@
 </style>
 </head>
 <body>
+<script>document.body.dataset.lang=(localStorage.getItem('luca_lang')==='ja'?'ja':'ko');document.documentElement.lang=document.body.dataset.lang;</script>
 <div class="wrap">
 
   <!-- ===================== HERO ===================== -->
   <div class="hero">
-    <img class="photo" src="luca.jpg" alt="루카">
+    <img class="photo" src="luca.jpg" alt="루카 LUCA">
     <div>
       <h1>루카 <span class="en">LUCA</span></h1>
       <div class="tags">
-        <span class="tag">미니어처 아메리칸 셰퍼드</span>
-        <span class="tag ice">블루멀 · 블루아이</span>
-        <span class="tag">수컷</span>
+        <span class="tag" data-i18n="breed.tag1">미니어처 아메리칸 셰퍼드</span>
+        <span class="tag ice" data-i18n="breed.tag2">블루멀 · 블루아이</span>
+        <span class="tag" data-i18n="breed.tag3">수컷</span>
       </div>
     </div>
     <div class="spacer"></div>
-    <div class="dday">
-      <div class="big" id="dday">D-?</div>
-      <div class="lbl" id="ddayLbl">입양일 2026.07.25</div>
+    <div class="hero-right">
+      <div class="langsw" id="langsw">
+        <button data-lang="ko">한국어</button>
+        <button data-lang="ja">日本語</button>
+      </div>
+      <div class="dday">
+        <div class="big" id="dday">D-?</div>
+        <div class="lbl" id="ddayLbl">입양일 2026.07.25</div>
+      </div>
     </div>
   </div>
 
   <!-- ===================== NAV ===================== -->
   <nav id="nav">
-    <button class="navbtn active" data-sec="breed">견종 정보</button>
-    <button class="navbtn" data-sec="health">건강</button>
-    <button class="navbtn" data-sec="train">훈련 <span class="soon">곧</span></button>
-    <button class="navbtn" data-sec="gear">제품</button>
-    <button class="navbtn" data-sec="care">육아 <span class="soon">곧</span></button>
-    <button class="navbtn" data-sec="info">지식·정보</button>
+    <button class="navbtn active" data-sec="breed"><span data-i18n="nav.breed">견종 정보</span></button>
+    <button class="navbtn" data-sec="health"><span data-i18n="nav.health">건강</span></button>
+    <button class="navbtn" data-sec="train"><span data-i18n="nav.train">훈련</span> <span class="soon" data-i18n="nav.soon">곧</span></button>
+    <button class="navbtn" data-sec="gear"><span data-i18n="nav.gear">제품</span></button>
+    <button class="navbtn" data-sec="care"><span data-i18n="nav.care">육아</span> <span class="soon" data-i18n="nav.soon">곧</span></button>
+    <button class="navbtn" data-sec="info"><span data-i18n="nav.info">지식·정보</span></button>
   </nav>
 
   <!-- ===================== BREED ===================== -->
   <section id="breed" class="active">
     <div class="sec-head">
-      <h2>견종 정보 · 기초 지식</h2>
-      <p>미니어처 아메리칸 셰퍼드(MAS) · 블루멀 · 블루아이 수컷 — 루카를 이해하기 위한 기본기</p>
+      <h2 data-i18n="breed.head.h2">견종 정보 · 기초 지식</h2>
+      <p data-i18n="breed.head.p">미니어처 아메리칸 셰퍼드(MAS) · 블루멀 · 블루아이 수컷 — 루카를 이해하기 위한 기본기</p>
     </div>
 
-    <div class="grid">
+    <!-- ===== KO ===== -->
+    <div class="grid" data-only="ko">
 
-      <!-- 기본 스펙 -->
       <div class="card">
         <h3>한눈에 보는 기본 정보</h3>
         <div class="spec"><span class="k">견종</span><span class="v">미니어처 아메리칸 셰퍼드 (MAS)</span></div>
@@ -280,7 +298,6 @@
         <div class="spec"><span class="k">AKC 공인</span><span class="v">2015년 (186번째)</span></div>
       </div>
 
-      <!-- 성격 -->
       <div class="card">
         <h3>성격 · 기질</h3>
         <ul class="clean">
@@ -292,7 +309,6 @@
         </ul>
       </div>
 
-      <!-- 기원 -->
       <div class="card">
         <h3>기원 한 줄 요약</h3>
         <p class="lead">
@@ -306,7 +322,6 @@
         </div>
       </div>
 
-      <!-- 블루멀 / 블루아이 -->
       <div class="card">
         <h3>블루멀 · 블루아이란?</h3>
         <ul class="clean">
@@ -320,7 +335,6 @@
         </div>
       </div>
 
-      <!-- 멀 유전 (중요) -->
       <div class="card span2">
         <h3>멀(Merle) 유전 — 꼭 알아둘 것 <span class="pill amber">중요</span></h3>
         <div class="grid" style="gap:14px">
@@ -348,10 +362,8 @@
         </div>
       </div>
 
-      <!-- 건강 주의 (MDR1) -->
       <div class="card span2">
         <h3>MAS가 잘 가지는 건강 이슈 <span class="pill red">필독</span></h3>
-
         <div class="callout danger">
           <div class="t">MDR1 (다약제 내성 유전자) — 가장 중요</div>
           <p>목축견에 흔한 유전 변이로, <b>변이 1개만 있어도</b> 특정 약에 심각·치명적으로 반응할 수 있어
@@ -362,7 +374,6 @@
             <li>동물병원 갈 때마다 <b>"MAS, MDR1 가능성"</b>을 수의사에게 꼭 알리기</li>
           </ul>
         </div>
-
         <div class="grid" style="gap:14px;margin-top:14px">
           <div class="callout warn">
             <div class="t">눈</div>
@@ -385,21 +396,134 @@
       </div>
 
     </div>
+
+    <!-- ===== JA ===== -->
+    <div class="grid" data-only="ja">
+
+      <div class="card">
+        <h3>ひと目でわかる基本情報</h3>
+        <div class="spec"><span class="k">犬種</span><span class="v">ミニチュア・アメリカン・シェパード (MAS)</span></div>
+        <div class="spec"><span class="k">グループ</span><span class="v">牧畜犬（ハーディング）</span></div>
+        <div class="spec"><span class="k">体高（オス）</span><span class="v">36–46 cm</span></div>
+        <div class="spec"><span class="k">体重</span><span class="v">9–18 kg (20–40 lb)</span></div>
+        <div class="spec"><span class="k">平均寿命</span><span class="v">13–15 年</span></div>
+        <div class="spec"><span class="k">エネルギー</span><span class="v">非常に高い</span></div>
+        <div class="spec"><span class="k">AKC公認</span><span class="v">2015年（186番目）</span></div>
+      </div>
+
+      <div class="card">
+        <h3>性格・気質</h3>
+        <ul class="clean">
+          <li><b>非常に賢く、しつけが入りやすい</b> — 教えるとすぐ覚える</li>
+          <li><b>エネルギッシュで自発的</b> — 仕事を好む働き者気質</li>
+          <li><b>家族に忠実</b>、見知らぬ人には最初やや警戒的</li>
+          <li><b>強い牧畜本能</b> — 子供や他の動物を追い集めようとする傾向が出ることがある</li>
+          <li>退屈すると問題行動 → <b>運動＋頭を使う遊び</b>が必須</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h3>起源ひとことまとめ</h3>
+        <p class="lead">
+          1960~70年代のアメリカ・カリフォルニアで、<b>小型のオーストラリアン・シェパード</b>を選抜繁殖して作られた小型牧畜犬。
+          かつては「ミニチュア・オーストラリアン・シェパード」と呼ばれ、2015年にAKCが正式な犬種として認めた。
+          体は小さくても<b>オージー（Aussie）の頭脳と活動量</b>をそのまま受け継いだ犬種。
+        </p>
+        <div style="margin-top:13px" class="tags">
+          <span class="tag">アジリティ</span><span class="tag">牧畜</span>
+          <span class="tag">服従訓練</span><span class="tag">フライボール</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>ブルーマール・ブルーアイとは？</h3>
+        <ul class="clean">
+          <li><b>ブルーマール</b> = 黒地に<b>マール（merle）遺伝子</b>が働き、グレーと黒がまだらになった模様。白・銅色（タン）のマーキングが混じることが多い</li>
+          <li><b>ブルーアイ</b>はマール遺伝子が目の色素まで変えて生じる自然な現象 — <b>それ自体は視力の問題ではない</b></li>
+          <li>片目だけ青い、1つの目の中に茶色と青が混じることもある（すべて正常）</li>
+        </ul>
+        <div class="callout info" style="margin-top:14px">
+          <div class="t">ルカの青い目</div>
+          <p>見た目の特徴にすぎないので心配いらない。ただしマール遺伝そのものは聴力・視力に関わるので、下の内容を必ず一度読んでほしい。</p>
+        </div>
+      </div>
+
+      <div class="card span2">
+        <h3>マール（Merle）遺伝 — 必ず知っておくこと <span class="pill amber">重要</span></h3>
+        <div class="grid" style="gap:14px">
+          <div class="callout warn">
+            <div class="t">シングルマール (Mm) — ルカに該当する可能性が高い</div>
+            <ul>
+              <li>一般的に<b>健康</b>で、青い目も無害</li>
+              <li>マールが1つだけでも難聴の確率がやや上がる — ある研究では部分難聴が<b>約36.8%</b>、両耳とも聞こえないケースは<b>1%未満</b></li>
+            </ul>
+          </div>
+          <div class="callout danger">
+            <div class="t">ダブルマール (MM) — マール×マール交配の結果</div>
+            <ul>
+              <li>両側性の難聴・視覚障害（小眼球など）の確率が<b>急激に</b>高まる（オージーのMMの約56%が両側性難聴）</li>
+              <li>そのため<b>マール同士は交配しない</b>のが原則</li>
+            </ul>
+          </div>
+        </div>
+        <div class="callout info" style="margin-top:14px">
+          <div class="t">ルカにしてあげること</div>
+          <ul>
+            <li>ブリーダーに<b>遺伝子検査の結果</b>（マールの状態、両親犬の情報）と<b>聴力検査（BAER）の有無</b>を確認する</li>
+            <li>拍手や音に反応するか日常で観察 — おかしければ動物病院でBAER検査</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card span2">
+        <h3>MASがかかりやすい健康問題 <span class="pill red">必読</span></h3>
+        <div class="callout danger">
+          <div class="t">MDR1（多剤耐性遺伝子）— 最も重要</div>
+          <p>牧畜犬に多い遺伝子変異で、<b>変異が1つあるだけでも</b>特定の薬に重篤・致命的に反応することがある
+          （震え・よだれ・食欲不振・失明 → 重いと昏睡・死亡）。</p>
+          <ul>
+            <li>注意すべき薬: 一部の<b>駆虫薬（イベルメクチンなど）</b>、特定の<b>麻酔・鎮静剤</b>、止瀉薬の<b>ロペラミド</b>など</li>
+            <li><b>ブリーダーにMDR1検査の結果を確認</b>し、不明なら検査を受ける</li>
+            <li>動物病院に行くたびに<b>「MAS、MDR1の可能性」</b>を獣医に必ず伝える</li>
+          </ul>
+        </div>
+        <div class="grid" style="gap:14px;margin-top:14px">
+          <div class="callout warn">
+            <div class="t">目</div>
+            <ul>
+              <li>虹彩欠損、若年性白内障、瞳孔膜遺残、進行性網膜萎縮（PRA）、コリー眼異常（CEA）など</li>
+              <li>一部は進行すると視力低下 → <b>定期的な眼科検診</b>を推奨</li>
+            </ul>
+          </div>
+          <div class="callout warn">
+            <div class="t">その他</div>
+            <ul>
+              <li>股関節形成不全、てんかんなど牧畜犬共通の問題</li>
+              <li>マール関連の<b>難聴</b>の可能性（上記参照）</li>
+            </ul>
+          </div>
+        </div>
+        <p style="font-size:12.5px;color:var(--ink-dim);margin-top:14px">
+          ※ 上記は犬種一般の傾向であり、ルカがすべて持つという意味ではない。正確な点はブリーダーの検査結果と獣医の診断に従おう。
+        </p>
+      </div>
+
+    </div>
   </section>
 
   <!-- ===================== HEALTH ===================== -->
   <section id="health">
     <div class="sec-head">
-      <h2>건강 관리</h2>
-      <p>일본 기준 · 예방접종 · 법적 의무 · 검진을 루카 날짜에 맞춰 관리</p>
+      <h2 data-i18n="health.head.h2">건강 관리</h2>
+      <p data-i18n="health.head.p">일본 기준 · 예방접종 · 법적 의무 · 검진을 루카 날짜에 맞춰 관리</p>
     </div>
     <div id="healthAlerts"></div>
     <div class="gear-bar">
       <div class="gear-stat" id="healthStat"></div>
       <div class="gear-filters" id="healthFilters">
-        <button class="fbtn active" data-f="all">전체</button>
-        <button class="fbtn" data-f="todo">남은 항목</button>
-        <button class="fbtn" data-f="recur">정기</button>
+        <button class="fbtn active" data-f="all" data-i18n="health.f.all">전체</button>
+        <button class="fbtn" data-f="todo" data-i18n="health.f.todo">남은 항목</button>
+        <button class="fbtn" data-f="recur" data-i18n="health.f.recur">정기</button>
       </div>
     </div>
     <div class="gear-hint" id="healthHint"></div>
@@ -410,14 +534,14 @@
   <section id="train">
     <div class="placeholder">
       <div class="mark">＋</div>
-      <h2>훈련 계획</h2>
-      <p>똑똑한 MAS에 맞춘 시기별 훈련 로드맵.</p>
+      <h2 data-i18n="train.h2">훈련 계획</h2>
+      <p data-i18n="train.p">똑똑한 MAS에 맞춘 시기별 훈련 로드맵.</p>
       <div class="coming">
-        <span>배변 훈련</span>
-        <span>사회화</span>
-        <span>기본 명령 (앉아·기다려)</span>
-        <span>분리불안 예방</span>
-        <span>크레이트 적응</span>
+        <span data-i18n="train.c1">배변 훈련</span>
+        <span data-i18n="train.c2">사회화</span>
+        <span data-i18n="train.c3">기본 명령 (앉아·기다려)</span>
+        <span data-i18n="train.c4">분리불안 예방</span>
+        <span data-i18n="train.c5">크레이트 적응</span>
       </div>
     </div>
   </section>
@@ -425,18 +549,18 @@
   <!-- ===================== GEAR ===================== -->
   <section id="gear">
     <div class="sec-head">
-      <h2>용품 관리</h2>
-      <p>카테고리별 보유 현황 · 정기 보충 품목 관리 · 가격/링크는 일본 Amazon 기준</p>
+      <h2 data-i18n="gear.head.h2">용품 관리</h2>
+      <p data-i18n="gear.head.p">카테고리별 보유 현황 · 정기 보충 품목 관리 · 가격/링크는 일본 Amazon 기준</p>
     </div>
     <div class="gear-bar">
       <div class="gear-stat" id="gearStat"></div>
       <div class="gear-filters" id="gearFilters">
-        <button class="fbtn active" data-f="all">전체</button>
-        <button class="fbtn" data-f="need">구매·보충 필요</button>
-        <button class="fbtn" data-f="recur">정기 소모품</button>
+        <button class="fbtn active" data-f="all" data-i18n="gear.f.all">전체</button>
+        <button class="fbtn" data-f="need" data-i18n="gear.f.need">구매·보충 필요</button>
+        <button class="fbtn" data-f="recur" data-i18n="gear.f.recur">정기 소모품</button>
       </div>
     </div>
-    <div class="gear-hint">체크 = 보유중 · 체크 해제 = 구매/보충 필요 · "정기"는 주기적으로 다시 사야 하는 소모품 (저장은 이 브라우저에 기록돼)</div>
+    <div class="gear-hint" data-i18n="gear.hint">체크 = 보유중 · 체크 해제 = 구매/보충 필요 · "정기"는 주기적으로 다시 사야 하는 소모품 (저장은 이 브라우저에 기록돼)</div>
     <div id="gearList"></div>
   </section>
 
@@ -444,14 +568,14 @@
   <section id="care">
     <div class="placeholder">
       <div class="mark">＋</div>
-      <h2>육아</h2>
-      <p>생후 2개월 아기 강아지와의 첫날부터의 일상 가이드.</p>
+      <h2 data-i18n="care.h2">육아</h2>
+      <p data-i18n="care.p">생후 2개월 아기 강아지와의 첫날부터의 일상 가이드.</p>
       <div class="coming">
-        <span>첫날 · 첫주 적응</span>
-        <span>먹이기 (양 · 횟수)</span>
-        <span>수면 · 분리</span>
-        <span>그루밍 · 목욕</span>
-        <span>안전한 집 만들기</span>
+        <span data-i18n="care.c1">첫날 · 첫주 적응</span>
+        <span data-i18n="care.c2">먹이기 (양 · 횟수)</span>
+        <span data-i18n="care.c3">수면 · 분리</span>
+        <span data-i18n="care.c4">그루밍 · 목욕</span>
+        <span data-i18n="care.c5">안전한 집 만들기</span>
       </div>
     </div>
   </section>
@@ -459,11 +583,11 @@
   <!-- ===================== 설채현 지식 ===================== -->
   <section id="info">
     <div class="sec-head">
-      <h2>지식·정보 <span class="pill amber" id="infoCount"></span></h2>
-      <p>반려견 지식을 주제별 개념으로 정리한 사전 · 키워드 검색 · 각 항목 끝의 링크는 근거가 된 출처 영상</p>
+      <h2><span data-i18n="info.head.h2">지식·정보</span> <span class="pill amber" id="infoCount"></span></h2>
+      <p data-i18n="info.head.p">반려견 지식을 주제별 개념으로 정리한 사전 · 키워드 검색 · 각 항목 끝의 링크는 근거가 된 출처 영상</p>
     </div>
     <div class="gear-bar">
-      <input class="info-search" id="infoSearch" type="search" placeholder="키워드 검색 (개념·내용)">
+      <input class="info-search" id="infoSearch" type="search" data-i18n-ph="info.search" placeholder="키워드 검색 (개념·내용)">
       <div class="gear-stat" id="infoStat"></div>
     </div>
     <div class="gear-filters" id="infoFilters" style="margin-bottom:14px"></div>
@@ -471,14 +595,101 @@
   </section>
 
   <footer>
-    루카 LUCA 허브 · 마지막 업데이트 2026-06-24<br>
-    출처: AKC · Wikipedia · Paw Print Genetics · UC Davis VGL · ASHGI (멀/MDR1 자료)<br>
-    ※ 의료 정보는 참고용 — 최종 판단은 브리더 검사 결과와 담당 수의사를 따르세요.
+    <span data-i18n="footer.l1">루카 LUCA 허브 · 마지막 업데이트 2026-06-24</span><br>
+    <span data-i18n="footer.l2">출처: AKC · Wikipedia · Paw Print Genetics · UC Davis VGL · ASHGI (멀/MDR1 자료)</span><br>
+    <span data-i18n="footer.l3">※ 의료 정보는 참고용 — 최종 판단은 브리더 검사 결과와 담당 수의사를 따르세요.</span>
   </footer>
 </div>
 
 <script src="info_data.js"></script>
 <script>
+  // ============================================================
+  //  i18n — 한국어 / 日本語
+  // ============================================================
+  let LANG = localStorage.getItem('luca_lang') === 'ja' ? 'ja' : 'ko';
+  const LANGHOOKS = [];
+  const T = {
+    ko:{
+      'nav.breed':'견종 정보','nav.health':'건강','nav.train':'훈련','nav.gear':'제품','nav.care':'육아','nav.info':'지식·정보','nav.soon':'곧',
+      'breed.tag1':'미니어처 아메리칸 셰퍼드','breed.tag2':'블루멀 · 블루아이','breed.tag3':'수컷',
+      'breed.head.h2':'견종 정보 · 기초 지식','breed.head.p':'미니어처 아메리칸 셰퍼드(MAS) · 블루멀 · 블루아이 수컷 — 루카를 이해하기 위한 기본기',
+      'health.head.h2':'건강 관리','health.head.p':'일본 기준 · 예방접종 · 법적 의무 · 검진을 루카 날짜에 맞춰 관리',
+      'health.f.all':'전체','health.f.todo':'남은 항목','health.f.recur':'정기',
+      'gear.head.h2':'용품 관리','gear.head.p':'카테고리별 보유 현황 · 정기 보충 품목 관리 · 가격/링크는 일본 Amazon 기준',
+      'gear.f.all':'전체','gear.f.need':'구매·보충 필요','gear.f.recur':'정기 소모품',
+      'gear.hint':'체크 = 보유중 · 체크 해제 = 구매/보충 필요 · "정기"는 주기적으로 다시 사야 하는 소모품 (저장은 이 브라우저에 기록돼)',
+      'info.head.h2':'지식·정보','info.head.p':'반려견 지식을 주제별 개념으로 정리한 사전 · 키워드 검색 · 각 항목 끝의 링크는 근거가 된 출처 영상','info.search':'키워드 검색 (개념·내용)',
+      'train.h2':'훈련 계획','train.p':'똑똑한 MAS에 맞춘 시기별 훈련 로드맵.',
+      'train.c1':'배변 훈련','train.c2':'사회화','train.c3':'기본 명령 (앉아·기다려)','train.c4':'분리불안 예방','train.c5':'크레이트 적응',
+      'care.h2':'육아','care.p':'생후 2개월 아기 강아지와의 첫날부터의 일상 가이드.',
+      'care.c1':'첫날 · 첫주 적응','care.c2':'먹이기 (양 · 횟수)','care.c3':'수면 · 분리','care.c4':'그루밍 · 목욕','care.c5':'안전한 집 만들기',
+      'footer.l1':'루카 LUCA 허브 · 마지막 업데이트 2026-06-24',
+      'footer.l2':'출처: AKC · Wikipedia · Paw Print Genetics · UC Davis VGL · ASHGI (멀/MDR1 자료)',
+      'footer.l3':'※ 의료 정보는 참고용 — 최종 판단은 브리더 검사 결과와 담당 수의사를 따르세요.',
+      'dday.lbl':'입양일 2026.07.25','dday.today':'오늘 루카가 와요!','dday.together':'함께한 지','dday.dleft':'일',
+      'st.total':'전체','st.have':'보유','st.need':'필요','st.needsum':'필요 합계','st.recur':'정기','st.done':'완료','st.left':'남은','st.law':'법적','st.show':'표시',
+      'badge.recur':'정기','badge.law':'법적 의무','price.none':'가격 미정','buy.link':'구매 링크','buy.search':'검색',
+      'empty.none':'해당 항목이 없어요.','empty.data':'데이터 준비 중입니다.',
+      'info.all':'전체','info.items':'항목','info.src':'출처','info.video':'영상',
+      'tm.season':'시즌<br>월 1회',
+      'ha.title':d=>`입양 후 30일 내 (~${d}) 꼭 해야 할 법적 의무 — 일본`,
+      'ha.b1':'광견병 예방접종 + 자치체 등록 (狂犬病予防法 · 이후 매년)',
+      'ha.b2':'마이크로칩 소유자 변경등록 (환경성 등록 사이트)',
+      'hh':(b,a)=>`생일 추정 ${b} · 입양 ${a} · 날짜는 예상값(브리더 정보로 수정 가능) · 체크=완료, 저장은 이 브라우저에`,
+    },
+    ja:{
+      'nav.breed':'犬種情報','nav.health':'健康','nav.train':'しつけ','nav.gear':'用品','nav.care':'育児','nav.info':'知識・情報','nav.soon':'近日',
+      'breed.tag1':'ミニチュア・アメリカン・シェパード','breed.tag2':'ブルーマール・ブルーアイ','breed.tag3':'オス',
+      'breed.head.h2':'犬種情報・基礎知識','breed.head.p':'ミニチュア・アメリカン・シェパード（MAS）・ブルーマール・ブルーアイのオス — ルカを理解するための基礎',
+      'health.head.h2':'健康管理','health.head.p':'日本基準・予防接種・法的義務・健診をルカの日付に合わせて管理',
+      'health.f.all':'すべて','health.f.todo':'残りの項目','health.f.recur':'定期',
+      'gear.head.h2':'用品管理','gear.head.p':'カテゴリ別の保有状況・定期補充品の管理・価格/リンクは日本のAmazon基準',
+      'gear.f.all':'すべて','gear.f.need':'購入・補充が必要','gear.f.recur':'定期消耗品',
+      'gear.hint':'チェック=保有中・チェック解除=購入/補充が必要・「定期」は定期的に買い替える消耗品（保存はこのブラウザに記録）',
+      'info.head.h2':'知識・情報','info.head.p':'犬の知識をテーマ別の概念としてまとめた事典・キーワード検索・各項目末尾のリンクは根拠となった出典動画','info.search':'キーワード検索（概念・内容）',
+      'train.h2':'しつけ計画','train.p':'賢いMASに合わせた時期別のしつけロードマップ。',
+      'train.c1':'トイレトレーニング','train.c2':'社会化','train.c3':'基本コマンド（おすわり・まて）','train.c4':'分離不安の予防','train.c5':'クレートトレーニング',
+      'care.h2':'育児','care.p':'生後2ヶ月の子犬との初日からの日常ガイド。',
+      'care.c1':'初日・初週の慣らし','care.c2':'食事（量・回数）','care.c3':'睡眠・お留守番','care.c4':'グルーミング・お風呂','care.c5':'安全な家づくり',
+      'footer.l1':'ルカ LUCA ハブ・最終更新 2026-06-24',
+      'footer.l2':'出典: AKC · Wikipedia · Paw Print Genetics · UC Davis VGL · ASHGI（マール/MDR1資料）',
+      'footer.l3':'※ 医療情報は参考用 — 最終判断はブリーダーの検査結果と担当獣医に従ってください。',
+      'dday.lbl':'迎え入れ日 2026.07.25','dday.today':'今日ルカが来ます！','dday.together':'一緒に過ごして','dday.dleft':'日',
+      'st.total':'全体','st.have':'保有','st.need':'必要','st.needsum':'必要合計','st.recur':'定期','st.done':'完了','st.left':'残り','st.law':'法的','st.show':'表示',
+      'badge.recur':'定期','badge.law':'法的義務','price.none':'価格未定','buy.link':'購入リンク','buy.search':'検索',
+      'empty.none':'該当する項目がありません。','empty.data':'データを準備中です。',
+      'info.all':'すべて','info.items':'項目','info.src':'出典','info.video':'動画',
+      'tm.season':'シーズン<br>月1回',
+      'ha.title':d=>`迎え入れ後30日以内（~${d}）に必ず行う法的義務 — 日本`,
+      'ha.b1':'狂犬病予防接種＋自治体登録（狂犬病予防法・以降毎年）',
+      'ha.b2':'マイクロチップ所有者変更登録（環境省 登録サイト）',
+      'hh':(b,a)=>`誕生日推定 ${b}・迎え入れ ${a}・日付は予想値（ブリーダー情報で修正可）・チェック=完了、保存はこのブラウザに`,
+    }
+  };
+  const t = k => { const v = T[LANG][k]; return v!==undefined ? v : (T.ko[k]!==undefined ? T.ko[k] : k); };
+  // 주제(토픽) 일본어 라벨 — 사전 데이터와 독립
+  const TOPIC_JA = {
+    '건강·질병':'健康・病気','행동·문제행동':'行動・問題行動','훈련':'しつけ','산책·운동':'散歩・運動',
+    '식사·영양':'食事・栄養','견종 정보':'犬種情報','그루밍·미용':'グルーミング・美容','제품·용품':'製品・用品',
+    '입양·반려생활':'迎え入れ・ペットライフ','법·제도·이슈':'法律・制度・話題','브이로그·기타':'Vlog・その他'
+  };
+
+  // ---- 언어 적용 ----
+  function applyLang(){
+    document.documentElement.lang = LANG;
+    document.body.dataset.lang = LANG;
+    document.querySelectorAll('[data-i18n]').forEach(el=>{ el.textContent = t(el.dataset.i18n); });
+    document.querySelectorAll('[data-i18n-ph]').forEach(el=>{ el.placeholder = t(el.dataset.i18nPh); });
+    document.querySelectorAll('#langsw button').forEach(b=>b.classList.toggle('active', b.dataset.lang===LANG));
+    LANGHOOKS.forEach(fn=>{ try{ fn(); }catch(e){ console.warn('langhook', e); } });
+  }
+  document.getElementById('langsw').addEventListener('click', e=>{
+    const b = e.target.closest('button'); if(!b) return;
+    LANG = b.dataset.lang === 'ja' ? 'ja' : 'ko';
+    localStorage.setItem('luca_lang', LANG);
+    applyLang();
+  });
+
   // ---- 클라우드 동기화 허브 (Firebase 모듈이 연결) ----
   window.LucaHub = {
     _cbs: [], _save: null,
@@ -501,51 +712,78 @@
 
   // ---- D-day 계산 (입양일 2026-07-25) ----
   (function(){
-    const target = new Date(2026,6,25); // month is 0-based → 6 = July
-    const now = new Date();
-    const t0 = new Date(now.getFullYear(),now.getMonth(),now.getDate());
-    const diff = Math.round((target - t0)/86400000);
     const el = document.getElementById('dday');
     const lbl = document.getElementById('ddayLbl');
-    if(diff > 0){ el.textContent = 'D-'+diff; lbl.textContent = '입양일 2026.07.25'; }
-    else if(diff === 0){ el.textContent = 'D-DAY'; lbl.textContent = '오늘 루카가 와요!'; }
-    else { el.textContent = '+'+(-diff)+'일'; lbl.textContent = '함께한 지'; }
+    function paint(){
+      const target = new Date(2026,6,25); // month is 0-based → 6 = July
+      const now = new Date();
+      const t0 = new Date(now.getFullYear(),now.getMonth(),now.getDate());
+      const diff = Math.round((target - t0)/86400000);
+      if(diff > 0){ el.textContent = 'D-'+diff; lbl.textContent = t('dday.lbl'); }
+      else if(diff === 0){ el.textContent = 'D-DAY'; lbl.textContent = t('dday.today'); }
+      else { el.textContent = '+'+(-diff)+t('dday.dleft'); lbl.textContent = t('dday.together'); }
+    }
+    LANGHOOKS.push(paint);
   })();
 
   // ---- 용품 데이터 ----
   // 필드: cat(카테고리) name brand spec price(엔/없으면 null) asin(있으면 직접링크)
   //       q(없을 때 Amazon 검색어, 일본어) recur(정기 소모품) cycle(주기) note(주의)
+  //       *_ja 는 일본어 라벨 (id 는 항상 한국어 name/asin 기준 — 언어 무관)
   const CATS = ['이동·외출','생활공간','배변','위생·청결','식사','그루밍','장난감'];
+  const CATS_JA = {'이동·외출':'移動・外出','생활공간':'生活スペース','배변':'トイレ','위생·청결':'衛生・清潔','식사':'食事','그루밍':'グルーミング','장난감':'おもちゃ'};
   const GEAR = [
     // 이동·외출
-    {cat:'이동·외출', name:'항공운송 대응 펫 캐리어', brand:'IATA 기준 / 캐스터·핸들 / 물그릇 포함', spec:'사이즈 M (70×53×48cm)', price:13800, asin:'B0F9P6G82X'},
-    {cat:'이동·외출', name:'하네스 · 리드줄', brand:'산책·외출용', spec:'소형견 퍼피 사이즈', price:null, q:'犬 ハーネス リード 小型犬 子犬'},
+    {cat:'이동·외출', name:'항공운송 대응 펫 캐리어', brand:'IATA 기준 / 캐스터·핸들 / 물그릇 포함', spec:'사이즈 M (70×53×48cm)', price:13800, asin:'B0F9P6G82X',
+      name_ja:'航空輸送対応ペットキャリー', brand_ja:'IATA基準 / キャスター・ハンドル / 水皿付き', spec_ja:'サイズM (70×53×48cm)'},
+    {cat:'이동·외출', name:'하네스 · 리드줄', brand:'산책·외출용', spec:'소형견 퍼피 사이즈', price:null, q:'犬 ハーネス リード 小型犬 子犬',
+      name_ja:'ハーネス・リード', brand_ja:'散歩・外出用', spec_ja:'小型犬 子犬サイズ'},
     // 생활공간
-    {cat:'생활공간', name:'펫 사클(울타리)', brand:'타ンス의겐(タンスのゲン)', spec:'높이 60cm · 실내외 겸용 · 더블락', price:8999, asin:'B0CN2LKXM5'},
-    {cat:'생활공간', name:'PVC 바닥 보호매트', brand:'TranzAnSfure / 화이트', spec:'160×200cm · 4mm · 방수·미끄럼방지', price:9221, asin:'B0FDWXRLBJ'},
-    {cat:'생활공간', name:'방석 · 펫 베드', brand:'잠자리용', spec:'소형견용 · 세탁 가능', price:null, q:'犬 ベッド 小型犬 クッション 洗える'},
+    {cat:'생활공간', name:'펫 사클(울타리)', brand:'타ンス의겐(タンスのゲン)', spec:'높이 60cm · 실내외 겸용 · 더블락', price:8999, asin:'B0CN2LKXM5',
+      name_ja:'ペットサークル', brand_ja:'タンスのゲン', spec_ja:'高さ60cm・室内外兼用・ダブルロック'},
+    {cat:'생활공간', name:'PVC 바닥 보호매트', brand:'TranzAnSfure / 화이트', spec:'160×200cm · 4mm · 방수·미끄럼방지', price:9221, asin:'B0FDWXRLBJ',
+      name_ja:'PVC床保護マット', brand_ja:'TranzAnSfure / ホワイト', spec_ja:'160×200cm・4mm・防水・滑り止め'},
+    {cat:'생활공간', name:'방석 · 펫 베드', brand:'잠자리용', spec:'소형견용 · 세탁 가능', price:null, q:'犬 ベッド 小型犬 クッション 洗える',
+      name_ja:'クッション・ペットベッド', brand_ja:'寝床用', spec_ja:'小型犬用・洗濯可'},
     // 배변
-    {cat:'배변', name:'도그 배변 트레이 (와이드)', brand:'페티오(Petio) / 그레이', spec:'와이드 · 한 손 개폐', price:1860, asin:'B00TWYLNV0'},
-    {cat:'배변', name:'배변패드 (와이드)', brand:'아이리스오야마', spec:'와이드 42매 · 초흡수·항균', price:1155, asin:'B0899W5G17', recur:true, cycle:'약 월 1~2팩'},
-    {cat:'배변', name:'배변봉투 / 매너백', brand:'산책 배변 처리', spec:'롤 타입', price:null, q:'犬 うんち袋 マナー袋', recur:true, cycle:'약 분기 1회'},
+    {cat:'배변', name:'도그 배변 트레이 (와이드)', brand:'페티오(Petio) / 그레이', spec:'와이드 · 한 손 개폐', price:1860, asin:'B00TWYLNV0',
+      name_ja:'ドッグトイレトレー（ワイド）', brand_ja:'Petio / グレー', spec_ja:'ワイド・片手で開閉'},
+    {cat:'배변', name:'배변패드 (와이드)', brand:'아이리스오야마', spec:'와이드 42매 · 초흡수·항균', price:1155, asin:'B0899W5G17', recur:true, cycle:'약 월 1~2팩',
+      name_ja:'トイレシート（ワイド）', brand_ja:'アイリスオーヤマ', spec_ja:'ワイド42枚・超吸収・抗菌', cycle_ja:'約月1~2パック'},
+    {cat:'배변', name:'배변봉투 / 매너백', brand:'산책 배변 처리', spec:'롤 타입', price:null, q:'犬 うんち袋 マナー袋', recur:true, cycle:'약 분기 1회',
+      name_ja:'うんち袋・マナー袋', brand_ja:'散歩時の排泄処理', spec_ja:'ロールタイプ', cycle_ja:'約四半期に1回'},
     // 위생·청결
-    {cat:'위생·청결', name:'반려동물 물티슈 (대용량)', brand:'유기농·수의사 감수 / 무향·무알콜', spec:'100매 × 6봉 (600매)', price:2999, asin:'B0FK2JT4PQ', recur:true, cycle:'약 1~2개월'},
-    {cat:'위생·청결', name:'장갑형 소취 물티슈', brand:'HICC PET / 코코넛향', spec:'20매 · 손에 끼워 닦기', price:2999, asin:'B0GR5R2G5K', recur:true, cycle:'약 1개월'},
-    {cat:'위생·청결', name:'펫 소취 스프레이', brand:'0mistPro / 일본제 · 무향', spec:'500ml · 제균', price:1880, asin:'B0D53KSD14', recur:true, cycle:'약 1~2개월'},
-    {cat:'위생·청결', name:'강아지 샴푸', brand:'저자극 · 퍼피용', spec:'목욕용', price:null, q:'犬 シャンプー 低刺激 子犬', recur:true, cycle:'약 2~3개월'},
+    {cat:'위생·청결', name:'반려동물 물티슈 (대용량)', brand:'유기농·수의사 감수 / 무향·무알콜', spec:'100매 × 6봉 (600매)', price:2999, asin:'B0FK2JT4PQ', recur:true, cycle:'약 1~2개월',
+      name_ja:'ペット用ウェットティッシュ（大容量）', brand_ja:'オーガニック・獣医監修 / 無香料・ノンアルコール', spec_ja:'100枚×6袋（600枚）', cycle_ja:'約1~2ヶ月'},
+    {cat:'위생·청결', name:'장갑형 소취 물티슈', brand:'HICC PET / 코코넛향', spec:'20매 · 손에 끼워 닦기', price:2999, asin:'B0GR5R2G5K', recur:true, cycle:'약 1개월',
+      name_ja:'手袋型 消臭ウェットティッシュ', brand_ja:'HICC PET / ココナッツの香り', spec_ja:'20枚・手にはめて拭く', cycle_ja:'約1ヶ月'},
+    {cat:'위생·청결', name:'펫 소취 스프레이', brand:'0mistPro / 일본제 · 무향', spec:'500ml · 제균', price:1880, asin:'B0D53KSD14', recur:true, cycle:'약 1~2개월',
+      name_ja:'ペット消臭スプレー', brand_ja:'0mistPro / 日本製・無香', spec_ja:'500ml・除菌', cycle_ja:'約1~2ヶ月'},
+    {cat:'위생·청결', name:'강아지 샴푸', brand:'저자극 · 퍼피용', spec:'목욕용', price:null, q:'犬 シャンプー 低刺激 子犬', recur:true, cycle:'약 2~3개월',
+      name_ja:'犬用シャンプー', brand_ja:'低刺激・子犬用', spec_ja:'お風呂用', cycle_ja:'約2~3ヶ月'},
     // 식사
-    {cat:'식사', name:'사료 (퍼피용)', brand:'생후 2개월~ · 소형견 성장기', spec:'주식 · 성장기 영양', price:null, q:'子犬 ドッグフード パピー 小型犬', recur:true, cycle:'약 월 1회'},
-    {cat:'식사', name:'간식 (트릿)', brand:'무첨가 · 훈련 보상용', spec:'훈련·간식용', price:null, q:'犬 おやつ 無添加 子犬 トレーニング', recur:true, cycle:'약 월 1회'},
-    {cat:'식사', name:'식기 (밥그릇·물그릇)', brand:'미끄럼방지', spec:'2구 또는 세트', price:null, q:'犬 食器 フードボウル 滑り止め'},
-    {cat:'식사', name:'자동 급수기', brand:'상시 급수', spec:'정수·급수기', price:null, q:'犬 自動給水器 ペット'},
+    {cat:'식사', name:'사료 (퍼피용)', brand:'생후 2개월~ · 소형견 성장기', spec:'주식 · 성장기 영양', price:null, q:'子犬 ドッグフード パピー 小型犬', recur:true, cycle:'약 월 1회',
+      name_ja:'ドッグフード（子犬用）', brand_ja:'生後2ヶ月~・小型犬 成長期', spec_ja:'主食・成長期の栄養', cycle_ja:'約月1回'},
+    {cat:'식사', name:'간식 (트릿)', brand:'무첨가 · 훈련 보상용', spec:'훈련·간식용', price:null, q:'犬 おやつ 無添加 子犬 トレーニング', recur:true, cycle:'약 월 1회',
+      name_ja:'おやつ（トリーツ）', brand_ja:'無添加・しつけのご褒美用', spec_ja:'しつけ・おやつ用', cycle_ja:'約月1回'},
+    {cat:'식사', name:'식기 (밥그릇·물그릇)', brand:'미끄럼방지', spec:'2구 또는 세트', price:null, q:'犬 食器 フードボウル 滑り止め',
+      name_ja:'食器（フードボウル・水皿）', brand_ja:'滑り止め', spec_ja:'2連またはセット'},
+    {cat:'식사', name:'자동 급수기', brand:'상시 급수', spec:'정수·급수기', price:null, q:'犬 自動給水器 ペット',
+      name_ja:'自動給水器', brand_ja:'常時給水', spec_ja:'浄水・給水器'},
     // 그루밍
-    {cat:'그루밍', name:'슬리커 브러시 (빗)', brand:'더블코트 털관리', spec:'MAS 털빠짐 관리용', price:null, q:'犬 スリッカーブラシ 換毛'},
-    {cat:'그루밍', name:'발톱깎이', brand:'소형견용', spec:'정기 발톱 관리', price:null, q:'犬 爪切り 小型犬'},
-    {cat:'그루밍', name:'칫솔 · 치약', brand:'반려견 전용', spec:'치아 관리', price:null, q:'犬 歯ブラシ 歯磨き粉', recur:true, cycle:'치약 약 분기'},
+    {cat:'그루밍', name:'슬리커 브러시 (빗)', brand:'더블코트 털관리', spec:'MAS 털빠짐 관리용', price:null, q:'犬 スリッカーブラシ 換毛',
+      name_ja:'スリッカーブラシ', brand_ja:'ダブルコートの被毛ケア', spec_ja:'MASの抜け毛ケア用'},
+    {cat:'그루밍', name:'발톱깎이', brand:'소형견용', spec:'정기 발톱 관리', price:null, q:'犬 爪切り 小型犬',
+      name_ja:'爪切り', brand_ja:'小型犬用', spec_ja:'定期的な爪のケア'},
+    {cat:'그루밍', name:'칫솔 · 치약', brand:'반려견 전용', spec:'치아 관리', price:null, q:'犬 歯ブラシ 歯磨き粉', recur:true, cycle:'치약 약 분기',
+      name_ja:'歯ブラシ・歯磨き粉', brand_ja:'犬専用', spec_ja:'歯のケア', cycle_ja:'歯磨き粉 約四半期'},
     // 장난감
-    {cat:'장난감', name:'노즈워크 매트', brand:'머리쓰기 놀이', spec:'똑똑한 MAS 두뇌 자극', price:null, q:'犬 ノーズワークマット'},
-    {cat:'장난감', name:'씹는 장난감', brand:'치발기', spec:'이갈이 시기용', price:null, q:'犬 噛むおもちゃ 子犬'},
-    {cat:'장난감', name:'터그 / 로프 장난감', brand:'상호작용 놀이', spec:'함께 노는 용', price:null, q:'犬 ロープ おもちゃ タグ'},
+    {cat:'장난감', name:'노즈워크 매트', brand:'머리쓰기 놀이', spec:'똑똑한 MAS 두뇌 자극', price:null, q:'犬 ノーズワークマット',
+      name_ja:'ノーズワークマット', brand_ja:'頭を使う遊び', spec_ja:'賢いMASの脳トレ'},
+    {cat:'장난감', name:'씹는 장난감', brand:'치발기', spec:'이갈이 시기용', price:null, q:'犬 噛むおもちゃ 子犬',
+      name_ja:'噛むおもちゃ', brand_ja:'歯固め', spec_ja:'歯の生え替わり時期用'},
+    {cat:'장난감', name:'터그 / 로프 장난감', brand:'상호작용 놀이', spec:'함께 노는 용', price:null, q:'犬 ロープ おもちゃ タグ',
+      name_ja:'タグ・ロープのおもちゃ', brand_ja:'ふれあい遊び', spec_ja:'一緒に遊ぶ用'},
   ];
 
   (function(){
@@ -553,26 +791,28 @@
     const KEY = 'luca_gear_have';
     let have = {};
     try{ have = JSON.parse(localStorage.getItem(KEY)) || {}; }catch(e){}
-    const id = p => p.asin || p.name;
+    const id = p => p.asin || p.name;                        // 한국어 name 기준 — 언어 무관 고정 ID
+    const F = (p,f) => LANG==='ja' ? (p[f+'_ja']||p[f]) : p[f];
+    const catName = c => LANG==='ja' ? (CATS_JA[c]||c) : c;
     const list = document.getElementById('gearList');
     const statEl = document.getElementById('gearStat');
     let filter = 'all';
 
     const link = p => p.asin
-      ? {url:'https://www.amazon.co.jp/dp/'+p.asin, cls:'pbuy', label:'구매 링크'}
-      : {url:'https://www.amazon.co.jp/s?k='+encodeURIComponent(p.q||p.name), cls:'pbuy search', label:'검색'};
+      ? {url:'https://www.amazon.co.jp/dp/'+p.asin, cls:'pbuy', label:t('buy.link')}
+      : {url:'https://www.amazon.co.jp/s?k='+encodeURIComponent(p.q||p.name), cls:'pbuy search', label:t('buy.search')};
 
     function row(p){
       const on = !!have[id(p)], l = link(p);
-      const badge = p.recur ? '<span class="badge recur">정기</span>' : '';
-      const cyc = (p.recur && p.cycle) ? ` · <span class="cyc">${p.cycle}</span>` : '';
-      const note = p.note ? `<div class="pnote">${p.note}</div>` : '';
-      const price = p.price!=null ? `<span class="pprice">${yen(p.price)}</span>` : `<span class="pprice none">가격 미정</span>`;
+      const badge = p.recur ? `<span class="badge recur">${t('badge.recur')}</span>` : '';
+      const cyc = (p.recur && F(p,'cycle')) ? ` · <span class="cyc">${F(p,'cycle')}</span>` : '';
+      const note = p.note ? `<div class="pnote">${F(p,'note')}</div>` : '';
+      const price = p.price!=null ? `<span class="pprice">${yen(p.price)}</span>` : `<span class="pprice none">${t('price.none')}</span>`;
       return `<div class="prow ${on?'have':''}" data-id="${id(p).replace(/"/g,'')}">
-        <input type="checkbox" class="pchk" ${on?'checked':''} aria-label="보유 여부">
+        <input type="checkbox" class="pchk" ${on?'checked':''} aria-label="have">
         <div class="pinfo">
-          <div class="ptop"><span class="pname">${p.name}</span>${badge}</div>
-          <div class="pmeta">${p.brand} · ${p.spec}${cyc}</div>
+          <div class="ptop"><span class="pname">${F(p,'name')}</span>${badge}</div>
+          <div class="pmeta">${F(p,'brand')} · ${F(p,'spec')}${cyc}</div>
           ${note}
         </div>
         ${price}
@@ -586,10 +826,10 @@
       CATS.forEach(cat=>{
         const items = GEAR.filter(p=>p.cat===cat && passes(p));
         if(!items.length) return;
-        html += `<div class="cat-group"><div class="cat-head">${cat} <span class="cnt">${items.length}</span></div>`+
+        html += `<div class="cat-group"><div class="cat-head">${catName(cat)} <span class="cnt">${items.length}</span></div>`+
                 `<div class="prod-list">${items.map(row).join('')}</div></div>`;
       });
-      list.innerHTML = html || `<div class="gear-hint" style="text-align:center;padding:34px 0">해당 항목이 없어요.</div>`;
+      list.innerHTML = html || `<div class="gear-hint" style="text-align:center;padding:34px 0">${t('empty.none')}</div>`;
       list.querySelectorAll('.pchk').forEach(chk=>chk.addEventListener('change',e=>{
         const k = e.target.closest('.prow').dataset.id;
         have[k] = e.target.checked;
@@ -605,18 +845,18 @@
       const needSum = GEAR.reduce((a,p)=> a + (have[id(p)]?0:(p.price||0)), 0);
       const recurN = GEAR.filter(p=>p.recur).length;
       statEl.innerHTML =
-        `<div class="stat">전체 <b>${total}</b></div>`+
-        `<div class="stat">보유 <b>${haveN}</b></div>`+
-        `<div class="stat need">필요 <b>${total-haveN}</b></div>`+
-        `<div class="stat need">필요 합계 <b>${yen(needSum)}</b></div>`+
-        `<div class="stat">정기 <b>${recurN}</b></div>`;
+        `<div class="stat">${t('st.total')} <b>${total}</b></div>`+
+        `<div class="stat">${t('st.have')} <b>${haveN}</b></div>`+
+        `<div class="stat need">${t('st.need')} <b>${total-haveN}</b></div>`+
+        `<div class="stat need">${t('st.needsum')} <b>${yen(needSum)}</b></div>`+
+        `<div class="stat">${t('st.recur')} <b>${recurN}</b></div>`;
     }
     document.getElementById('gearFilters').addEventListener('click',e=>{
       const b = e.target.closest('.fbtn'); if(!b) return;
       document.querySelectorAll('#gearFilters .fbtn').forEach(x=>x.classList.remove('active'));
       b.classList.add('active'); filter = b.dataset.f; render();
     });
-    render(); stats();
+    LANGHOOKS.push(()=>{ render(); stats(); });
     window.LucaHub.onState('gear', g => {
       have = Object.assign({}, have, g);
       localStorage.setItem(KEY, JSON.stringify(have));
@@ -629,38 +869,56 @@
   const BIRTH = '2026-05-25';   // 추정 생일 (브리더 확인 후 수정)
   const ARRIVAL = '2026-07-25'; // 입양일
   const HCATS = ['법적 의무 (일본)','예방접종 (混合ワクチン)','기생충 예방','건강검진','중성화','치아·성장'];
+  const HCATS_JA = {'법적 의무 (일본)':'法的義務（日本）','예방접종 (混合ワクチン)':'予防接種（混合ワクチン）','기생충 예방':'寄生虫予防','건강검진':'健康診断','중성화':'去勢・避妊','치아·성장':'歯・成長'};
   const HEALTH = [
     {cat:'법적 의무 (일본)', name:'마이크로칩 소유자 변경등록', when:{type:'deadline',base:'arrival',days:30}, law:true,
-      note:'2022.6~ 의무. 펫샵·브리더 분양견은 칩 장착됨 → 환경성 「犬と猫のマイクロチップ情報登録」에서 30일 내 소유자 정보 변경등록.'},
+      note:'2022.6~ 의무. 펫샵·브리더 분양견은 칩 장착됨 → 환경성 「犬と猫のマイクロチップ情報登録」에서 30일 내 소유자 정보 변경등록.',
+      name_ja:'マイクロチップ所有者変更登録',
+      note_ja:'2022.6~義務。ペットショップ・ブリーダーの分譲犬はチップ装着済み → 環境省「犬と猫のマイクロチップ情報登録」で30日以内に所有者情報を変更登録。'},
     {cat:'법적 의무 (일본)', name:'광견병 예방접종 + 자치체 등록', when:{type:'deadline',base:'arrival',days:30}, law:true, recur:true, cycle:'매년 1회',
-      note:'狂犬病予防法: 생후 91일↑ 의무. 90일 넘겨 입양 시 입양 후 30일 내 접종. 注射済証을 자치체 제출 → 注射済票 발급. 이후 매년 1회.'},
+      note:'狂犬病予防法: 생후 91일↑ 의무. 90일 넘겨 입양 시 입양 후 30일 내 접종. 注射済証을 자치체 제출 → 注射済票 발급. 이후 매년 1회.',
+      name_ja:'狂犬病予防接種＋自治体登録', cycle_ja:'毎年1回',
+      note_ja:'狂犬病予防法: 生後91日以上で義務。90日を過ぎて迎え入れた場合は迎え入れ後30日以内に接種。注射済証を自治体に提出 → 注射済票が発行される。以降は毎年1回。'},
 
     {cat:'예방접종 (混合ワクチン)', name:'혼합백신 1차', when:{type:'week',week:6},
-      note:'보통 분양 전 브리더가 접종. 접종 이력·증명서 꼭 확인.'},
+      note:'보통 분양 전 브리더가 접종. 접종 이력·증명서 꼭 확인.',
+      name_ja:'混合ワクチン1回目', note_ja:'通常は分譲前にブリーダーが接種。接種歴・証明書を必ず確認。'},
     {cat:'예방접종 (混合ワクチン)', name:'혼합백신 2차', when:{type:'week',week:9},
-      note:'1차 후 3~4주 간격. 동물병원에서.'},
+      note:'1차 후 3~4주 간격. 동물병원에서.',
+      name_ja:'混合ワクチン2回目', note_ja:'1回目から3~4週間隔。動物病院で。'},
     {cat:'예방접종 (混合ワクチン)', name:'혼합백신 3차 (최종)', when:{type:'week',week:14},
-      note:'생후 14~16주 최종 권장. 산책은 최종 접종 후 시작.'},
+      note:'생후 14~16주 최종 권장. 산책은 최종 접종 후 시작.',
+      name_ja:'混合ワクチン3回目（最終）', note_ja:'生後14~16週で最終接種が推奨。散歩は最終接種後に開始。'},
 
     {cat:'기생충 예방', name:'심장사상충(필라리아) 예방', when:{type:'season'}, recur:true, cycle:'월 1회(시즌)',
-      note:'일본: 보통 5월~12월 매월(지역 따라 통년). 시작 전 수의사 상담. 주의: MDR1 — 약 선택 시 MAS 고지.'},
+      note:'일본: 보통 5월~12월 매월(지역 따라 통년). 시작 전 수의사 상담. 주의: MDR1 — 약 선택 시 MAS 고지.',
+      name_ja:'フィラリア（犬糸状虫）予防', cycle_ja:'月1回（シーズン中）',
+      note_ja:'日本: 通常5月~12月に毎月（地域により通年）。開始前に獣医に相談。注意: MDR1 — 薬の選択時にMASであることを伝える。'},
     {cat:'기생충 예방', name:'벼룩·진드기 예방', when:{type:'season'}, recur:true, cycle:'월 1회',
-      note:'3월 중순~12월, 실내는 통년 권장. 월 1회 투여.'},
-    {cat:'기생충 예방', name:'내부기생충 구충 (분변검사)', when:{type:'label',label:'입양 직후~자견기'},
-      note:'분변검사 후 구충. 자견기에 수 회 반복.'},
+      note:'3월 중순~12월, 실내는 통년 권장. 월 1회 투여.',
+      name_ja:'ノミ・マダニ予防', cycle_ja:'月1回',
+      note_ja:'3月中旬~12月、室内飼いは通年が推奨。月1回投与。'},
+    {cat:'기생충 예방', name:'내부기생충 구충 (분변검사)', when:{type:'label',label:'입양 직후~자견기',label_ja:'迎え入れ直後~子犬期'},
+      note:'분변검사 후 구충. 자견기에 수 회 반복.',
+      name_ja:'内部寄生虫の駆虫（検便）', note_ja:'検便後に駆虫。子犬期に数回繰り返す。'},
 
     {cat:'건강검진', name:'첫 건강검진', when:{type:'deadline',base:'arrival',days:7},
-      note:'입양 후 1주 내 권장. 전반 상태·분변검사. 브리더 접종/검사 기록 지참.'},
-    {cat:'건강검진', name:'유전질환 체크 (눈·청력·MDR1)', when:{type:'label',label:'자견기'},
-      note:'MAS·블루멀 관련: 안과 검진, 청력(BAER), MDR1 유전자 검사 결과 확인.'},
-    {cat:'건강검진', name:'정기 건강검진', when:{type:'label',label:'연 1회~'}, recur:true, cycle:'연 1회',
-      note:'성견 연 1회 이상. 백신·필라리아 검사와 함께.'},
+      note:'입양 후 1주 내 권장. 전반 상태·분변검사. 브리더 접종/검사 기록 지참.',
+      name_ja:'初回の健康診断', note_ja:'迎え入れ後1週間以内が推奨。全身状態・検便。ブリーダーの接種/検査記録を持参。'},
+    {cat:'건강검진', name:'유전질환 체크 (눈·청력·MDR1)', when:{type:'label',label:'자견기',label_ja:'子犬期'},
+      note:'MAS·블루멀 관련: 안과 검진, 청력(BAER), MDR1 유전자 검사 결과 확인.',
+      name_ja:'遺伝性疾患チェック（目・聴力・MDR1）', note_ja:'MAS・ブルーマール関連: 眼科検診、聴力（BAER）、MDR1遺伝子検査の結果を確認。'},
+    {cat:'건강검진', name:'정기 건강검진', when:{type:'label',label:'연 1회~',label_ja:'年1回~'}, recur:true, cycle:'연 1회',
+      note:'성견 연 1회 이상. 백신·필라리아 검사와 함께.',
+      name_ja:'定期健康診断', cycle_ja:'年1回', note_ja:'成犬は年1回以上。ワクチン・フィラリア検査と併せて。'},
 
     {cat:'중성화', name:'去勢수술 (수컷)', when:{type:'month',month:6},
-      note:'보통 생후 6개월 전후. 시기·찬반은 수의사 상담.'},
+      note:'보통 생후 6개월 전후. 시기·찬반은 수의사 상담.',
+      name_ja:'去勢手術（オス）', note_ja:'通常は生後6ヶ月前後。時期・賛否は獣医に相談。'},
 
-    {cat:'치아·성장', name:'유치→영구치 교환 확인', when:{type:'label',label:'생후 4~7개월'},
-      note:'잔존유치 있으면 수의사 상담. 어릴 때 양치 습관 들이기.'},
+    {cat:'치아·성장', name:'유치→영구치 교환 확인', when:{type:'label',label:'생후 4~7개월',label_ja:'生後4~7ヶ月'},
+      note:'잔존유치 있으면 수의사 상담. 어릴 때 양치 습관 들이기.',
+      name_ja:'乳歯→永久歯の生え替わり確認', note_ja:'残存乳歯があれば獣医に相談。幼いうちに歯磨きの習慣をつける。'},
   ];
 
   (function(){
@@ -671,27 +929,30 @@
     const addM=(dt,n)=>{const x=new Date(dt);x.setMonth(x.getMonth()+n);return x;};
     const fmt=dt=>(dt.getMonth()+1)+'/'+dt.getDate();
     const birth=ymd(BIRTH), arrival=ymd(ARRIVAL);
-    const hid=p=>p.name;
+    const hid=p=>p.name;                                     // 한국어 name 기준 — 언어 무관 고정 ID
+    const F=(p,f)=>LANG==='ja' ? (p[f+'_ja']||p[f]) : p[f];
+    const catName=c=>LANG==='ja' ? (HCATS_JA[c]||c) : c;
     let filter='all';
     const list=document.getElementById('healthList');
     const statEl=document.getElementById('healthStat');
 
     function timing(p){
-      const w=p.when;
-      if(w.type==='week')  return `생후 ${w.week}주<br>~${fmt(addD(birth,w.week*7))}`;
-      if(w.type==='month') return `생후 ${w.month}개월<br>~${fmt(addM(birth,w.month))}`;
-      if(w.type==='deadline'){const d=addD(w.base==='arrival'?arrival:birth,w.days);return `${w.days}일 내<br>~${fmt(d)}`;}
-      if(w.type==='season') return `시즌<br>월 1회`;
-      return w.label||'—';
+      const w=p.when, ja=LANG==='ja';
+      if(w.type==='week')  return (ja?`生後${w.week}週`:`생후 ${w.week}주`)+`<br>~${fmt(addD(birth,w.week*7))}`;
+      if(w.type==='month') return (ja?`生後${w.month}ヶ月`:`생후 ${w.month}개월`)+`<br>~${fmt(addM(birth,w.month))}`;
+      if(w.type==='deadline'){const d=addD(w.base==='arrival'?arrival:birth,w.days);return (ja?`${w.days}日以内`:`${w.days}일 내`)+`<br>~${fmt(d)}`;}
+      if(w.type==='season') return t('tm.season');
+      return ja ? (w.label_ja||w.label||'—') : (w.label||'—');
     }
     function hrow(p){
       const on=!!done[hid(p)];
-      const badges=(p.law?'<span class="badge law">법적 의무</span>':'')+(p.recur?'<span class="badge recur">정기</span>':'');
+      const badges=(p.law?`<span class="badge law">${t('badge.law')}</span>`:'')+(p.recur?`<span class="badge recur">${t('badge.recur')}</span>`:'');
+      const cyc=(p.recur && F(p,'cycle')) ? ` · <span class="cyc">${F(p,'cycle')}</span>` : '';
       return `<div class="prow ${on?'have':''}" data-id="${hid(p)}">
-        <input type="checkbox" class="pchk" ${on?'checked':''} aria-label="완료">
+        <input type="checkbox" class="pchk" ${on?'checked':''} aria-label="done">
         <div class="pinfo">
-          <div class="ptop"><span class="pname">${p.name}</span>${badges}</div>
-          <div class="pmeta">${p.note}</div>
+          <div class="ptop"><span class="pname">${F(p,'name')}</span>${badges}</div>
+          <div class="pmeta">${F(p,'note')}${cyc}</div>
         </div>
         <span class="ptime">${timing(p)}</span>
       </div>`;
@@ -703,10 +964,10 @@
       HCATS.forEach(cat=>{
         const items=HEALTH.filter(p=>p.cat===cat&&passes(p));
         if(!items.length)return;
-        html+=`<div class="cat-group"><div class="cat-head">${cat} <span class="cnt">${items.length}</span></div>`+
+        html+=`<div class="cat-group"><div class="cat-head">${catName(cat)} <span class="cnt">${items.length}</span></div>`+
               `<div class="prod-list">${items.map(hrow).join('')}</div></div>`;
       });
-      list.innerHTML=html||`<div class="gear-hint" style="text-align:center;padding:34px 0">해당 항목이 없어요.</div>`;
+      list.innerHTML=html||`<div class="gear-hint" style="text-align:center;padding:34px 0">${t('empty.none')}</div>`;
       list.querySelectorAll('.pchk').forEach(chk=>chk.addEventListener('change',e=>{
         const k=e.target.closest('.prow').dataset.id;
         done[k]=e.target.checked;
@@ -720,28 +981,27 @@
       const total=HEALTH.length, doneN=HEALTH.filter(p=>done[hid(p)]).length;
       const lawN=HEALTH.filter(p=>p.law).length, recurN=HEALTH.filter(p=>p.recur).length;
       statEl.innerHTML=
-        `<div class="stat">전체 <b>${total}</b></div>`+
-        `<div class="stat">완료 <b>${doneN}</b></div>`+
-        `<div class="stat need">남은 <b>${total-doneN}</b></div>`+
-        `<div class="stat need">법적 <b>${lawN}</b></div>`+
-        `<div class="stat">정기 <b>${recurN}</b></div>`;
+        `<div class="stat">${t('st.total')} <b>${total}</b></div>`+
+        `<div class="stat">${t('st.done')} <b>${doneN}</b></div>`+
+        `<div class="stat need">${t('st.left')} <b>${total-doneN}</b></div>`+
+        `<div class="stat need">${t('st.law')} <b>${lawN}</b></div>`+
+        `<div class="stat">${t('st.recur')} <b>${recurN}</b></div>`;
     }
-    (function(){
+    function banners(){
       const d=addD(arrival,30);
       const ds=`${d.getFullYear()}.${d.getMonth()+1}.${d.getDate()}`;
       document.getElementById('healthAlerts').innerHTML=
-        `<div class="callout danger compact"><div class="t">입양 후 30일 내 (~${ds}) 꼭 해야 할 법적 의무 — 일본</div><ul>`+
-        `<li><b>광견병 예방접종 + 자치체 등록</b> (狂犬病予防法 · 이후 매년)</li>`+
-        `<li><b>마이크로칩 소유자 변경등록</b> (환경성 등록 사이트)</li></ul></div>`;
-      document.getElementById('healthHint').textContent=
-        `생일 추정 ${BIRTH} · 입양 ${ARRIVAL} · 날짜는 예상값(브리더 정보로 수정 가능) · 체크=완료, 저장은 이 브라우저에`;
-    })();
+        `<div class="callout danger compact"><div class="t">${t('ha.title')(ds)}</div><ul>`+
+        `<li>${t('ha.b1')}</li>`+
+        `<li>${t('ha.b2')}</li></ul></div>`;
+      document.getElementById('healthHint').textContent=t('hh')(BIRTH,ARRIVAL);
+    }
     document.getElementById('healthFilters').addEventListener('click',e=>{
       const b=e.target.closest('.fbtn');if(!b)return;
       document.querySelectorAll('#healthFilters .fbtn').forEach(x=>x.classList.remove('active'));
       b.classList.add('active');filter=b.dataset.f;render();
     });
-    render();stats();
+    LANGHOOKS.push(()=>{ banners(); render(); stats(); });
     window.LucaHub.onState('health', h => {
       done = Object.assign({}, done, h);
       localStorage.setItem(KEY, JSON.stringify(done));
@@ -755,23 +1015,29 @@
     const list = document.getElementById('infoList');
     const esc = s => (s||'').replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
     if(!data || !Array.isArray(data.entries) || !data.entries.length){
-      list.innerHTML = '<div class="info-empty">데이터 준비 중입니다.</div>';
+      LANGHOOKS.push(()=>{ list.innerHTML = `<div class="info-empty">${t('empty.data')}</div>`; });
       return;
     }
     const entries = data.entries;
     const topics = data.topics || [];
-    document.getElementById('infoCount').textContent = entries.length + '항목';
     let filter='all', q='';
     const statEl = document.getElementById('infoStat');
     const filtersEl = document.getElementById('infoFilters');
     const searchEl = document.getElementById('infoSearch');
+    const countEl = document.getElementById('infoCount');
+    const eterm = e => LANG==='ja' ? (e.term_ja||e.term) : e.term;
+    const ebody = e => LANG==='ja' ? (e.body_ja||e.body) : e.body;
+    const topicLabel = tp => LANG==='ja' ? (TOPIC_JA[tp]||tp) : tp;
 
-    filtersEl.innerHTML =
-      `<button class="fbtn active" data-f="all">전체 <span class="cnt2">${entries.length}</span></button>` +
-      topics.map(t=>{
-        const c = entries.filter(e=>e.topic===t).length;
-        return c ? `<button class="fbtn" data-f="${esc(t)}">${esc(t)} <span class="cnt2">${c}</span></button>` : '';
-      }).join('');
+    function buildFilters(){
+      countEl.textContent = entries.length + t('info.items');
+      filtersEl.innerHTML =
+        `<button class="fbtn ${filter==='all'?'active':''}" data-f="all">${t('info.all')} <span class="cnt2">${entries.length}</span></button>` +
+        topics.map(tp=>{
+          const c = entries.filter(e=>e.topic===tp).length;
+          return c ? `<button class="fbtn ${filter===tp?'active':''}" data-f="${esc(tp)}">${esc(topicLabel(tp))} <span class="cnt2">${c}</span></button>` : '';
+        }).join('');
+    }
 
     // 간단 마크다운 렌더: **굵게**, '- ' 불릿, 줄바꿈
     function md(src){
@@ -792,25 +1058,26 @@
     }
     function card(e){
       const src = (e.sources&&e.sources.length)
-        ? `<div class="info-src">출처${e.sources.map((u,i)=>` <a href="${esc(u)}" target="_blank" rel="noopener">영상${e.sources.length>1?(i+1):''}</a>`).join('')}</div>`
+        ? `<div class="info-src">${t('info.src')}${e.sources.map((u,i)=>` <a href="${esc(u)}" target="_blank" rel="noopener">${t('info.video')}${e.sources.length>1?(i+1):''}</a>`).join('')}</div>`
         : '';
       return `<div class="info-card">
-        <span class="info-term">${esc(e.term)}</span><span class="info-tag">${esc(e.topic)}</span>
-        <div class="info-body">${md(e.body)}</div>
+        <span class="info-term">${esc(eterm(e))}</span><span class="info-tag">${esc(topicLabel(e.topic))}</span>
+        <div class="info-body">${md(ebody(e))}</div>
         ${src}
       </div>`;
     }
     function match(e){
       if(filter!=='all' && e.topic!==filter) return false;
       if(q){
-        if(!((e.term+' '+e.body+' '+e.topic).toLowerCase().includes(q))) return false;
+        const hay = (eterm(e)+' '+ebody(e)+' '+e.topic+' '+topicLabel(e.topic)).toLowerCase();
+        if(!hay.includes(q)) return false;
       }
       return true;
     }
     function render(){
       const items = entries.filter(match);
-      statEl.innerHTML = `<div class="stat">표시 <b>${items.length}</b></div>`;
-      list.innerHTML = items.length ? items.map(card).join('') : '<div class="info-empty">해당 항목이 없습니다.</div>';
+      statEl.innerHTML = `<div class="stat">${t('st.show')} <b>${items.length}</b></div>`;
+      list.innerHTML = items.length ? items.map(card).join('') : `<div class="info-empty">${t('empty.none')}</div>`;
     }
     filtersEl.addEventListener('click', e=>{
       const b = e.target.closest('.fbtn'); if(!b) return;
@@ -818,8 +1085,11 @@
       b.classList.add('active'); filter = b.dataset.f; render();
     });
     searchEl.addEventListener('input', e=>{ q = e.target.value.trim().toLowerCase(); render(); });
-    render();
+    LANGHOOKS.push(()=>{ buildFilters(); render(); });
   })();
+
+  // ---- 최초 1회 언어 적용 (모든 hook 등록 후) ----
+  applyLang();
 </script>
 <script type="module">
   // ---- Firebase 실시간 동기화 (체크 상태를 모든 기기에 즉시 반영) ----
