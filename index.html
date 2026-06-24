@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>루카 LUCA — 반려견 허브</title>
+<style>
+  :root{
+    /* soft & bright, blue-merle inspired */
+    --bg:#f3f7fb;
+    --bg-tint-a:#e3eefa;     /* pale sky */
+    --bg-tint-b:#f7efe6;     /* warm cream */
+    --card:#ffffff;
+    --card-soft:#fbfdff;
+    --line:#e4ecf4;
+    --line-soft:#eef3f8;
+    --ink:#33424f;
+    --ink-soft:#5e7082;
+    --ink-dim:#93a3b3;
+    --accent:#5f83a8;        /* slate blue (merle) */
+    --accent-light:#88a6c6;
+    --ice:#5cb0e6;           /* blue eyes */
+    --ice-soft:#dcefff;
+    --copper:#cf9266;        /* tan markings */
+    --good:#46b98a;
+    --warn:#c98f33;
+    --warn-bg:#fbf3e2;
+    --warn-line:#eedcb4;
+    --danger:#cf5d59;
+    --danger-bg:#fcefee;
+    --danger-line:#f2cfcd;
+    --info-bg:#ecf5fd;
+    --info-line:#cfe5f6;
+    --radius:18px;
+    --shadow:0 10px 30px rgba(80,110,140,.10);
+    --shadow-sm:0 4px 14px rgba(80,110,140,.08);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:"Apple SD Gothic Neo","Pretendard",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    background:
+      radial-gradient(900px 480px at 85% -8%, var(--bg-tint-a), transparent 60%),
+      radial-gradient(760px 460px at -8% 4%, var(--bg-tint-b), transparent 58%),
+      var(--bg);
+    color:var(--ink);
+    line-height:1.65;
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+  }
+  .wrap{max-width:1080px;margin:0 auto;padding:30px 20px 80px}
+
+  /* ---------- Hero ---------- */
+  .hero{
+    display:flex;flex-wrap:wrap;align-items:center;gap:24px;
+    background:linear-gradient(135deg,#ffffff,#f4f9ff);
+    border:1px solid var(--line);border-radius:var(--radius);
+    padding:24px 28px;box-shadow:var(--shadow);position:relative;overflow:hidden;
+  }
+  .hero::after{
+    content:"";position:absolute;right:-50px;top:-50px;width:220px;height:220px;
+    background:radial-gradient(circle at center, rgba(92,176,230,.16), transparent 70%);pointer-events:none;
+  }
+  .photo{
+    width:96px;height:96px;border-radius:50%;flex:none;object-fit:cover;object-position:50% 32%;
+    border:3px solid #fff;box-shadow:0 6px 18px rgba(80,110,140,.22),0 0 0 1px var(--line);
+  }
+  .hero h1{font-size:30px;letter-spacing:.5px;display:flex;align-items:baseline;gap:11px;flex-wrap:wrap;color:#2b3947}
+  .hero h1 .en{font-size:15px;color:var(--accent);font-weight:700;letter-spacing:2.5px}
+  .hero .tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:11px}
+  .tag{font-size:12.5px;padding:4px 12px;border-radius:999px;background:#f1f6fb;
+    border:1px solid var(--line);color:var(--ink-soft)}
+  .tag.ice{color:#2f86bd;background:var(--info-bg);border-color:var(--info-line)}
+  .hero .spacer{flex:1}
+  .dday{
+    text-align:center;background:linear-gradient(135deg,#f3f9ff,#eaf3fc);
+    border:1px solid var(--info-line);border-radius:15px;padding:14px 22px;min-width:132px
+  }
+  .dday .big{font-size:30px;font-weight:800;color:var(--accent);line-height:1.1}
+  .dday .lbl{font-size:12px;color:var(--ink-dim);margin-top:4px}
+
+  /* ---------- Nav ---------- */
+  nav{display:flex;flex-wrap:wrap;gap:8px;margin:24px 0 20px}
+  .navbtn{
+    font:inherit;font-size:14.5px;font-weight:600;cursor:pointer;
+    color:var(--ink-soft);background:var(--card);border:1px solid var(--line);
+    padding:9px 17px;border-radius:12px;transition:.15s;display:flex;align-items:center;gap:7px;
+    box-shadow:var(--shadow-sm)
+  }
+  .navbtn:hover{color:var(--ink);border-color:var(--accent-light);transform:translateY(-1px)}
+  .navbtn.active{background:linear-gradient(135deg,var(--accent),#4f7194);color:#fff;border-color:var(--accent);box-shadow:0 6px 16px rgba(95,131,168,.28)}
+  .navbtn .soon{font-size:10px;color:var(--ink-dim);font-weight:600;background:#f1f6fb;padding:1px 6px;border-radius:6px}
+  .navbtn.active .soon{color:#eaf3fc;background:rgba(255,255,255,.18)}
+
+  /* ---------- Sections ---------- */
+  section{display:none;animation:fade .25s ease}
+  section.active{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+  .card{
+    background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+    padding:20px 22px;box-shadow:var(--shadow-sm)
+  }
+  .card h3{font-size:16px;margin-bottom:13px;color:#2b3947;padding-bottom:11px;border-bottom:1px solid var(--line-soft)}
+  .card.span2{grid-column:1/-1}
+
+  .spec{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px dashed var(--line);font-size:14.5px}
+  .spec:last-child{border-bottom:none}
+  .spec .k{color:var(--ink-dim)}
+  .spec .v{color:var(--ink);font-weight:600;text-align:right}
+
+  ul.clean{list-style:none}
+  ul.clean li{position:relative;padding:6px 0 6px 20px;font-size:14.5px;color:var(--ink-soft);border-bottom:1px dashed var(--line)}
+  ul.clean li:last-child{border-bottom:none}
+  ul.clean li::before{content:"";position:absolute;left:3px;top:14px;width:6px;height:6px;border-radius:50%;background:var(--accent-light)}
+  ul.clean li b{color:var(--ink)}
+
+  .lead{font-size:14.5px;color:var(--ink-soft)}
+  .lead b{color:var(--ink)}
+
+  .callout{border-radius:14px;padding:16px 18px;border:1px solid}
+  .callout .t{font-weight:700;margin-bottom:7px;font-size:15px;display:flex;align-items:center;gap:8px}
+  .callout .t::before{content:"";width:9px;height:9px;border-radius:50%;flex:none;background:currentColor;opacity:.85}
+  .callout p, .callout li{font-size:14px}
+  .callout.danger{background:var(--danger-bg);border-color:var(--danger-line)}
+  .callout.danger .t{color:var(--danger)}
+  .callout.warn{background:var(--warn-bg);border-color:var(--warn-line)}
+  .callout.warn .t{color:var(--warn)}
+  .callout.info{background:var(--info-bg);border-color:var(--info-line)}
+  .callout.info .t{color:#2f86bd}
+  .callout ul{list-style:none;margin-top:6px}
+  .callout li{padding:4px 0 4px 16px;position:relative;color:var(--ink-soft)}
+  .callout li::before{content:"·";position:absolute;left:4px;color:var(--ink-dim);font-weight:800}
+  .callout b{color:var(--ink)}
+
+  .pill{display:inline-block;font-size:11.5px;font-weight:700;padding:2px 10px;border-radius:999px;margin-left:8px;vertical-align:middle}
+  .pill.red{background:var(--danger-bg);color:var(--danger);border:1px solid var(--danger-line)}
+  .pill.amber{background:var(--warn-bg);color:var(--warn);border:1px solid var(--warn-line)}
+
+  /* placeholder */
+  .placeholder{text-align:center;padding:58px 24px;color:var(--ink-dim)}
+  .placeholder .mark{width:54px;height:54px;border-radius:16px;margin:0 auto 16px;
+    background:linear-gradient(135deg,#eef5fc,#e3eefa);border:1px solid var(--line);
+    display:flex;align-items:center;justify-content:center;color:var(--accent);font-weight:800;font-size:22px}
+  .placeholder h2{color:var(--ink-soft);font-size:20px;margin-bottom:8px}
+  .placeholder .coming{display:inline-flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:18px;max-width:620px}
+  .placeholder .coming span{font-size:13px;background:var(--card);border:1px solid var(--line);
+    padding:8px 14px;border-radius:11px;color:var(--ink-soft);box-shadow:var(--shadow-sm)}
+
+  /* ---- 용품 관리 ---- */
+  .gear-bar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-bottom:13px}
+  .gear-stat{display:flex;gap:8px;flex-wrap:wrap}
+  .stat{background:var(--card);border:1px solid var(--line);border-radius:11px;
+    padding:7px 13px;box-shadow:var(--shadow-sm);font-size:12.5px;color:var(--ink-soft)}
+  .stat b{color:#2b3947;font-weight:800;font-size:14px;margin-left:3px}
+  .stat.need b{color:var(--danger)}
+  .gear-filters{display:flex;gap:7px;flex-wrap:wrap;margin-left:auto}
+  .fbtn{font:inherit;font-size:13px;font-weight:600;cursor:pointer;color:var(--ink-soft);
+    background:var(--card);border:1px solid var(--line);padding:7px 13px;border-radius:10px;
+    transition:.15s;box-shadow:var(--shadow-sm)}
+  .fbtn:hover{border-color:var(--accent-light);color:var(--ink)}
+  .fbtn.active{background:linear-gradient(135deg,var(--accent),#4f7194);color:#fff;border-color:var(--accent)}
+  .gear-hint{font-size:12px;color:var(--ink-dim);margin-bottom:18px}
+
+  .cat-group{margin-bottom:20px}
+  .cat-head{font-size:13px;font-weight:800;color:var(--accent);letter-spacing:.3px;
+    margin:0 2px 9px;display:flex;align-items:center;gap:8px}
+  .cat-head .cnt{font-size:11px;font-weight:600;color:var(--ink-dim);background:var(--info-bg);
+    border:1px solid var(--info-line);padding:1px 8px;border-radius:999px}
+
+  .prod-list{display:flex;flex-direction:column;gap:9px}
+  .prow{display:flex;align-items:center;gap:13px;background:var(--card);border:1px solid var(--line);
+    border-radius:13px;padding:12px 15px;box-shadow:var(--shadow-sm);transition:.15s}
+  .prow:hover{border-color:var(--accent-light)}
+  .prow.have{opacity:.6;background:var(--line-soft)}
+  .pchk{width:20px;height:20px;flex:none;cursor:pointer;accent-color:var(--accent)}
+  .pinfo{flex:1;min-width:0}
+  .ptop{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .pname{font-size:14.5px;font-weight:700;color:#2b3947}
+  .prow.have .pname{text-decoration:line-through}
+  .badge{font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:999px;white-space:nowrap}
+  .badge.recur{color:#b5832f;background:var(--warn-bg);border:1px solid var(--warn-line)}
+  .pmeta{font-size:12px;color:var(--ink-dim);margin-top:3px}
+  .pmeta .cyc{color:#b5832f;font-weight:600}
+  .pnote{font-size:11.5px;color:var(--danger);margin-top:3px;font-weight:600}
+  .pprice{font-size:14.5px;font-weight:800;color:var(--ink);white-space:nowrap}
+  .pprice.none{font-size:12px;font-weight:600;color:var(--ink-dim)}
+  .pbuy{font-size:12px;font-weight:700;color:#fff;text-decoration:none;white-space:nowrap;
+    background:linear-gradient(135deg,var(--accent),#4f7194);padding:6px 12px;border-radius:9px;transition:.15s}
+  .pbuy:hover{filter:brightness(1.07)}
+  .pbuy.search{background:#eef3f8;color:var(--accent);border:1px solid var(--line)}
+  .ptime{font-size:11.5px;font-weight:700;color:var(--accent);background:var(--info-bg);
+    border:1px solid var(--info-line);padding:5px 10px;border-radius:9px;white-space:nowrap;text-align:center;line-height:1.35;flex:none}
+  .badge.law{color:var(--danger);background:var(--danger-bg);border:1px solid var(--danger-line)}
+  .callout.compact{margin-bottom:14px}
+  @media(max-width:560px){
+    .prow{flex-wrap:wrap}
+    .pinfo{flex-basis:calc(100% - 33px)}
+    .prow .pprice,.prow .pbuy,.prow .ptime{margin-left:33px}
+  }
+
+  /* ---- 설채현 지식 ---- */
+  .info-search{flex:1;min-width:200px;font:inherit;font-size:14px;color:var(--ink);
+    background:var(--card);border:1px solid var(--line);border-radius:11px;padding:9px 14px;
+    box-shadow:var(--shadow-sm);outline:none}
+  .info-search:focus{border-color:var(--accent-light)}
+  .cnt2{font-size:10.5px;font-weight:700;opacity:.7;margin-left:2px}
+  .info-card{background:var(--card);border:1px solid var(--line);border-radius:14px;
+    padding:16px 19px;box-shadow:var(--shadow-sm);margin-bottom:11px}
+  .info-term{font-size:16px;font-weight:800;color:#2b3947;display:inline-block;margin-right:8px}
+  .info-tag{font-size:10.5px;color:var(--accent);background:var(--info-bg);border:1px solid var(--info-line);
+    padding:1px 8px;border-radius:999px;vertical-align:middle}
+  .info-body{font-size:14px;color:var(--ink-soft);margin-top:10px;line-height:1.7}
+  .info-body p{margin:6px 0}
+  .info-body strong{color:var(--ink)}
+  ul.info-ul{list-style:none;margin:6px 0}
+  ul.info-ul li{position:relative;padding:3px 0 3px 15px}
+  ul.info-ul li::before{content:"";position:absolute;left:2px;top:12px;width:5px;height:5px;border-radius:50%;background:var(--copper)}
+  .info-src{margin-top:11px;padding-top:9px;border-top:1px dashed var(--line);font-size:12px;color:var(--ink-dim)}
+  .info-src a{color:var(--accent);text-decoration:none;margin-left:5px}
+  .info-src a:hover{text-decoration:underline}
+  .info-empty{text-align:center;padding:40px 0;color:var(--ink-dim);font-size:13.5px}
+
+  footer{margin-top:36px;text-align:center;color:var(--ink-dim);font-size:12.5px;line-height:1.9}
+  footer a{color:var(--accent);text-decoration:none}
+  .sec-head{margin:6px 0 18px}
+  .sec-head h2{font-size:22px;color:#2b3947}
+  .sec-head p{color:var(--ink-dim);font-size:13.5px;margin-top:5px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ===================== HERO ===================== -->
+  <div class="hero">
+    <img class="photo" src="luca.jpg" alt="루카">
+    <div>
+      <h1>루카 <span class="en">LUCA</span></h1>
+      <div class="tags">
+        <span class="tag">미니어처 아메리칸 셰퍼드</span>
+        <span class="tag ice">블루멀 · 블루아이</span>
+        <span class="tag">수컷</span>
+      </div>
+    </div>
+    <div class="spacer"></div>
+    <div class="dday">
+      <div class="big" id="dday">D-?</div>
+      <div class="lbl" id="ddayLbl">입양일 2026.07.25</div>
+    </div>
+  </div>
+
+  <!-- ===================== NAV ===================== -->
+  <nav id="nav">
+    <button class="navbtn active" data-sec="breed">견종 정보</button>
+    <button class="navbtn" data-sec="health">건강</button>
+    <button class="navbtn" data-sec="train">훈련 <span class="soon">곧</span></button>
+    <button class="navbtn" data-sec="gear">제품</button>
+    <button class="navbtn" data-sec="care">육아 <span class="soon">곧</span></button>
+    <button class="navbtn" data-sec="info">지식·정보</button>
+  </nav>
+
+  <!-- ===================== BREED ===================== -->
+  <section id="breed" class="active">
+    <div class="sec-head">
+      <h2>견종 정보 · 기초 지식</h2>
+      <p>미니어처 아메리칸 셰퍼드(MAS) · 블루멀 · 블루아이 수컷 — 루카를 이해하기 위한 기본기</p>
+    </div>
+
+    <div class="grid">
+
+      <!-- 기본 스펙 -->
+      <div class="card">
+        <h3>한눈에 보는 기본 정보</h3>
+        <div class="spec"><span class="k">견종</span><span class="v">미니어처 아메리칸 셰퍼드 (MAS)</span></div>
+        <div class="spec"><span class="k">그룹</span><span class="v">목축견 (Herding)</span></div>
+        <div class="spec"><span class="k">키 (수컷)</span><span class="v">36–46 cm</span></div>
+        <div class="spec"><span class="k">몸무게</span><span class="v">9–18 kg (20–40 lb)</span></div>
+        <div class="spec"><span class="k">기대 수명</span><span class="v">13–15 년</span></div>
+        <div class="spec"><span class="k">에너지</span><span class="v">매우 높음</span></div>
+        <div class="spec"><span class="k">AKC 공인</span><span class="v">2015년 (186번째)</span></div>
+      </div>
+
+      <!-- 성격 -->
+      <div class="card">
+        <h3>성격 · 기질</h3>
+        <ul class="clean">
+          <li><b>매우 똑똑하고 훈련을 잘 받음</b> — 가르치면 빠르게 배움</li>
+          <li><b>에너지 넘치고 자기주도적</b> — 일거리를 좋아하는 일꾼 기질</li>
+          <li><b>가족에게 충성</b>, 낯선 사람에겐 처음엔 다소 경계</li>
+          <li><b>강한 목축 본능</b> — 아이·다른 동물을 몰려는 성향이 나올 수 있음</li>
+          <li>지루하면 문제행동 → <b>운동 + 머리 쓰는 놀이</b>가 필수</li>
+        </ul>
+      </div>
+
+      <!-- 기원 -->
+      <div class="card">
+        <h3>기원 한 줄 요약</h3>
+        <p class="lead">
+          1960–70년대 미국 캘리포니아에서 <b>작은 오스트레일리안 셰퍼드</b>를 선별 번식해 만든 소형 목축견.
+          예전엔 "미니어처 오스트레일리안 셰퍼드"로 불렸고, 2015년 AKC가 정식 견종으로 인정했어.
+          몸집은 작아도 <b>오지(Aussie)의 두뇌와 활동성</b>을 그대로 가진 견종이야.
+        </p>
+        <div style="margin-top:13px" class="tags">
+          <span class="tag">어질리티</span><span class="tag">목축</span>
+          <span class="tag">복종훈련</span><span class="tag">플라이볼</span>
+        </div>
+      </div>
+
+      <!-- 블루멀 / 블루아이 -->
+      <div class="card">
+        <h3>블루멀 · 블루아이란?</h3>
+        <ul class="clean">
+          <li><b>블루멀</b> = 검정 바탕에 <b>멀(merle) 유전자</b>가 작용해 회색·검정이 얼룩진 무늬. 흰색·구리색(탄) 마킹이 섞이는 경우가 많아</li>
+          <li><b>블루아이</b>는 멀 유전자가 눈 색소까지 바꿔서 생기는 자연스러운 현상 — <b>그 자체로는 시력 문제가 아님</b></li>
+          <li>한쪽만 파랗거나, 한 눈 안에 갈색·파랑이 섞이기도 해 (모두 정상)</li>
+        </ul>
+        <div class="callout info" style="margin-top:14px">
+          <div class="t">루카의 파란 눈</div>
+          <p>외모상 특징일 뿐이라 걱정 안 해도 돼. 다만 멀 유전 자체는 청력·시력과 관련이 있어서 아래 내용을 꼭 한 번 읽어줘.</p>
+        </div>
+      </div>
+
+      <!-- 멀 유전 (중요) -->
+      <div class="card span2">
+        <h3>멀(Merle) 유전 — 꼭 알아둘 것 <span class="pill amber">중요</span></h3>
+        <div class="grid" style="gap:14px">
+          <div class="callout warn">
+            <div class="t">싱글 멀 (Mm) — 루카에 해당할 가능성이 높음</div>
+            <ul>
+              <li>일반적으로 <b>건강</b>하고, 파란 눈도 무해</li>
+              <li>멀이 하나만 있어도 난청 확률이 약간 올라감 — 한 연구에서 부분 난청 <b>약 36.8%</b>, 양쪽 다 안 들리는 경우는 <b>1% 미만</b></li>
+            </ul>
+          </div>
+          <div class="callout danger">
+            <div class="t">더블 멀 (MM) — 멀 × 멀 교배의 결과</div>
+            <ul>
+              <li>양측 난청·시각장애(작은 눈 등) 확률이 <b>급격히</b> 높아짐 (오지 MM의 약 56%가 양측 난청)</li>
+              <li>그래서 <b>멀끼리는 교배하지 않는 것</b>이 원칙</li>
+            </ul>
+          </div>
+        </div>
+        <div class="callout info" style="margin-top:14px">
+          <div class="t">루카에게 해줄 것</div>
+          <ul>
+            <li>브리더에게 <b>유전자 검사 결과</b>(멀 상태, 부모견 정보)와 <b>청력 검사(BAER) 여부</b>를 확인하기</li>
+            <li>박수·소리에 반응 잘 하는지 일상에서 관찰 — 이상하면 동물병원에서 BAER 검사</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- 건강 주의 (MDR1) -->
+      <div class="card span2">
+        <h3>MAS가 잘 가지는 건강 이슈 <span class="pill red">필독</span></h3>
+
+        <div class="callout danger">
+          <div class="t">MDR1 (다약제 내성 유전자) — 가장 중요</div>
+          <p>목축견에 흔한 유전 변이로, <b>변이 1개만 있어도</b> 특정 약에 심각·치명적으로 반응할 수 있어
+          (떨림·침흘림·식욕부진·실명 → 심하면 혼수·사망).</p>
+          <ul>
+            <li>주의 약물: 일부 <b>구충제(이버멕틴 등)</b>, 특정 <b>마취·진정제</b>, 지사제 <b>로페라마이드</b> 등</li>
+            <li><b>브리더에게 MDR1 검사 결과를 확인</b>하고, 모르면 검사받기</li>
+            <li>동물병원 갈 때마다 <b>"MAS, MDR1 가능성"</b>을 수의사에게 꼭 알리기</li>
+          </ul>
+        </div>
+
+        <div class="grid" style="gap:14px;margin-top:14px">
+          <div class="callout warn">
+            <div class="t">눈</div>
+            <ul>
+              <li>홍채 결손, 유년기 백내장, 동공잔존막, 진행성 망막위축(PRA), 콜리 안구기형(CEA) 등</li>
+              <li>일부는 진행되면 시력 저하 → <b>정기 안과 검진</b> 권장</li>
+            </ul>
+          </div>
+          <div class="callout warn">
+            <div class="t">기타</div>
+            <ul>
+              <li>고관절 이형성증, 간질 등 목축견 공통 이슈</li>
+              <li>멀 관련 <b>난청</b> 가능성(위 참조)</li>
+            </ul>
+          </div>
+        </div>
+        <p style="font-size:12.5px;color:var(--ink-dim);margin-top:14px">
+          ※ 위는 견종 일반 경향이야 — 루카가 다 가진다는 뜻은 아님. 정확한 건 브리더 검사 결과와 수의사 진단을 따르자.
+        </p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===================== HEALTH ===================== -->
+  <section id="health">
+    <div class="sec-head">
+      <h2>건강 관리</h2>
+      <p>일본 기준 · 예방접종 · 법적 의무 · 검진을 루카 날짜에 맞춰 관리</p>
+    </div>
+    <div id="healthAlerts"></div>
+    <div class="gear-bar">
+      <div class="gear-stat" id="healthStat"></div>
+      <div class="gear-filters" id="healthFilters">
+        <button class="fbtn active" data-f="all">전체</button>
+        <button class="fbtn" data-f="todo">남은 항목</button>
+        <button class="fbtn" data-f="recur">정기</button>
+      </div>
+    </div>
+    <div class="gear-hint" id="healthHint"></div>
+    <div id="healthList"></div>
+  </section>
+
+  <!-- ===================== TRAIN (placeholder) ===================== -->
+  <section id="train">
+    <div class="placeholder">
+      <div class="mark">＋</div>
+      <h2>훈련 계획</h2>
+      <p>똑똑한 MAS에 맞춘 시기별 훈련 로드맵.</p>
+      <div class="coming">
+        <span>배변 훈련</span>
+        <span>사회화</span>
+        <span>기본 명령 (앉아·기다려)</span>
+        <span>분리불안 예방</span>
+        <span>크레이트 적응</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== GEAR ===================== -->
+  <section id="gear">
+    <div class="sec-head">
+      <h2>용품 관리</h2>
+      <p>카테고리별 보유 현황 · 정기 보충 품목 관리 · 가격/링크는 일본 Amazon 기준</p>
+    </div>
+    <div class="gear-bar">
+      <div class="gear-stat" id="gearStat"></div>
+      <div class="gear-filters" id="gearFilters">
+        <button class="fbtn active" data-f="all">전체</button>
+        <button class="fbtn" data-f="need">구매·보충 필요</button>
+        <button class="fbtn" data-f="recur">정기 소모품</button>
+      </div>
+    </div>
+    <div class="gear-hint">체크 = 보유중 · 체크 해제 = 구매/보충 필요 · "정기"는 주기적으로 다시 사야 하는 소모품 (저장은 이 브라우저에 기록돼)</div>
+    <div id="gearList"></div>
+  </section>
+
+  <!-- ===================== CARE (placeholder) ===================== -->
+  <section id="care">
+    <div class="placeholder">
+      <div class="mark">＋</div>
+      <h2>육아</h2>
+      <p>생후 2개월 아기 강아지와의 첫날부터의 일상 가이드.</p>
+      <div class="coming">
+        <span>첫날 · 첫주 적응</span>
+        <span>먹이기 (양 · 횟수)</span>
+        <span>수면 · 분리</span>
+        <span>그루밍 · 목욕</span>
+        <span>안전한 집 만들기</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 설채현 지식 ===================== -->
+  <section id="info">
+    <div class="sec-head">
+      <h2>지식·정보 <span class="pill amber" id="infoCount"></span></h2>
+      <p>반려견 지식을 주제별 개념으로 정리한 사전 · 키워드 검색 · 각 항목 끝의 링크는 근거가 된 출처 영상</p>
+    </div>
+    <div class="gear-bar">
+      <input class="info-search" id="infoSearch" type="search" placeholder="키워드 검색 (개념·내용)">
+      <div class="gear-stat" id="infoStat"></div>
+    </div>
+    <div class="gear-filters" id="infoFilters" style="margin-bottom:14px"></div>
+    <div id="infoList"></div>
+  </section>
+
+  <footer>
+    루카 LUCA 허브 · 마지막 업데이트 2026-06-24<br>
+    출처: AKC · Wikipedia · Paw Print Genetics · UC Davis VGL · ASHGI (멀/MDR1 자료)<br>
+    ※ 의료 정보는 참고용 — 최종 판단은 브리더 검사 결과와 담당 수의사를 따르세요.
+  </footer>
+</div>
+
+<script src="info_data.js"></script>
+<script>
+  // ---- 탭 전환 ----
+  const nav = document.getElementById('nav');
+  nav.addEventListener('click', e=>{
+    const btn = e.target.closest('.navbtn');
+    if(!btn) return;
+    document.querySelectorAll('.navbtn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('section').forEach(s=>s.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.sec).classList.add('active');
+    window.scrollTo({top:0,behavior:'smooth'});
+  });
+
+  // ---- D-day 계산 (입양일 2026-07-25) ----
+  (function(){
+    const target = new Date(2026,6,25); // month is 0-based → 6 = July
+    const now = new Date();
+    const t0 = new Date(now.getFullYear(),now.getMonth(),now.getDate());
+    const diff = Math.round((target - t0)/86400000);
+    const el = document.getElementById('dday');
+    const lbl = document.getElementById('ddayLbl');
+    if(diff > 0){ el.textContent = 'D-'+diff; lbl.textContent = '입양일 2026.07.25'; }
+    else if(diff === 0){ el.textContent = 'D-DAY'; lbl.textContent = '오늘 루카가 와요!'; }
+    else { el.textContent = '+'+(-diff)+'일'; lbl.textContent = '함께한 지'; }
+  })();
+
+  // ---- 용품 데이터 ----
+  // 필드: cat(카테고리) name brand spec price(엔/없으면 null) asin(있으면 직접링크)
+  //       q(없을 때 Amazon 검색어, 일본어) recur(정기 소모품) cycle(주기) note(주의)
+  const CATS = ['이동·외출','생활공간','배변','위생·청결','식사','그루밍','장난감'];
+  const GEAR = [
+    // 이동·외출
+    {cat:'이동·외출', name:'항공운송 대응 펫 캐리어', brand:'IATA 기준 / 캐스터·핸들 / 물그릇 포함', spec:'사이즈 M (70×53×48cm)', price:13800, asin:'B0F9P6G82X'},
+    {cat:'이동·외출', name:'하네스 · 리드줄', brand:'산책·외출용', spec:'소형견 퍼피 사이즈', price:null, q:'犬 ハーネス リード 小型犬 子犬'},
+    // 생활공간
+    {cat:'생활공간', name:'펫 사클(울타리)', brand:'타ンス의겐(タンスのゲン)', spec:'높이 60cm · 실내외 겸용 · 더블락', price:8999, asin:'B0CN2LKXM5'},
+    {cat:'생활공간', name:'PVC 바닥 보호매트', brand:'TranzAnSfure / 화이트', spec:'160×200cm · 4mm · 방수·미끄럼방지', price:9221, asin:'B0FDWXRLBJ'},
+    {cat:'생활공간', name:'방석 · 펫 베드', brand:'잠자리용', spec:'소형견용 · 세탁 가능', price:null, q:'犬 ベッド 小型犬 クッション 洗える'},
+    // 배변
+    {cat:'배변', name:'도그 배변 트레이 (와이드)', brand:'페티오(Petio) / 그레이', spec:'와이드 · 한 손 개폐', price:1860, asin:'B00TWYLNV0'},
+    {cat:'배변', name:'배변패드 (와이드)', brand:'아이리스오야마', spec:'와이드 42매 · 초흡수·항균', price:1155, asin:'B0899W5G17', recur:true, cycle:'약 월 1~2팩'},
+    {cat:'배변', name:'배변봉투 / 매너백', brand:'산책 배변 처리', spec:'롤 타입', price:null, q:'犬 うんち袋 マナー袋', recur:true, cycle:'약 분기 1회'},
+    // 위생·청결
+    {cat:'위생·청결', name:'반려동물 물티슈 (대용량)', brand:'유기농·수의사 감수 / 무향·무알콜', spec:'100매 × 6봉 (600매)', price:2999, asin:'B0FK2JT4PQ', recur:true, cycle:'약 1~2개월'},
+    {cat:'위생·청결', name:'장갑형 소취 물티슈', brand:'HICC PET / 코코넛향', spec:'20매 · 손에 끼워 닦기', price:2999, asin:'B0GR5R2G5K', recur:true, cycle:'약 1개월'},
+    {cat:'위생·청결', name:'펫 소취 스프레이', brand:'0mistPro / 일본제 · 무향', spec:'500ml · 제균', price:1880, asin:'B0D53KSD14', recur:true, cycle:'약 1~2개월'},
+    {cat:'위생·청결', name:'강아지 샴푸', brand:'저자극 · 퍼피용', spec:'목욕용', price:null, q:'犬 シャンプー 低刺激 子犬', recur:true, cycle:'약 2~3개월'},
+    // 식사
+    {cat:'식사', name:'사료 (퍼피용)', brand:'생후 2개월~ · 소형견 성장기', spec:'주식 · 성장기 영양', price:null, q:'子犬 ドッグフード パピー 小型犬', recur:true, cycle:'약 월 1회'},
+    {cat:'식사', name:'간식 (트릿)', brand:'무첨가 · 훈련 보상용', spec:'훈련·간식용', price:null, q:'犬 おやつ 無添加 子犬 トレーニング', recur:true, cycle:'약 월 1회'},
+    {cat:'식사', name:'식기 (밥그릇·물그릇)', brand:'미끄럼방지', spec:'2구 또는 세트', price:null, q:'犬 食器 フードボウル 滑り止め'},
+    {cat:'식사', name:'자동 급수기', brand:'상시 급수', spec:'정수·급수기', price:null, q:'犬 自動給水器 ペット'},
+    // 그루밍
+    {cat:'그루밍', name:'슬리커 브러시 (빗)', brand:'더블코트 털관리', spec:'MAS 털빠짐 관리용', price:null, q:'犬 スリッカーブラシ 換毛'},
+    {cat:'그루밍', name:'발톱깎이', brand:'소형견용', spec:'정기 발톱 관리', price:null, q:'犬 爪切り 小型犬'},
+    {cat:'그루밍', name:'칫솔 · 치약', brand:'반려견 전용', spec:'치아 관리', price:null, q:'犬 歯ブラシ 歯磨き粉', recur:true, cycle:'치약 약 분기'},
+    // 장난감
+    {cat:'장난감', name:'노즈워크 매트', brand:'머리쓰기 놀이', spec:'똑똑한 MAS 두뇌 자극', price:null, q:'犬 ノーズワークマット'},
+    {cat:'장난감', name:'씹는 장난감', brand:'치발기', spec:'이갈이 시기용', price:null, q:'犬 噛むおもちゃ 子犬'},
+    {cat:'장난감', name:'터그 / 로프 장난감', brand:'상호작용 놀이', spec:'함께 노는 용', price:null, q:'犬 ロープ おもちゃ タグ'},
+  ];
+
+  (function(){
+    const yen = n => '¥'+n.toLocaleString('ja-JP');
+    const KEY = 'luca_gear_have';
+    let have = {};
+    try{ have = JSON.parse(localStorage.getItem(KEY)) || {}; }catch(e){}
+    const id = p => p.asin || p.name;
+    const list = document.getElementById('gearList');
+    const statEl = document.getElementById('gearStat');
+    let filter = 'all';
+
+    const link = p => p.asin
+      ? {url:'https://www.amazon.co.jp/dp/'+p.asin, cls:'pbuy', label:'구매 링크'}
+      : {url:'https://www.amazon.co.jp/s?k='+encodeURIComponent(p.q||p.name), cls:'pbuy search', label:'검색'};
+
+    function row(p){
+      const on = !!have[id(p)], l = link(p);
+      const badge = p.recur ? '<span class="badge recur">정기</span>' : '';
+      const cyc = (p.recur && p.cycle) ? ` · <span class="cyc">${p.cycle}</span>` : '';
+      const note = p.note ? `<div class="pnote">${p.note}</div>` : '';
+      const price = p.price!=null ? `<span class="pprice">${yen(p.price)}</span>` : `<span class="pprice none">가격 미정</span>`;
+      return `<div class="prow ${on?'have':''}" data-id="${id(p).replace(/"/g,'')}">
+        <input type="checkbox" class="pchk" ${on?'checked':''} aria-label="보유 여부">
+        <div class="pinfo">
+          <div class="ptop"><span class="pname">${p.name}</span>${badge}</div>
+          <div class="pmeta">${p.brand} · ${p.spec}${cyc}</div>
+          ${note}
+        </div>
+        ${price}
+        <a class="${l.cls}" href="${l.url}" target="_blank" rel="noopener">${l.label}</a>
+      </div>`;
+    }
+    const passes = p => filter==='need' ? !have[id(p)] : filter==='recur' ? !!p.recur : true;
+
+    function render(){
+      let html = '';
+      CATS.forEach(cat=>{
+        const items = GEAR.filter(p=>p.cat===cat && passes(p));
+        if(!items.length) return;
+        html += `<div class="cat-group"><div class="cat-head">${cat} <span class="cnt">${items.length}</span></div>`+
+                `<div class="prod-list">${items.map(row).join('')}</div></div>`;
+      });
+      list.innerHTML = html || `<div class="gear-hint" style="text-align:center;padding:34px 0">해당 항목이 없어요.</div>`;
+      list.querySelectorAll('.pchk').forEach(chk=>chk.addEventListener('change',e=>{
+        const k = e.target.closest('.prow').dataset.id;
+        if(e.target.checked) have[k]=true; else delete have[k];
+        localStorage.setItem(KEY, JSON.stringify(have));
+        if(filter==='need') render(); else e.target.closest('.prow').classList.toggle('have', e.target.checked);
+        stats();
+      }));
+    }
+    function stats(){
+      const total = GEAR.length;
+      const haveN = GEAR.filter(p=>have[id(p)]).length;
+      const needSum = GEAR.reduce((a,p)=> a + (have[id(p)]?0:(p.price||0)), 0);
+      const recurN = GEAR.filter(p=>p.recur).length;
+      statEl.innerHTML =
+        `<div class="stat">전체 <b>${total}</b></div>`+
+        `<div class="stat">보유 <b>${haveN}</b></div>`+
+        `<div class="stat need">필요 <b>${total-haveN}</b></div>`+
+        `<div class="stat need">필요 합계 <b>${yen(needSum)}</b></div>`+
+        `<div class="stat">정기 <b>${recurN}</b></div>`;
+    }
+    document.getElementById('gearFilters').addEventListener('click',e=>{
+      const b = e.target.closest('.fbtn'); if(!b) return;
+      document.querySelectorAll('#gearFilters .fbtn').forEach(x=>x.classList.remove('active'));
+      b.classList.add('active'); filter = b.dataset.f; render();
+    });
+    render(); stats();
+  })();
+
+  // ---- 건강 관리 데이터 (일본 기준) ----
+  // when.type: week(생후 N주) / month(생후 N개월) / deadline(base+days 내) / season / label
+  const BIRTH = '2026-05-25';   // 추정 생일 (브리더 확인 후 수정)
+  const ARRIVAL = '2026-07-25'; // 입양일
+  const HCATS = ['법적 의무 (일본)','예방접종 (混合ワクチン)','기생충 예방','건강검진','중성화','치아·성장'];
+  const HEALTH = [
+    {cat:'법적 의무 (일본)', name:'마이크로칩 소유자 변경등록', when:{type:'deadline',base:'arrival',days:30}, law:true,
+      note:'2022.6~ 의무. 펫샵·브리더 분양견은 칩 장착됨 → 환경성 「犬と猫のマイクロチップ情報登録」에서 30일 내 소유자 정보 변경등록.'},
+    {cat:'법적 의무 (일본)', name:'광견병 예방접종 + 자치체 등록', when:{type:'deadline',base:'arrival',days:30}, law:true, recur:true, cycle:'매년 1회',
+      note:'狂犬病予防法: 생후 91일↑ 의무. 90일 넘겨 입양 시 입양 후 30일 내 접종. 注射済証을 자치체 제출 → 注射済票 발급. 이후 매년 1회.'},
+
+    {cat:'예방접종 (混合ワクチン)', name:'혼합백신 1차', when:{type:'week',week:6},
+      note:'보통 분양 전 브리더가 접종. 접종 이력·증명서 꼭 확인.'},
+    {cat:'예방접종 (混合ワクチン)', name:'혼합백신 2차', when:{type:'week',week:9},
+      note:'1차 후 3~4주 간격. 동물병원에서.'},
+    {cat:'예방접종 (混合ワクチン)', name:'혼합백신 3차 (최종)', when:{type:'week',week:14},
+      note:'생후 14~16주 최종 권장. 산책은 최종 접종 후 시작.'},
+
+    {cat:'기생충 예방', name:'심장사상충(필라리아) 예방', when:{type:'season'}, recur:true, cycle:'월 1회(시즌)',
+      note:'일본: 보통 5월~12월 매월(지역 따라 통년). 시작 전 수의사 상담. 주의: MDR1 — 약 선택 시 MAS 고지.'},
+    {cat:'기생충 예방', name:'벼룩·진드기 예방', when:{type:'season'}, recur:true, cycle:'월 1회',
+      note:'3월 중순~12월, 실내는 통년 권장. 월 1회 투여.'},
+    {cat:'기생충 예방', name:'내부기생충 구충 (분변검사)', when:{type:'label',label:'입양 직후~자견기'},
+      note:'분변검사 후 구충. 자견기에 수 회 반복.'},
+
+    {cat:'건강검진', name:'첫 건강검진', when:{type:'deadline',base:'arrival',days:7},
+      note:'입양 후 1주 내 권장. 전반 상태·분변검사. 브리더 접종/검사 기록 지참.'},
+    {cat:'건강검진', name:'유전질환 체크 (눈·청력·MDR1)', when:{type:'label',label:'자견기'},
+      note:'MAS·블루멀 관련: 안과 검진, 청력(BAER), MDR1 유전자 검사 결과 확인.'},
+    {cat:'건강검진', name:'정기 건강검진', when:{type:'label',label:'연 1회~'}, recur:true, cycle:'연 1회',
+      note:'성견 연 1회 이상. 백신·필라리아 검사와 함께.'},
+
+    {cat:'중성화', name:'去勢수술 (수컷)', when:{type:'month',month:6},
+      note:'보통 생후 6개월 전후. 시기·찬반은 수의사 상담.'},
+
+    {cat:'치아·성장', name:'유치→영구치 교환 확인', when:{type:'label',label:'생후 4~7개월'},
+      note:'잔존유치 있으면 수의사 상담. 어릴 때 양치 습관 들이기.'},
+  ];
+
+  (function(){
+    const KEY='luca_health_done';
+    let done={}; try{ done=JSON.parse(localStorage.getItem(KEY))||{}; }catch(e){}
+    const ymd=s=>{const[y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d);};
+    const addD=(dt,n)=>{const x=new Date(dt);x.setDate(x.getDate()+n);return x;};
+    const addM=(dt,n)=>{const x=new Date(dt);x.setMonth(x.getMonth()+n);return x;};
+    const fmt=dt=>(dt.getMonth()+1)+'/'+dt.getDate();
+    const birth=ymd(BIRTH), arrival=ymd(ARRIVAL);
+    const hid=p=>p.name;
+    let filter='all';
+    const list=document.getElementById('healthList');
+    const statEl=document.getElementById('healthStat');
+
+    function timing(p){
+      const w=p.when;
+      if(w.type==='week')  return `생후 ${w.week}주<br>~${fmt(addD(birth,w.week*7))}`;
+      if(w.type==='month') return `생후 ${w.month}개월<br>~${fmt(addM(birth,w.month))}`;
+      if(w.type==='deadline'){const d=addD(w.base==='arrival'?arrival:birth,w.days);return `${w.days}일 내<br>~${fmt(d)}`;}
+      if(w.type==='season') return `시즌<br>월 1회`;
+      return w.label||'—';
+    }
+    function hrow(p){
+      const on=!!done[hid(p)];
+      const badges=(p.law?'<span class="badge law">법적 의무</span>':'')+(p.recur?'<span class="badge recur">정기</span>':'');
+      return `<div class="prow ${on?'have':''}" data-id="${hid(p)}">
+        <input type="checkbox" class="pchk" ${on?'checked':''} aria-label="완료">
+        <div class="pinfo">
+          <div class="ptop"><span class="pname">${p.name}</span>${badges}</div>
+          <div class="pmeta">${p.note}</div>
+        </div>
+        <span class="ptime">${timing(p)}</span>
+      </div>`;
+    }
+    const passes=p=>filter==='todo'?!done[hid(p)]:filter==='recur'?!!p.recur:true;
+
+    function render(){
+      let html='';
+      HCATS.forEach(cat=>{
+        const items=HEALTH.filter(p=>p.cat===cat&&passes(p));
+        if(!items.length)return;
+        html+=`<div class="cat-group"><div class="cat-head">${cat} <span class="cnt">${items.length}</span></div>`+
+              `<div class="prod-list">${items.map(hrow).join('')}</div></div>`;
+      });
+      list.innerHTML=html||`<div class="gear-hint" style="text-align:center;padding:34px 0">해당 항목이 없어요.</div>`;
+      list.querySelectorAll('.pchk').forEach(chk=>chk.addEventListener('change',e=>{
+        const k=e.target.closest('.prow').dataset.id;
+        if(e.target.checked)done[k]=true;else delete done[k];
+        localStorage.setItem(KEY,JSON.stringify(done));
+        if(filter==='todo')render();else e.target.closest('.prow').classList.toggle('have',e.target.checked);
+        stats();
+      }));
+    }
+    function stats(){
+      const total=HEALTH.length, doneN=HEALTH.filter(p=>done[hid(p)]).length;
+      const lawN=HEALTH.filter(p=>p.law).length, recurN=HEALTH.filter(p=>p.recur).length;
+      statEl.innerHTML=
+        `<div class="stat">전체 <b>${total}</b></div>`+
+        `<div class="stat">완료 <b>${doneN}</b></div>`+
+        `<div class="stat need">남은 <b>${total-doneN}</b></div>`+
+        `<div class="stat need">법적 <b>${lawN}</b></div>`+
+        `<div class="stat">정기 <b>${recurN}</b></div>`;
+    }
+    (function(){
+      const d=addD(arrival,30);
+      const ds=`${d.getFullYear()}.${d.getMonth()+1}.${d.getDate()}`;
+      document.getElementById('healthAlerts').innerHTML=
+        `<div class="callout danger compact"><div class="t">입양 후 30일 내 (~${ds}) 꼭 해야 할 법적 의무 — 일본</div><ul>`+
+        `<li><b>광견병 예방접종 + 자치체 등록</b> (狂犬病予防法 · 이후 매년)</li>`+
+        `<li><b>마이크로칩 소유자 변경등록</b> (환경성 등록 사이트)</li></ul></div>`;
+      document.getElementById('healthHint').textContent=
+        `생일 추정 ${BIRTH} · 입양 ${ARRIVAL} · 날짜는 예상값(브리더 정보로 수정 가능) · 체크=완료, 저장은 이 브라우저에`;
+    })();
+    document.getElementById('healthFilters').addEventListener('click',e=>{
+      const b=e.target.closest('.fbtn');if(!b)return;
+      document.querySelectorAll('#healthFilters .fbtn').forEach(x=>x.classList.remove('active'));
+      b.classList.add('active');filter=b.dataset.f;render();
+    });
+    render();stats();
+  })();
+
+  // ---- 지식·정보 (개념 사전) ----
+  (function(){
+    const data = window.INFO;
+    const list = document.getElementById('infoList');
+    const esc = s => (s||'').replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+    if(!data || !Array.isArray(data.entries) || !data.entries.length){
+      list.innerHTML = '<div class="info-empty">데이터 준비 중입니다.</div>';
+      return;
+    }
+    const entries = data.entries;
+    const topics = data.topics || [];
+    document.getElementById('infoCount').textContent = entries.length + '항목';
+    let filter='all', q='';
+    const statEl = document.getElementById('infoStat');
+    const filtersEl = document.getElementById('infoFilters');
+    const searchEl = document.getElementById('infoSearch');
+
+    filtersEl.innerHTML =
+      `<button class="fbtn active" data-f="all">전체 <span class="cnt2">${entries.length}</span></button>` +
+      topics.map(t=>{
+        const c = entries.filter(e=>e.topic===t).length;
+        return c ? `<button class="fbtn" data-f="${esc(t)}">${esc(t)} <span class="cnt2">${c}</span></button>` : '';
+      }).join('');
+
+    // 간단 마크다운 렌더: **굵게**, '- ' 불릿, 줄바꿈
+    function md(src){
+      const inline = s => esc(s).replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+      let html='', inList=false;
+      (src||'').split('\n').forEach(raw=>{
+        const line = raw.trim();
+        if(line.startsWith('- ')){
+          if(!inList){ html+='<ul class="info-ul">'; inList=true; }
+          html += `<li>${inline(line.slice(2))}</li>`;
+        } else {
+          if(inList){ html+='</ul>'; inList=false; }
+          if(line) html += `<p>${inline(line)}</p>`;
+        }
+      });
+      if(inList) html+='</ul>';
+      return html;
+    }
+    function card(e){
+      const src = (e.sources&&e.sources.length)
+        ? `<div class="info-src">출처${e.sources.map((u,i)=>` <a href="${esc(u)}" target="_blank" rel="noopener">영상${e.sources.length>1?(i+1):''}</a>`).join('')}</div>`
+        : '';
+      return `<div class="info-card">
+        <span class="info-term">${esc(e.term)}</span><span class="info-tag">${esc(e.topic)}</span>
+        <div class="info-body">${md(e.body)}</div>
+        ${src}
+      </div>`;
+    }
+    function match(e){
+      if(filter!=='all' && e.topic!==filter) return false;
+      if(q){
+        if(!((e.term+' '+e.body+' '+e.topic).toLowerCase().includes(q))) return false;
+      }
+      return true;
+    }
+    function render(){
+      const items = entries.filter(match);
+      statEl.innerHTML = `<div class="stat">표시 <b>${items.length}</b></div>`;
+      list.innerHTML = items.length ? items.map(card).join('') : '<div class="info-empty">해당 항목이 없습니다.</div>';
+    }
+    filtersEl.addEventListener('click', e=>{
+      const b = e.target.closest('.fbtn'); if(!b) return;
+      filtersEl.querySelectorAll('.fbtn').forEach(x=>x.classList.remove('active'));
+      b.classList.add('active'); filter = b.dataset.f; render();
+    });
+    searchEl.addEventListener('input', e=>{ q = e.target.value.trim().toLowerCase(); render(); });
+    render();
+  })();
+</script>
+</body>
+</html>
