@@ -673,7 +673,7 @@ window.GEAR=GEAR;
       localStorage.setItem('luca_gear_have',JSON.stringify(have));window.LucaHub.save('gear',k,e.target.checked);
       if(filter==='need')render();else e.target.closest('.prow').classList.toggle('have',e.target.checked);stats();
     }));
-    list.querySelectorAll('[data-edit]').forEach(b=>b.addEventListener('click',()=>{openCfg=b.dataset.edit;draft=Object.assign({mode:'weight',total:'',perDay:'',start:'',nextDate:''},cfg[openCfg]||{});render();}));
+    list.querySelectorAll('[data-edit]').forEach(b=>b.addEventListener('click',()=>{openCfg=b.dataset.edit;const td=iso(new Date());draft=Object.assign({mode:'weight',total:'',perDay:'',start:td,nextDate:td},cfg[openCfg]||{});render();}));
     const ed=list.querySelector('.gcfg');if(ed){
       ed.querySelectorAll('[data-seg] button').forEach(b=>b.addEventListener('click',()=>{draft.mode=b.dataset.mode;render();}));
       ed.querySelectorAll('input').forEach(inp=>inp.addEventListener('input',()=>{draft[inp.dataset.k]=inp.value;const pv=ed.querySelector('#gPrev');if(pv){pv.textContent=previewHTML(draft);pv.style.opacity=computeNext(draft)?1:.5;}}));
