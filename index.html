@@ -2,1117 +2,1002 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>루카 LUCA — 반려견 허브</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>우리 아이들 — LUCA</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
 <style>
   :root{
-    /* soft & bright, blue-merle inspired */
-    --bg:#f3f7fb;
-    --bg-tint-a:#e3eefa;     /* pale sky */
-    --bg-tint-b:#f7efe6;     /* warm cream */
-    --card:#ffffff;
-    --card-soft:#fbfdff;
-    --line:#e4ecf4;
-    --line-soft:#eef3f8;
-    --ink:#33424f;
-    --ink-soft:#5e7082;
-    --ink-dim:#93a3b3;
-    --accent:#5f83a8;        /* slate blue (merle) */
-    --accent-light:#88a6c6;
-    --ice:#5cb0e6;           /* blue eyes */
-    --ice-soft:#dcefff;
-    --copper:#cf9266;        /* tan markings */
-    --good:#46b98a;
-    --warn:#c98f33;
-    --warn-bg:#fbf3e2;
-    --warn-line:#eedcb4;
-    --danger:#cf5d59;
-    --danger-bg:#fcefee;
-    --danger-line:#f2cfcd;
-    --info-bg:#ecf5fd;
-    --info-line:#cfe5f6;
-    --radius:18px;
-    --shadow:0 10px 30px rgba(80,110,140,.10);
-    --shadow-sm:0 4px 14px rgba(80,110,140,.08);
+    --paper:#F2EEE5; --paper-edge:#E8E2D4; --card:#FBF8F1;
+    --ink:#2A2620; --ink-soft:#6E665A; --ink-faint:#A79D8C;
+    --line:#E4DCCC; --line-soft:#EEE8DA;
+    --copper:#A6562F; --copper-ink:#8A4622; --copper-soft:#F0E3D6;
+    --slate:#4F6B82; --slate-soft:#E2E8EE; --slate-line:#CFDAE3;
+    --brick:#A33F33; --brick-soft:#F2DED9;
+    --olive:#5F6B3F;
+    --sans:'Pretendard',-apple-system,BlinkMacSystemFont,system-ui,sans-serif;
   }
   *{box-sizing:border-box;margin:0;padding:0}
-  body{
-    font-family:"Apple SD Gothic Neo","Hiragino Sans","Pretendard",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
-    background:
-      radial-gradient(900px 480px at 85% -8%, var(--bg-tint-a), transparent 60%),
-      radial-gradient(760px 460px at -8% 4%, var(--bg-tint-b), transparent 58%),
-      var(--bg);
-    color:var(--ink);
-    line-height:1.65;
-    -webkit-font-smoothing:antialiased;
-    min-height:100vh;
-  }
-  .wrap{max-width:1080px;margin:0 auto;padding:30px 20px 80px}
-
-  /* ---------- language toggle ---------- */
+  html,body{background:var(--paper)}
+  body{font-family:var(--sans);color:var(--ink);-webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;font-variant-numeric:tabular-nums;line-height:1.6}
   body[data-lang="ja"] [data-only="ko"]{display:none!important}
   body[data-lang="ko"] [data-only="ja"]{display:none!important}
+  .app{max-width:480px;margin:0 auto;min-height:100vh;background:var(--paper);position:relative}
+  .view{display:none;padding:0 18px;animation:fade .25s ease}
+  .view.active{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+  .pad{padding-bottom:96px}
 
-  /* ---------- Hero ---------- */
-  .hero{
-    display:flex;flex-wrap:wrap;align-items:center;gap:24px;
-    background:linear-gradient(135deg,#ffffff,#f4f9ff);
-    border:1px solid var(--line);border-radius:var(--radius);
-    padding:24px 28px;box-shadow:var(--shadow);position:relative;overflow:hidden;
-  }
-  .hero::after{
-    content:"";position:absolute;right:-50px;top:-50px;width:220px;height:220px;
-    background:radial-gradient(circle at center, rgba(92,176,230,.16), transparent 70%);pointer-events:none;
-  }
-  .photo{
-    width:96px;height:96px;border-radius:50%;flex:none;object-fit:cover;object-position:50% 32%;
-    border:3px solid #fff;box-shadow:0 6px 18px rgba(80,110,140,.22),0 0 0 1px var(--line);
-  }
-  .hero h1{font-size:30px;letter-spacing:.5px;display:flex;align-items:baseline;gap:11px;flex-wrap:wrap;color:#2b3947}
-  .hero h1 .en{font-size:15px;color:var(--accent);font-weight:700;letter-spacing:2.5px}
-  .hero .tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:11px}
-  .tag{font-size:12.5px;padding:4px 12px;border-radius:999px;background:#f1f6fb;
-    border:1px solid var(--line);color:var(--ink-soft)}
-  .tag.ice{color:#2f86bd;background:var(--info-bg);border-color:var(--info-line)}
-  .hero .spacer{flex:1}
-  .hero-right{display:flex;flex-direction:column;align-items:flex-end;gap:11px;position:relative;z-index:1}
-  .langsw{display:inline-flex;background:#eef3f8;border:1px solid var(--line);
-    border-radius:999px;padding:3px;gap:2px;box-shadow:var(--shadow-sm)}
-  .langsw button{font:inherit;font-size:12.5px;font-weight:700;cursor:pointer;border:none;
-    background:transparent;color:var(--ink-soft);padding:5px 14px;border-radius:999px;transition:.15s}
-  .langsw button:hover{color:var(--ink)}
-  .langsw button.active{background:#fff;color:var(--accent);box-shadow:var(--shadow-sm)}
-  .dday{
-    text-align:center;background:linear-gradient(135deg,#f3f9ff,#eaf3fc);
-    border:1px solid var(--info-line);border-radius:15px;padding:14px 22px;min-width:132px
-  }
-  .dday .big{font-size:30px;font-weight:800;color:var(--accent);line-height:1.1}
-  .dday .lbl{font-size:12px;color:var(--ink-dim);margin-top:4px}
+  /* masthead */
+  .mast{padding:20px 2px 0}
+  .mast-top{display:flex;align-items:center;justify-content:space-between}
+  .mast-top .t{font-size:18px;font-weight:700;letter-spacing:-.02em}
+  .mast-top .e{font-size:11px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-faint);margin-left:8px}
+  .toggle{display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden;background:var(--card)}
+  .toggle button{font:inherit;font-size:12px;font-weight:600;border:none;cursor:pointer;padding:5px 12px;background:transparent;color:var(--ink-faint);transition:.15s}
+  .toggle button.on{background:var(--ink);color:var(--paper)}
+  .mast-line{display:flex;align-items:center;gap:10px;margin-top:14px;padding-bottom:6px;border-bottom:1px solid var(--line)}
+  .mast-line .lab{font-size:10px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-faint);white-space:nowrap}
+  .mast-line .rule{flex:1;height:1px;background:var(--line)}
+  .mast-line .yr{font-size:11px;font-weight:500;letter-spacing:.06em;color:var(--ink-faint)}
 
-  /* ---------- Nav ---------- */
-  nav{display:flex;flex-wrap:wrap;gap:8px;margin:24px 0 20px}
-  .navbtn{
-    font:inherit;font-size:14.5px;font-weight:600;cursor:pointer;
-    color:var(--ink-soft);background:var(--card);border:1px solid var(--line);
-    padding:9px 17px;border-radius:12px;transition:.15s;display:flex;align-items:center;gap:7px;
-    box-shadow:var(--shadow-sm)
-  }
-  .navbtn:hover{color:var(--ink);border-color:var(--accent-light);transform:translateY(-1px)}
-  .navbtn.active{background:linear-gradient(135deg,var(--accent),#4f7194);color:#fff;border-color:var(--accent);box-shadow:0 6px 16px rgba(95,131,168,.28)}
-  .navbtn .soon{font-size:10px;color:var(--ink-dim);font-weight:600;background:#f1f6fb;padding:1px 6px;border-radius:6px}
-  .navbtn.active .soon{color:#eaf3fc;background:rgba(255,255,255,.18)}
+  /* dog cards */
+  .dogs{padding-top:18px}
+  .dog{display:flex;gap:14px;align-items:center;background:var(--card);border:1px solid var(--line);
+    border-radius:14px;padding:13px 14px;margin-bottom:11px;width:100%;text-align:left;font:inherit;color:inherit;cursor:pointer;transition:.15s}
+  .dog:hover{border-color:#D8CDB7}
+  .dog:active{transform:scale(.992)}
+  .dog.empty{border-style:dashed;background:#F7F3EB;cursor:pointer}
+  .dpic{width:62px;height:62px;border-radius:12px;flex:none;object-fit:cover;object-position:50% 32%;border:1px solid var(--line);background:var(--copper-soft)}
+  .dpic-ph{width:62px;height:62px;border-radius:12px;flex:none;border:1px solid var(--line);background:var(--copper-soft);color:var(--copper);display:flex;align-items:center;justify-content:center}
+  .dog.empty .dpic-ph{background:var(--paper-edge);color:#BCB2A1}
+  .dpic-ph svg{width:30px;height:30px}
+  .dinfo{flex:1;min-width:0}
+  .dn{display:flex;align-items:center;gap:8px}
+  .dn b{font-size:18px;font-weight:700;color:var(--ink);letter-spacing:-.01em}
+  .sx{font-size:11px;font-weight:600;padding:1px 8px;border-radius:5px;background:var(--slate-soft);color:var(--slate);white-space:nowrap}
+  .sx.f{background:#F4E3EA;color:#A8587A}
+  .sx.m{background:var(--paper-edge);color:var(--ink-faint)}
+  .dm{font-size:12.5px;color:var(--ink-soft);margin-top:4px}
+  .dm.faint{color:var(--ink-faint)}
+  .dm b{font-weight:600;color:var(--ink)}
+  .dgo{flex:none;color:var(--ink-faint)}
+  .dgo svg{width:18px;height:18px;display:block}
 
-  /* ---------- Sections ---------- */
-  section{display:none;animation:fade .25s ease}
-  section.active{display:block}
-  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
-
-  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
-  .card{
-    background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
-    padding:20px 22px;box-shadow:var(--shadow-sm)
-  }
-  .card h3{font-size:16px;margin-bottom:13px;color:#2b3947;padding-bottom:11px;border-bottom:1px solid var(--line-soft)}
-  .card.span2{grid-column:1/-1}
-
-  .spec{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px dashed var(--line);font-size:14.5px}
+  /* profile */
+  .pf-top{display:flex;align-items:center;gap:12px;padding:18px 2px 4px}
+  .back{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:10px;
+    border:1px solid var(--line);background:var(--card);color:var(--ink-soft);cursor:pointer;flex:none}
+  .back svg{width:19px;height:19px}
+  .pf-hero{display:flex;gap:15px;align-items:center;padding:14px 0 4px}
+  .pf-hero .pic{width:84px;height:84px;border-radius:14px;flex:none;object-fit:cover;object-position:50% 32%;border:1px solid var(--line)}
+  .pf-hero h1{font-size:25px;font-weight:700;letter-spacing:-.02em}
+  .pf-hero .breed{font-size:12.5px;color:var(--ink-soft);margin-top:4px}
+  .tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px}
+  .tag{font-size:11.5px;font-weight:500;padding:3px 9px;border-radius:6px;background:var(--paper-edge);color:var(--ink-soft);border:1px solid var(--line)}
+  .tag.eye{background:var(--slate-soft);color:var(--slate);border-color:var(--slate-line)}
+  .eyebrow{display:flex;align-items:center;gap:10px;margin:24px 0 12px}
+  .eyebrow .k{font-size:12.5px;font-weight:600;color:var(--ink)}
+  .eyebrow .tick{width:14px;height:1px;background:var(--copper)}
+  .eyebrow .rule{flex:1;height:1px;background:var(--line)}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:13px;padding:15px 16px;margin-bottom:11px}
+  .spec{display:flex;justify-content:space-between;gap:12px;padding:7px 0;border-bottom:1px dashed var(--line);font-size:13.5px}
   .spec:last-child{border-bottom:none}
-  .spec .k{color:var(--ink-dim)}
-  .spec .v{color:var(--ink);font-weight:600;text-align:right}
-
-  ul.clean{list-style:none}
-  ul.clean li{position:relative;padding:6px 0 6px 20px;font-size:14.5px;color:var(--ink-soft);border-bottom:1px dashed var(--line)}
+  .spec .k{color:var(--ink-faint)} .spec .v{color:var(--ink);font-weight:600;text-align:right}
+  ul.clean{list-style:none} ul.clean li{position:relative;padding:6px 0 6px 16px;font-size:13.5px;color:var(--ink-soft);border-bottom:1px dashed var(--line)}
   ul.clean li:last-child{border-bottom:none}
-  ul.clean li::before{content:"";position:absolute;left:3px;top:14px;width:6px;height:6px;border-radius:50%;background:var(--accent-light)}
-  ul.clean li b{color:var(--ink)}
+  ul.clean li::before{content:"";position:absolute;left:2px;top:13px;width:5px;height:5px;border-radius:50%;background:var(--copper)}
+  ul.clean li b{color:var(--ink);font-weight:600}
+  .callout{border-radius:12px;padding:14px 15px;border:1px solid;margin-bottom:11px}
+  .callout .t{font-weight:700;margin-bottom:6px;font-size:14px}
+  .callout p,.callout li{font-size:13px;line-height:1.6}
+  .callout.info{background:var(--slate-soft);border-color:var(--slate-line)} .callout.info .t{color:var(--slate)}
+  .callout.warn{background:#FBF1DE;border-color:#EBD9B4} .callout.warn .t{color:#9A6B1E}
+  .callout.danger{background:var(--brick-soft);border-color:#EBC9C2} .callout.danger .t{color:var(--brick)}
+  .callout ul{list-style:none;margin-top:5px} .callout li{padding:3px 0 3px 14px;position:relative;color:var(--ink-soft)}
+  .callout li::before{content:"·";position:absolute;left:4px;color:var(--ink-faint);font-weight:800} .callout b{color:var(--ink)}
+  .pf-link{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;font:inherit;font-size:14px;font-weight:600;
+    cursor:pointer;color:#fff;background:var(--copper);border:none;border-radius:11px;padding:13px;margin-top:4px}
+  .pf-link svg{width:17px;height:17px}
+  .pf-empty{text-align:center;padding:48px 20px;color:var(--ink-faint)}
+  .pf-empty .mk{width:60px;height:60px;border-radius:16px;margin:0 auto 16px;background:var(--paper-edge);color:#BCB2A1;display:flex;align-items:center;justify-content:center}
+  .pf-empty .mk svg{width:30px;height:30px}
+  .pf-empty h2{font-size:18px;color:var(--ink-soft);margin-bottom:6px;font-weight:600}
+  .pf-empty p{font-size:13px}
 
-  .lead{font-size:14.5px;color:var(--ink-soft)}
-  .lead b{color:var(--ink)}
+  /* generic placeholder for unbuilt tabs */
+  .soon{text-align:center;padding:64px 24px;color:var(--ink-faint)}
+  .soon .mk{width:56px;height:56px;border-radius:15px;margin:0 auto 16px;background:var(--copper-soft);color:var(--copper);display:flex;align-items:center;justify-content:center}
+  .soon .mk svg{width:27px;height:27px}
+  .soon h2{font-size:19px;color:var(--ink-soft);margin-bottom:7px;font-weight:600}
+  .soon p{font-size:13px}
 
-  .callout{border-radius:14px;padding:16px 18px;border:1px solid}
-  .callout .t{font-weight:700;margin-bottom:7px;font-size:15px;display:flex;align-items:center;gap:8px}
-  .callout .t::before{content:"";width:9px;height:9px;border-radius:50%;flex:none;background:currentColor;opacity:.85}
-  .callout p, .callout li{font-size:14px}
-  .callout.danger{background:var(--danger-bg);border-color:var(--danger-line)}
-  .callout.danger .t{color:var(--danger)}
-  .callout.warn{background:var(--warn-bg);border-color:var(--warn-line)}
-  .callout.warn .t{color:var(--warn)}
-  .callout.info{background:var(--info-bg);border-color:var(--info-line)}
-  .callout.info .t{color:#2f86bd}
-  .callout ul{list-style:none;margin-top:6px}
-  .callout li{padding:4px 0 4px 16px;position:relative;color:var(--ink-soft)}
-  .callout li::before{content:"·";position:absolute;left:4px;color:var(--ink-dim);font-weight:800}
-  .callout b{color:var(--ink)}
-
-  .pill{display:inline-block;font-size:11.5px;font-weight:700;padding:2px 10px;border-radius:999px;margin-left:8px;vertical-align:middle}
-  .pill.red{background:var(--danger-bg);color:var(--danger);border:1px solid var(--danger-line)}
-  .pill.amber{background:var(--warn-bg);color:var(--warn);border:1px solid var(--warn-line)}
-
-  /* placeholder */
-  .placeholder{text-align:center;padding:58px 24px;color:var(--ink-dim)}
-  .placeholder .mark{width:54px;height:54px;border-radius:16px;margin:0 auto 16px;
-    background:linear-gradient(135deg,#eef5fc,#e3eefa);border:1px solid var(--line);
-    display:flex;align-items:center;justify-content:center;color:var(--accent);font-weight:800;font-size:22px}
-  .placeholder h2{color:var(--ink-soft);font-size:20px;margin-bottom:8px}
-  .placeholder .coming{display:inline-flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:18px;max-width:620px}
-  .placeholder .coming span{font-size:13px;background:var(--card);border:1px solid var(--line);
-    padding:8px 14px;border-radius:11px;color:var(--ink-soft);box-shadow:var(--shadow-sm)}
-
-  /* ---- 용품 관리 ---- */
-  .gear-bar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-bottom:13px}
-  .gear-stat{display:flex;gap:8px;flex-wrap:wrap}
-  .stat{background:var(--card);border:1px solid var(--line);border-radius:11px;
-    padding:7px 13px;box-shadow:var(--shadow-sm);font-size:12.5px;color:var(--ink-soft)}
-  .stat b{color:#2b3947;font-weight:800;font-size:14px;margin-left:3px}
-  .stat.need b{color:var(--danger)}
-  .gear-filters{display:flex;gap:7px;flex-wrap:wrap;margin-left:auto}
-  .fbtn{font:inherit;font-size:13px;font-weight:600;cursor:pointer;color:var(--ink-soft);
-    background:var(--card);border:1px solid var(--line);padding:7px 13px;border-radius:10px;
-    transition:.15s;box-shadow:var(--shadow-sm)}
-  .fbtn:hover{border-color:var(--accent-light);color:var(--ink)}
-  .fbtn.active{background:linear-gradient(135deg,var(--accent),#4f7194);color:#fff;border-color:var(--accent)}
-  .gear-hint{font-size:12px;color:var(--ink-dim);margin-bottom:18px}
-
-  .cat-group{margin-bottom:20px}
-  .cat-head{font-size:13px;font-weight:800;color:var(--accent);letter-spacing:.3px;
-    margin:0 2px 9px;display:flex;align-items:center;gap:8px}
-  .cat-head .cnt{font-size:11px;font-weight:600;color:var(--ink-dim);background:var(--info-bg);
-    border:1px solid var(--info-line);padding:1px 8px;border-radius:999px}
-
-  .prod-list{display:flex;flex-direction:column;gap:9px}
-  .prow{display:flex;align-items:center;gap:13px;background:var(--card);border:1px solid var(--line);
-    border-radius:13px;padding:12px 15px;box-shadow:var(--shadow-sm);transition:.15s}
-  .prow:hover{border-color:var(--accent-light)}
-  .prow.have{opacity:.6;background:var(--line-soft)}
-  .pchk{width:20px;height:20px;flex:none;cursor:pointer;accent-color:var(--accent)}
+  /* ===== 용품 ===== */
+  .gbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:16px 0 6px}
+  .gstats{display:flex;gap:6px}
+  .gstat{background:var(--card);border:1px solid var(--line);border-radius:9px;padding:6px 11px;font-size:12px;color:var(--ink-soft)}
+  .gstat b{color:var(--ink);font-weight:700;margin-left:3px}
+  .gstat.need b{color:var(--brick)}
+  .gfilters{display:flex;gap:6px;margin-left:auto}
+  .fbtn{font:inherit;font-size:12.5px;font-weight:600;cursor:pointer;color:var(--ink-soft);background:var(--card);border:1px solid var(--line);padding:6px 11px;border-radius:8px;transition:.12s}
+  .fbtn.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+  .ghint{font-size:11.5px;color:var(--ink-faint);margin:4px 2px 14px;line-height:1.5}
+  .cat{margin-bottom:18px}
+  .cathead{display:flex;align-items:center;gap:8px;font-size:11px;font-weight:700;color:var(--copper);letter-spacing:.04em;margin:0 2px 9px;text-transform:uppercase}
+  .cathead .cnt{font-weight:600;color:var(--ink-faint);background:var(--copper-soft);padding:1px 7px;border-radius:999px;font-size:10.5px}
+  .prow{display:flex;align-items:center;gap:11px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:11px 13px;margin-bottom:8px;transition:.15s}
+  .prow.have{opacity:.55}
+  .pchk{width:20px;height:20px;flex:none;cursor:pointer;accent-color:var(--copper)}
   .pinfo{flex:1;min-width:0}
-  .ptop{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-  .pname{font-size:14.5px;font-weight:700;color:#2b3947}
+  .ptop{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+  .pname{font-size:14px;font-weight:600;color:var(--ink)}
   .prow.have .pname{text-decoration:line-through}
-  .badge{font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:999px;white-space:nowrap}
-  .badge.recur{color:#b5832f;background:var(--warn-bg);border:1px solid var(--warn-line)}
-  .pmeta{font-size:12px;color:var(--ink-dim);margin-top:3px}
-  .pmeta .cyc{color:#b5832f;font-weight:600}
-  .pnote{font-size:11.5px;color:var(--danger);margin-top:3px;font-weight:600}
-  .pprice{font-size:14.5px;font-weight:800;color:var(--ink);white-space:nowrap}
-  .pprice.none{font-size:12px;font-weight:600;color:var(--ink-dim)}
-  .pbuy{font-size:12px;font-weight:700;color:#fff;text-decoration:none;white-space:nowrap;
-    background:linear-gradient(135deg,var(--accent),#4f7194);padding:6px 12px;border-radius:9px;transition:.15s}
-  .pbuy:hover{filter:brightness(1.07)}
-  .pbuy.search{background:#eef3f8;color:var(--accent);border:1px solid var(--line)}
-  .ptime{font-size:11.5px;font-weight:700;color:var(--accent);background:var(--info-bg);
-    border:1px solid var(--info-line);padding:5px 10px;border-radius:9px;white-space:nowrap;text-align:center;line-height:1.35;flex:none}
-  .badge.law{color:var(--danger);background:var(--danger-bg);border:1px solid var(--danger-line)}
-  .callout.compact{margin-bottom:14px}
-  @media(max-width:560px){
-    .prow{flex-wrap:wrap}
-    .pinfo{flex-basis:calc(100% - 33px)}
-    .prow .pprice,.prow .pbuy,.prow .ptime{margin-left:33px}
-  }
+  .bdg{font-size:10px;font-weight:600;padding:1px 7px;border-radius:5px;background:var(--copper-soft);color:var(--copper-ink)}
+  .pmeta{font-size:11.5px;color:var(--ink-faint);margin-top:3px}
+  .pbuyrow{display:flex;align-items:center;gap:8px;margin-top:7px;flex-wrap:wrap}
+  .pnext{font-size:11.5px;font-weight:600;color:var(--copper-ink);background:var(--copper-soft);padding:3px 8px;border-radius:6px;font-variant-numeric:tabular-nums}
+  .pnext.over{background:var(--brick-soft);color:var(--brick)}
+  .pset{font:inherit;font-size:11.5px;font-weight:600;color:var(--slate);background:none;border:1px dashed var(--slate-line);padding:3px 9px;border-radius:6px;cursor:pointer}
+  .pedit{font:inherit;font-size:11px;color:var(--ink-faint);background:none;border:none;cursor:pointer;text-decoration:underline}
+  .pprice{font-size:13.5px;font-weight:700;color:var(--ink);white-space:nowrap;flex:none;font-variant-numeric:tabular-nums}
+  .pprice.none{font-size:11.5px;font-weight:600;color:var(--ink-faint)}
+  .pbuy{font-size:11.5px;font-weight:700;color:#fff;text-decoration:none;white-space:nowrap;background:var(--copper);padding:6px 11px;border-radius:8px;flex:none}
+  .pbuy.search{background:var(--paper-edge);color:var(--copper-ink)}
+  .gcfg{background:var(--card);border:1px solid var(--slate-line);border-radius:12px;padding:13px 14px;margin:-3px 0 10px}
+  .gcfg .seg{display:flex;gap:4px;background:var(--paper-edge);border-radius:9px;padding:3px;margin-bottom:12px}
+  .gcfg .seg button{flex:1;font:inherit;font-size:12.5px;font-weight:600;color:var(--ink-soft);background:none;border:none;padding:7px 0;border-radius:7px;cursor:pointer}
+  .gcfg .seg button.on{background:var(--card);color:var(--ink)}
+  .gfield{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:9px}
+  .gfield label{font-size:12.5px;color:var(--ink-soft)}
+  .gfield input{font:inherit;font-size:13px;color:var(--ink);background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:7px 10px;width:140px;text-align:right;font-variant-numeric:tabular-nums}
+  .gfield input[type=date]{text-align:left}
+  .gest{font-size:12px;color:var(--copper-ink);background:var(--copper-soft);border-radius:8px;padding:8px 11px;margin:3px 0 11px;text-align:center;font-weight:600;font-variant-numeric:tabular-nums}
+  .gbtns{display:flex;gap:7px}
+  .gbtns button{font:inherit;font-size:13px;font-weight:600;cursor:pointer;border-radius:9px;padding:9px 0;flex:1;border:1px solid var(--line)}
+  .gbtns .save{background:var(--copper);color:#fff;border-color:var(--copper);flex:2}
+  .gbtns .cancel{background:var(--card);color:var(--ink-soft)}
+  .gbtns .clear{background:var(--card);color:var(--brick);border-color:#EBC9C2}
+  /* ===== 건강 ===== */
+  .hsel{display:flex;gap:4px;background:var(--paper-edge);border-radius:10px;padding:4px;margin:16px 0 4px}
+  .hsel button{flex:1;font:inherit;font-size:13px;font-weight:600;color:var(--ink-soft);background:none;border:none;padding:8px 0;border-radius:8px;cursor:pointer}
+  .hsel button.on{background:var(--card);color:var(--ink)}
+  .htime{font-size:11px;font-weight:600;color:var(--slate);background:var(--slate-soft);border:1px solid var(--slate-line);padding:5px 9px;border-radius:7px;white-space:nowrap;text-align:center;line-height:1.3;flex:none;font-variant-numeric:tabular-nums}
+  .bdg.law{background:var(--brick-soft);color:var(--brick)}
 
-  /* ---- 설채현 지식 ---- */
-  .info-search{flex:1;min-width:200px;font:inherit;font-size:14px;color:var(--ink);
-    background:var(--card);border:1px solid var(--line);border-radius:11px;padding:9px 14px;
-    box-shadow:var(--shadow-sm);outline:none}
-  .info-search:focus{border-color:var(--accent-light)}
-  .cnt2{font-size:10.5px;font-weight:700;opacity:.7;margin-left:2px}
-  .info-card{background:var(--card);border:1px solid var(--line);border-radius:14px;
-    padding:16px 19px;box-shadow:var(--shadow-sm);margin-bottom:11px}
-  .info-term{font-size:16px;font-weight:800;color:#2b3947;display:inline-block;margin-right:8px}
-  .info-tag{font-size:10.5px;color:var(--accent);background:var(--info-bg);border:1px solid var(--info-line);
-    padding:1px 8px;border-radius:999px;vertical-align:middle}
-  .info-body{font-size:14px;color:var(--ink-soft);margin-top:10px;line-height:1.7}
-  .info-body p{margin:6px 0}
-  .info-body strong{color:var(--ink)}
-  ul.info-ul{list-style:none;margin:6px 0}
-  ul.info-ul li{position:relative;padding:3px 0 3px 15px}
-  ul.info-ul li::before{content:"";position:absolute;left:2px;top:12px;width:5px;height:5px;border-radius:50%;background:var(--copper)}
-  .info-src{margin-top:11px;padding-top:9px;border-top:1px dashed var(--line);font-size:12px;color:var(--ink-dim)}
-  .info-src a{color:var(--accent);text-decoration:none;margin-left:5px}
-  .info-src a:hover{text-decoration:underline}
-  .info-empty{text-align:center;padding:40px 0;color:var(--ink-dim);font-size:13.5px}
+  /* ===== 달력 ===== */
+  .calnav{display:flex;align-items:center;gap:8px;margin:16px 0 12px}
+  .calnav .mo{font-size:17px;font-weight:700;letter-spacing:-.01em;margin-right:auto}
+  .calnav button{height:34px;width:34px;flex:none;border-radius:9px;border:1px solid var(--line);background:var(--card);color:var(--ink-soft);cursor:pointer;display:flex;align-items:center;justify-content:center}
+  .calnav button:active{transform:scale(.95)}
+  .calnav button svg{width:18px;height:18px}
+  .calnav .today{width:auto;padding:0 13px;font:inherit;font-size:12.5px;font-weight:600;color:var(--ink-soft)}
+  .calfilters{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+  .cchip{font:inherit;font-size:12px;font-weight:600;cursor:pointer;color:var(--ink-soft);background:var(--card);border:1px solid var(--line);padding:5px 12px;border-radius:999px;transition:.12s}
+  .cchip.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+  .cchip.cdog.on{background:var(--copper);border-color:var(--copper)}
+  .cgrid{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 8px;margin-bottom:16px}
+  .cdow{display:grid;grid-template-columns:repeat(7,1fr)}
+  .cdow span{text-align:center;font-size:10.5px;font-weight:600;color:var(--ink-faint);padding:3px 0 6px}
+  .cdow span.sun{color:var(--brick)}
+  .cells{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
+  .cell{aspect-ratio:1;border:none;background:none;font:inherit;cursor:pointer;border-radius:9px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;position:relative;color:var(--ink);padding:0}
+  .cell.pad{visibility:hidden;pointer-events:none}
+  .cell .d{font-size:13px;font-weight:600;line-height:1}
+  .cell.sun .d{color:var(--brick)}
+  .cell.today{background:var(--copper-soft)}
+  .cell.today .d{color:var(--copper-ink);font-weight:700}
+  .cell.sel{background:var(--ink)}
+  .cell.sel .d{color:var(--paper)}
+  .cell .mk{display:flex;gap:2px;height:5px;align-items:center;justify-content:center}
+  .cell .dot{width:4px;height:4px;border-radius:50%;background:var(--ink-faint)}
+  .cell.today .dot{background:var(--copper)}
+  .cell.sel .dot{background:var(--paper)}
+  .cell .st{position:absolute;top:4px;right:5px;color:var(--copper);font-size:8px;line-height:1}
+  .cell.sel .st{color:#E8B96B}
+  .cphead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:2px 2px 11px}
+  .cphead .lab{font-size:12.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint)}
+  .cphead .sub{font-size:11px;color:var(--ink-faint);font-weight:500}
+  .cphead .acts{display:flex;gap:6px;flex:none}
+  .cphead .acts button{font:inherit;font-size:12px;font-weight:600;cursor:pointer;border-radius:8px;padding:6px 11px;border:1px solid var(--line);background:var(--card);color:var(--ink-soft)}
+  .cphead .acts button.star.on{color:var(--copper);border-color:var(--copper-soft);background:var(--copper-soft)}
+  .cprow{display:flex;align-items:center;gap:11px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:11px 13px;margin-bottom:8px}
+  .cprow.tap{cursor:pointer}
+  .cprow.tap:active{transform:scale(.995)}
+  .cprow .when{font-size:11.5px;font-weight:700;color:var(--copper-ink);background:var(--copper-soft);border-radius:6px;padding:3px 7px;white-space:nowrap;flex:none;min-width:40px;text-align:center;font-variant-numeric:tabular-nums}
+  .cprow .when.over{background:var(--brick-soft);color:var(--brick)}
+  .cprow .ci{flex:1;min-width:0}
+  .cprow .ct{font-size:13.5px;font-weight:600;color:var(--ink)}
+  .cprow .ct.done{text-decoration:line-through;color:var(--ink-faint)}
+  .cprow .cm{font-size:11.5px;color:var(--ink-faint);margin-top:3px;display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+  .ckind{font-size:10px;font-weight:600;padding:1px 7px;border-radius:5px}
+  .ckind.health{background:var(--slate-soft);color:var(--slate)}
+  .ckind.supply{background:var(--copper-soft);color:var(--copper-ink)}
+  .ckind.event{background:#E9EEDF;color:var(--olive)}
+  .cprow .del,.cprow .go{flex:none;background:none;border:none;cursor:pointer;color:var(--ink-faint);padding:3px;display:flex}
+  .cprow .del svg{width:15px;height:15px} .cprow .go svg{width:16px;height:16px}
+  .cpempty{text-align:center;padding:32px 16px;color:var(--ink-faint);font-size:13px}
+  .cadd{background:var(--card);border:1px solid var(--slate-line);border-radius:12px;padding:13px 14px;margin-bottom:10px}
+  .cadd input,.cadd select{font:inherit;font-size:13px;color:var(--ink);background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:9px 10px;width:100%;margin-bottom:9px}
+  .cadd .gbtns{display:flex;gap:7px}
+  .cadd .gbtns button{font:inherit;font-size:13px;font-weight:600;cursor:pointer;border-radius:9px;padding:9px 0;flex:1;border:1px solid var(--line)}
+  .cadd .gbtns .save{background:var(--copper);color:#fff;border-color:var(--copper);flex:2}
+  .cadd .gbtns .cancel{background:var(--card);color:var(--ink-soft)}
 
-  footer{margin-top:36px;text-align:center;color:var(--ink-dim);font-size:12.5px;line-height:1.9}
-  footer a{color:var(--accent);text-decoration:none}
-  .sec-head{margin:6px 0 18px}
-  .sec-head h2{font-size:22px;color:#2b3947}
-  .sec-head p{color:var(--ink-dim);font-size:13.5px;margin-top:5px}
+  /* ===== 지식 ===== */
+  .isearch-wrap{position:sticky;top:0;z-index:10;background:var(--paper);padding:8px 0 10px;margin-top:6px}
+  .isearch{position:relative}
+  .isearch input{width:100%;font:inherit;font-size:14px;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:11px;padding:12px 14px 12px 40px;-webkit-appearance:none}
+  .isearch input::placeholder{color:var(--ink-faint)}
+  .isearch input:focus{outline:none;border-color:#D8CDB7}
+  .isearch .mag{position:absolute;left:13px;top:50%;transform:translateY(-50%);width:17px;height:17px;color:var(--ink-faint);pointer-events:none}
+  .ichips{display:flex;gap:7px;overflow-x:auto;padding:2px 0 4px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+  .ichips::-webkit-scrollbar{display:none}
+  .ichip{flex:none;font:inherit;font-size:12.5px;font-weight:600;cursor:pointer;color:var(--ink-soft);background:var(--card);border:1px solid var(--line);padding:6px 12px;border-radius:999px;white-space:nowrap}
+  .ichip.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+  .ichip .c{margin-left:5px;font-size:11px;color:var(--ink-faint);font-variant-numeric:tabular-nums}
+  .ichip.on .c{color:var(--paper-edge)}
+  .icount{font-size:11.5px;color:var(--ink-faint);margin:13px 2px 10px;letter-spacing:.04em;font-variant-numeric:tabular-nums}
+  .iitem{background:var(--card);border:1px solid var(--line);border-radius:12px;margin-bottom:9px;overflow:hidden}
+  .ihead{display:flex;align-items:center;gap:10px;padding:13px 14px;cursor:pointer;width:100%;text-align:left;font:inherit;color:inherit;background:none;border:none}
+  .ihead .no{font-size:10.5px;font-weight:700;color:var(--copper);background:var(--copper-soft);border-radius:5px;padding:2px 6px;flex:none;font-variant-numeric:tabular-nums;letter-spacing:.02em}
+  .ihead .tm{flex:1;font-size:14.5px;font-weight:600;color:var(--ink);min-width:0}
+  .ihead .tg{font-size:10.5px;font-weight:600;color:var(--ink-soft);background:var(--paper-edge);border-radius:5px;padding:2px 7px;flex:none;white-space:nowrap}
+  .ihead .cv{flex:none;color:var(--ink-faint);transition:transform .2s}
+  .iitem.open .ihead .cv{transform:rotate(90deg)}
+  .ihead .cv svg{width:16px;height:16px;display:block}
+  .ibody{display:none;padding:2px 15px 15px;border-top:1px solid var(--line-soft)}
+  .iitem.open .ibody{display:block}
+  .ibody p{font-size:13.5px;color:var(--ink-soft);margin:11px 0 0;line-height:1.65}
+  .ibody .info-ul{list-style:none;margin:9px 0 0}
+  .ibody .info-ul li{position:relative;padding:4px 0 4px 15px;font-size:13.5px;color:var(--ink-soft);line-height:1.6}
+  .ibody .info-ul li::before{content:"";position:absolute;left:2px;top:12px;width:5px;height:5px;border-radius:50%;background:var(--copper)}
+  .ibody strong{color:var(--ink);font-weight:600}
+  .isrc{margin-top:13px;padding-top:11px;border-top:1px dashed var(--line);display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+  .isrc .lab{font-size:12px;font-weight:600;color:var(--ink-faint)}
+  .isrc a{font-size:11.5px;font-weight:600;color:var(--slate);background:var(--slate-soft);border:1px solid var(--slate-line);padding:3px 9px;border-radius:6px;text-decoration:none}
+  .iguide{text-align:center;padding:50px 24px;color:var(--ink-faint)}
+  .iguide .mk{width:54px;height:54px;border-radius:15px;margin:0 auto 16px;background:var(--copper-soft);color:var(--copper);display:flex;align-items:center;justify-content:center}
+  .iguide .mk svg{width:26px;height:26px}
+  .iguide h2{font-size:17px;color:var(--ink-soft);margin-bottom:6px;font-weight:600}
+  .iguide p{font-size:13px}
+
+  /* tab bar */
+  .tabbar{position:fixed;left:0;right:0;bottom:0;max-width:480px;margin:0 auto;
+    background:rgba(251,248,241,.93);backdrop-filter:saturate(1.5) blur(10px);border-top:1px solid var(--line);
+    display:flex;box-shadow:0 -10px 26px -18px rgba(60,45,25,.3);z-index:50}
+  .tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 0 calc(10px + env(safe-area-inset-bottom,6px));
+    color:var(--ink-faint);background:none;border:none;cursor:pointer;font:inherit;transition:.12s}
+  .tab svg{width:22px;height:22px}
+  .tab span{font-size:10.5px;font-weight:600;letter-spacing:.01em}
+  .tab.on{color:var(--copper)}
 </style>
 </head>
 <body>
 <script>document.body.dataset.lang=(localStorage.getItem('luca_lang')==='ja'?'ja':'ko');document.documentElement.lang=document.body.dataset.lang;</script>
-<div class="wrap">
+<div class="app">
 
-  <!-- ===================== HERO ===================== -->
-  <div class="hero">
-    <img class="photo" src="luca.jpg" alt="루카 LUCA">
-    <div>
-      <h1>루카 <span class="en">LUCA</span></h1>
-      <div class="tags">
-        <span class="tag" data-i18n="breed.tag1">미니어처 아메리칸 셰퍼드</span>
-        <span class="tag ice" data-i18n="breed.tag2">블루멀 · 블루아이</span>
-        <span class="tag" data-i18n="breed.tag3">수컷</span>
+  <!-- ===== HOME ===== -->
+  <section id="home" class="view active pad">
+    <div class="mast">
+      <div class="mast-top">
+        <div><span class="t" data-i18n="home.title">우리 아이들</span><span class="e">Our Dogs</span></div>
+        <div class="toggle" id="toggle"><button data-lang="ko">한</button><button data-lang="ja">日</button></div>
+      </div>
+      <div class="mast-line"><span class="lab" data-i18n="home.sub">Field Guide</span><span class="rule"></span><span class="yr">2026</span></div>
+    </div>
+    <div class="dogs" id="dogList"></div>
+  </section>
+
+  <!-- ===== PROFILE (reached from a dog card) ===== -->
+  <section id="profile" class="view pad">
+    <div class="pf-top">
+      <button class="back" id="pfBack" aria-label="back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+      <span style="font-size:12px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-faint)" data-i18n="pf.kicker">Profile</span>
+    </div>
+    <div id="pfBody"></div>
+  </section>
+
+  <!-- ===== CALENDAR (phase 4) ===== -->
+  <section id="cal" class="view pad">
+    <div class="mast"><div class="mast-top"><div><span class="t" data-i18n="nav.cal">달력</span><span class="e">Calendar</span></div></div>
+      <div class="mast-line"><span class="lab">Schedule</span><span class="rule"></span><span class="yr">2026</span></div></div>
+    <div class="calnav">
+      <div class="mo" id="calMo"></div>
+      <button id="calToday" class="today" data-i18n="cal.today">오늘</button>
+      <button id="calPrev" aria-label="prev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+      <button id="calNext" aria-label="next"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
+    </div>
+    <div class="calfilters" id="calFilters"></div>
+    <div class="cgrid">
+      <div class="cdow" id="calDow"></div>
+      <div class="cells" id="calCells"></div>
+    </div>
+    <div id="calBody"></div>
+  </section>
+
+  <!-- ===== HEALTH (phase 3) ===== -->
+  <section id="health" class="view pad">
+    <div class="mast"><div class="mast-top"><div><span class="t" data-i18n="nav.health">건강</span><span class="e">Health</span></div></div>
+      <div class="mast-line"><span class="lab">Care Log</span><span class="rule"></span><span class="yr">2026</span></div></div>
+    <div class="hsel" id="hSel"></div>
+    <div class="gbar">
+      <div class="gstats" id="hStats"></div>
+      <div class="gfilters" id="hFilters">
+        <button class="fbtn on" data-f="all" data-i18n="h.f.all">전체</button>
+        <button class="fbtn" data-f="todo" data-i18n="h.f.todo">남은</button>
+        <button class="fbtn" data-f="law" data-i18n="h.f.law">법적</button>
       </div>
     </div>
-    <div class="spacer"></div>
-    <div class="hero-right">
-      <div class="langsw" id="langsw">
-        <button data-lang="ko">한국어</button>
-        <button data-lang="ja">日本語</button>
-      </div>
-      <div class="dday">
-        <div class="big" id="dday">D-?</div>
-        <div class="lbl" id="ddayLbl">입양일 2026.07.25</div>
+    <div class="ghint" id="hHint" style="display:none"></div>
+    <div id="hList"></div>
+  </section>
+
+  <!-- ===== GEAR / 용품 (phase 2) ===== -->
+  <section id="gear" class="view pad">
+    <div class="mast"><div class="mast-top"><div><span class="t" data-i18n="nav.gear">용품</span><span class="e">Supplies</span></div></div>
+      <div class="mast-line"><span class="lab">Supplies</span><span class="rule"></span><span class="yr">2026</span></div></div>
+    <div class="gbar">
+      <div class="gstats" id="gStats"></div>
+      <div class="gfilters" id="gFilters">
+        <button class="fbtn on" data-f="all" data-i18n="g.f.all">전체</button>
+        <button class="fbtn" data-f="need" data-i18n="g.f.need">필요</button>
+        <button class="fbtn" data-f="recur" data-i18n="g.f.recur">정기</button>
       </div>
     </div>
-  </div>
+    <div class="ghint" data-i18n="g.hint">체크 = 보유중 · 정기 소모품은 구매 주기를 설정하면 달력에 다음 구매일이 떠요.</div>
+    <div id="gList"></div>
+  </section>
 
-  <!-- ===================== NAV ===================== -->
-  <nav id="nav">
-    <button class="navbtn active" data-sec="breed"><span data-i18n="nav.breed">견종 정보</span></button>
-    <button class="navbtn" data-sec="health"><span data-i18n="nav.health">건강</span></button>
-    <button class="navbtn" data-sec="train"><span data-i18n="nav.train">훈련</span> <span class="soon" data-i18n="nav.soon">곧</span></button>
-    <button class="navbtn" data-sec="gear"><span data-i18n="nav.gear">제품</span></button>
-    <button class="navbtn" data-sec="care"><span data-i18n="nav.care">육아</span> <span class="soon" data-i18n="nav.soon">곧</span></button>
-    <button class="navbtn" data-sec="info"><span data-i18n="nav.info">지식·정보</span></button>
+  <!-- ===== INFO / 지식 (phase 5) ===== -->
+  <section id="info" class="view pad">
+    <div class="mast"><div class="mast-top"><div><span class="t" data-i18n="nav.info">지식</span><span class="e">Field Guide</span></div></div>
+      <div class="mast-line"><span class="lab">644 Entries</span><span class="rule"></span><span class="yr">2026</span></div></div>
+    <div class="isearch-wrap"><div class="isearch">
+      <svg class="mag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3-3"/></svg>
+      <input id="iSearch" type="search" data-i18n-ph="info.search" placeholder="개념·내용 검색" autocomplete="off">
+    </div></div>
+    <div class="ichips" id="iChips"></div>
+    <div class="icount" id="iCount"></div>
+    <div id="iList"></div>
+  </section>
+
+  <!-- ===== TAB BAR ===== -->
+  <nav class="tabbar" id="tabbar">
+    <button class="tab on" data-tab="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11.5 12 4l8 7.5"/><path d="M6 10v9h12v-9"/></svg><span data-i18n="nav.home">홈</span></button>
+    <button class="tab" data-tab="cal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 9h18M8 3v4M16 3v4"/></svg><span data-i18n="nav.cal">달력</span></button>
+    <button class="tab" data-tab="health"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l2-5 3 10 2.5-7 1.5 2H21"/></svg><span data-i18n="nav.health">건강</span></button>
+    <button class="tab" data-tab="gear"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8h12l-1 11H7L6 8Z"/><path d="M9 8a3 3 0 0 1 6 0"/></svg><span data-i18n="nav.gear">용품</span></button>
+    <button class="tab" data-tab="info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h11a2 2 0 0 1 2 2v14H7a2 2 0 0 1-2-2V4Z"/><path d="M9 4v16"/></svg><span data-i18n="nav.info">지식</span></button>
   </nav>
 
-  <!-- ===================== BREED ===================== -->
-  <section id="breed" class="active">
-    <div class="sec-head">
-      <h2 data-i18n="breed.head.h2">견종 정보 · 기초 지식</h2>
-      <p data-i18n="breed.head.p">미니어처 아메리칸 셰퍼드(MAS) · 블루멀 · 블루아이 수컷 — 루카를 이해하기 위한 기본기</p>
-    </div>
-
-    <!-- ===== KO ===== -->
-    <div class="grid" data-only="ko">
-
-      <div class="card">
-        <h3>한눈에 보는 기본 정보</h3>
-        <div class="spec"><span class="k">견종</span><span class="v">미니어처 아메리칸 셰퍼드 (MAS)</span></div>
-        <div class="spec"><span class="k">그룹</span><span class="v">목축견 (Herding)</span></div>
-        <div class="spec"><span class="k">키 (수컷)</span><span class="v">36–46 cm</span></div>
-        <div class="spec"><span class="k">몸무게</span><span class="v">9–18 kg (20–40 lb)</span></div>
-        <div class="spec"><span class="k">기대 수명</span><span class="v">13–15 년</span></div>
-        <div class="spec"><span class="k">에너지</span><span class="v">매우 높음</span></div>
-        <div class="spec"><span class="k">AKC 공인</span><span class="v">2015년 (186번째)</span></div>
-      </div>
-
-      <div class="card">
-        <h3>성격 · 기질</h3>
-        <ul class="clean">
-          <li><b>매우 똑똑하고 훈련을 잘 받음</b> — 가르치면 빠르게 배움</li>
-          <li><b>에너지 넘치고 자기주도적</b> — 일거리를 좋아하는 일꾼 기질</li>
-          <li><b>가족에게 충성</b>, 낯선 사람에겐 처음엔 다소 경계</li>
-          <li><b>강한 목축 본능</b> — 아이·다른 동물을 몰려는 성향이 나올 수 있음</li>
-          <li>지루하면 문제행동 → <b>운동 + 머리 쓰는 놀이</b>가 필수</li>
-        </ul>
-      </div>
-
-      <div class="card">
-        <h3>기원 한 줄 요약</h3>
-        <p class="lead">
-          1960–70년대 미국 캘리포니아에서 <b>작은 오스트레일리안 셰퍼드</b>를 선별 번식해 만든 소형 목축견.
-          예전엔 "미니어처 오스트레일리안 셰퍼드"로 불렸고, 2015년 AKC가 정식 견종으로 인정했어.
-          몸집은 작아도 <b>오지(Aussie)의 두뇌와 활동성</b>을 그대로 가진 견종이야.
-        </p>
-        <div style="margin-top:13px" class="tags">
-          <span class="tag">어질리티</span><span class="tag">목축</span>
-          <span class="tag">복종훈련</span><span class="tag">플라이볼</span>
-        </div>
-      </div>
-
-      <div class="card">
-        <h3>블루멀 · 블루아이란?</h3>
-        <ul class="clean">
-          <li><b>블루멀</b> = 검정 바탕에 <b>멀(merle) 유전자</b>가 작용해 회색·검정이 얼룩진 무늬. 흰색·구리색(탄) 마킹이 섞이는 경우가 많아</li>
-          <li><b>블루아이</b>는 멀 유전자가 눈 색소까지 바꿔서 생기는 자연스러운 현상 — <b>그 자체로는 시력 문제가 아님</b></li>
-          <li>한쪽만 파랗거나, 한 눈 안에 갈색·파랑이 섞이기도 해 (모두 정상)</li>
-        </ul>
-        <div class="callout info" style="margin-top:14px">
-          <div class="t">루카의 파란 눈</div>
-          <p>외모상 특징일 뿐이라 걱정 안 해도 돼. 다만 멀 유전 자체는 청력·시력과 관련이 있어서 아래 내용을 꼭 한 번 읽어줘.</p>
-        </div>
-      </div>
-
-      <div class="card span2">
-        <h3>멀(Merle) 유전 — 꼭 알아둘 것 <span class="pill amber">중요</span></h3>
-        <div class="grid" style="gap:14px">
-          <div class="callout warn">
-            <div class="t">싱글 멀 (Mm) — 루카에 해당할 가능성이 높음</div>
-            <ul>
-              <li>일반적으로 <b>건강</b>하고, 파란 눈도 무해</li>
-              <li>멀이 하나만 있어도 난청 확률이 약간 올라감 — 한 연구에서 부분 난청 <b>약 36.8%</b>, 양쪽 다 안 들리는 경우는 <b>1% 미만</b></li>
-            </ul>
-          </div>
-          <div class="callout danger">
-            <div class="t">더블 멀 (MM) — 멀 × 멀 교배의 결과</div>
-            <ul>
-              <li>양측 난청·시각장애(작은 눈 등) 확률이 <b>급격히</b> 높아짐 (오지 MM의 약 56%가 양측 난청)</li>
-              <li>그래서 <b>멀끼리는 교배하지 않는 것</b>이 원칙</li>
-            </ul>
-          </div>
-        </div>
-        <div class="callout info" style="margin-top:14px">
-          <div class="t">루카에게 해줄 것</div>
-          <ul>
-            <li>브리더에게 <b>유전자 검사 결과</b>(멀 상태, 부모견 정보)와 <b>청력 검사(BAER) 여부</b>를 확인하기</li>
-            <li>박수·소리에 반응 잘 하는지 일상에서 관찰 — 이상하면 동물병원에서 BAER 검사</li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="card span2">
-        <h3>MAS가 잘 가지는 건강 이슈 <span class="pill red">필독</span></h3>
-        <div class="callout danger">
-          <div class="t">MDR1 (다약제 내성 유전자) — 가장 중요</div>
-          <p>목축견에 흔한 유전 변이로, <b>변이 1개만 있어도</b> 특정 약에 심각·치명적으로 반응할 수 있어
-          (떨림·침흘림·식욕부진·실명 → 심하면 혼수·사망).</p>
-          <ul>
-            <li>주의 약물: 일부 <b>구충제(이버멕틴 등)</b>, 특정 <b>마취·진정제</b>, 지사제 <b>로페라마이드</b> 등</li>
-            <li><b>브리더에게 MDR1 검사 결과를 확인</b>하고, 모르면 검사받기</li>
-            <li>동물병원 갈 때마다 <b>"MAS, MDR1 가능성"</b>을 수의사에게 꼭 알리기</li>
-          </ul>
-        </div>
-        <div class="grid" style="gap:14px;margin-top:14px">
-          <div class="callout warn">
-            <div class="t">눈</div>
-            <ul>
-              <li>홍채 결손, 유년기 백내장, 동공잔존막, 진행성 망막위축(PRA), 콜리 안구기형(CEA) 등</li>
-              <li>일부는 진행되면 시력 저하 → <b>정기 안과 검진</b> 권장</li>
-            </ul>
-          </div>
-          <div class="callout warn">
-            <div class="t">기타</div>
-            <ul>
-              <li>고관절 이형성증, 간질 등 목축견 공통 이슈</li>
-              <li>멀 관련 <b>난청</b> 가능성(위 참조)</li>
-            </ul>
-          </div>
-        </div>
-        <p style="font-size:12.5px;color:var(--ink-dim);margin-top:14px">
-          ※ 위는 견종 일반 경향이야 — 루카가 다 가진다는 뜻은 아님. 정확한 건 브리더 검사 결과와 수의사 진단을 따르자.
-        </p>
-      </div>
-
-    </div>
-
-    <!-- ===== JA ===== -->
-    <div class="grid" data-only="ja">
-
-      <div class="card">
-        <h3>ひと目でわかる基本情報</h3>
-        <div class="spec"><span class="k">犬種</span><span class="v">ミニチュア・アメリカン・シェパード (MAS)</span></div>
-        <div class="spec"><span class="k">グループ</span><span class="v">牧畜犬（ハーディング）</span></div>
-        <div class="spec"><span class="k">体高（オス）</span><span class="v">36–46 cm</span></div>
-        <div class="spec"><span class="k">体重</span><span class="v">9–18 kg (20–40 lb)</span></div>
-        <div class="spec"><span class="k">平均寿命</span><span class="v">13–15 年</span></div>
-        <div class="spec"><span class="k">エネルギー</span><span class="v">非常に高い</span></div>
-        <div class="spec"><span class="k">AKC公認</span><span class="v">2015年（186番目）</span></div>
-      </div>
-
-      <div class="card">
-        <h3>性格・気質</h3>
-        <ul class="clean">
-          <li><b>非常に賢く、しつけが入りやすい</b> — 教えるとすぐ覚える</li>
-          <li><b>エネルギッシュで自発的</b> — 仕事を好む働き者気質</li>
-          <li><b>家族に忠実</b>、見知らぬ人には最初やや警戒的</li>
-          <li><b>強い牧畜本能</b> — 子供や他の動物を追い集めようとする傾向が出ることがある</li>
-          <li>退屈すると問題行動 → <b>運動＋頭を使う遊び</b>が必須</li>
-        </ul>
-      </div>
-
-      <div class="card">
-        <h3>起源ひとことまとめ</h3>
-        <p class="lead">
-          1960~70年代のアメリカ・カリフォルニアで、<b>小型のオーストラリアン・シェパード</b>を選抜繁殖して作られた小型牧畜犬。
-          かつては「ミニチュア・オーストラリアン・シェパード」と呼ばれ、2015年にAKCが正式な犬種として認めた。
-          体は小さくても<b>オージー（Aussie）の頭脳と活動量</b>をそのまま受け継いだ犬種。
-        </p>
-        <div style="margin-top:13px" class="tags">
-          <span class="tag">アジリティ</span><span class="tag">牧畜</span>
-          <span class="tag">服従訓練</span><span class="tag">フライボール</span>
-        </div>
-      </div>
-
-      <div class="card">
-        <h3>ブルーマール・ブルーアイとは？</h3>
-        <ul class="clean">
-          <li><b>ブルーマール</b> = 黒地に<b>マール（merle）遺伝子</b>が働き、グレーと黒がまだらになった模様。白・銅色（タン）のマーキングが混じることが多い</li>
-          <li><b>ブルーアイ</b>はマール遺伝子が目の色素まで変えて生じる自然な現象 — <b>それ自体は視力の問題ではない</b></li>
-          <li>片目だけ青い、1つの目の中に茶色と青が混じることもある（すべて正常）</li>
-        </ul>
-        <div class="callout info" style="margin-top:14px">
-          <div class="t">ルカの青い目</div>
-          <p>見た目の特徴にすぎないので心配いらない。ただしマール遺伝そのものは聴力・視力に関わるので、下の内容を必ず一度読んでほしい。</p>
-        </div>
-      </div>
-
-      <div class="card span2">
-        <h3>マール（Merle）遺伝 — 必ず知っておくこと <span class="pill amber">重要</span></h3>
-        <div class="grid" style="gap:14px">
-          <div class="callout warn">
-            <div class="t">シングルマール (Mm) — ルカに該当する可能性が高い</div>
-            <ul>
-              <li>一般的に<b>健康</b>で、青い目も無害</li>
-              <li>マールが1つだけでも難聴の確率がやや上がる — ある研究では部分難聴が<b>約36.8%</b>、両耳とも聞こえないケースは<b>1%未満</b></li>
-            </ul>
-          </div>
-          <div class="callout danger">
-            <div class="t">ダブルマール (MM) — マール×マール交配の結果</div>
-            <ul>
-              <li>両側性の難聴・視覚障害（小眼球など）の確率が<b>急激に</b>高まる（オージーのMMの約56%が両側性難聴）</li>
-              <li>そのため<b>マール同士は交配しない</b>のが原則</li>
-            </ul>
-          </div>
-        </div>
-        <div class="callout info" style="margin-top:14px">
-          <div class="t">ルカにしてあげること</div>
-          <ul>
-            <li>ブリーダーに<b>遺伝子検査の結果</b>（マールの状態、両親犬の情報）と<b>聴力検査（BAER）の有無</b>を確認する</li>
-            <li>拍手や音に反応するか日常で観察 — おかしければ動物病院でBAER検査</li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="card span2">
-        <h3>MASがかかりやすい健康問題 <span class="pill red">必読</span></h3>
-        <div class="callout danger">
-          <div class="t">MDR1（多剤耐性遺伝子）— 最も重要</div>
-          <p>牧畜犬に多い遺伝子変異で、<b>変異が1つあるだけでも</b>特定の薬に重篤・致命的に反応することがある
-          （震え・よだれ・食欲不振・失明 → 重いと昏睡・死亡）。</p>
-          <ul>
-            <li>注意すべき薬: 一部の<b>駆虫薬（イベルメクチンなど）</b>、特定の<b>麻酔・鎮静剤</b>、止瀉薬の<b>ロペラミド</b>など</li>
-            <li><b>ブリーダーにMDR1検査の結果を確認</b>し、不明なら検査を受ける</li>
-            <li>動物病院に行くたびに<b>「MAS、MDR1の可能性」</b>を獣医に必ず伝える</li>
-          </ul>
-        </div>
-        <div class="grid" style="gap:14px;margin-top:14px">
-          <div class="callout warn">
-            <div class="t">目</div>
-            <ul>
-              <li>虹彩欠損、若年性白内障、瞳孔膜遺残、進行性網膜萎縮（PRA）、コリー眼異常（CEA）など</li>
-              <li>一部は進行すると視力低下 → <b>定期的な眼科検診</b>を推奨</li>
-            </ul>
-          </div>
-          <div class="callout warn">
-            <div class="t">その他</div>
-            <ul>
-              <li>股関節形成不全、てんかんなど牧畜犬共通の問題</li>
-              <li>マール関連の<b>難聴</b>の可能性（上記参照）</li>
-            </ul>
-          </div>
-        </div>
-        <p style="font-size:12.5px;color:var(--ink-dim);margin-top:14px">
-          ※ 上記は犬種一般の傾向であり、ルカがすべて持つという意味ではない。正確な点はブリーダーの検査結果と獣医の診断に従おう。
-        </p>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- ===================== HEALTH ===================== -->
-  <section id="health">
-    <div class="sec-head">
-      <h2 data-i18n="health.head.h2">건강 관리</h2>
-      <p data-i18n="health.head.p">일본 기준 · 예방접종 · 법적 의무 · 검진을 루카 날짜에 맞춰 관리</p>
-    </div>
-    <div id="healthAlerts"></div>
-    <div class="gear-bar">
-      <div class="gear-stat" id="healthStat"></div>
-      <div class="gear-filters" id="healthFilters">
-        <button class="fbtn active" data-f="all" data-i18n="health.f.all">전체</button>
-        <button class="fbtn" data-f="todo" data-i18n="health.f.todo">남은 항목</button>
-        <button class="fbtn" data-f="recur" data-i18n="health.f.recur">정기</button>
-      </div>
-    </div>
-    <div class="gear-hint" id="healthHint"></div>
-    <div id="healthList"></div>
-  </section>
-
-  <!-- ===================== TRAIN (placeholder) ===================== -->
-  <section id="train">
-    <div class="placeholder">
-      <div class="mark">＋</div>
-      <h2 data-i18n="train.h2">훈련 계획</h2>
-      <p data-i18n="train.p">똑똑한 MAS에 맞춘 시기별 훈련 로드맵.</p>
-      <div class="coming">
-        <span data-i18n="train.c1">배변 훈련</span>
-        <span data-i18n="train.c2">사회화</span>
-        <span data-i18n="train.c3">기본 명령 (앉아·기다려)</span>
-        <span data-i18n="train.c4">분리불안 예방</span>
-        <span data-i18n="train.c5">크레이트 적응</span>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===================== GEAR ===================== -->
-  <section id="gear">
-    <div class="sec-head">
-      <h2 data-i18n="gear.head.h2">용품 관리</h2>
-      <p data-i18n="gear.head.p">카테고리별 보유 현황 · 정기 보충 품목 관리 · 가격/링크는 일본 Amazon 기준</p>
-    </div>
-    <div class="gear-bar">
-      <div class="gear-stat" id="gearStat"></div>
-      <div class="gear-filters" id="gearFilters">
-        <button class="fbtn active" data-f="all" data-i18n="gear.f.all">전체</button>
-        <button class="fbtn" data-f="need" data-i18n="gear.f.need">구매·보충 필요</button>
-        <button class="fbtn" data-f="recur" data-i18n="gear.f.recur">정기 소모품</button>
-      </div>
-    </div>
-    <div class="gear-hint" data-i18n="gear.hint">체크 = 보유중 · 체크 해제 = 구매/보충 필요 · "정기"는 주기적으로 다시 사야 하는 소모품 (저장은 이 브라우저에 기록돼)</div>
-    <div id="gearList"></div>
-  </section>
-
-  <!-- ===================== CARE (placeholder) ===================== -->
-  <section id="care">
-    <div class="placeholder">
-      <div class="mark">＋</div>
-      <h2 data-i18n="care.h2">육아</h2>
-      <p data-i18n="care.p">생후 2개월 아기 강아지와의 첫날부터의 일상 가이드.</p>
-      <div class="coming">
-        <span data-i18n="care.c1">첫날 · 첫주 적응</span>
-        <span data-i18n="care.c2">먹이기 (양 · 횟수)</span>
-        <span data-i18n="care.c3">수면 · 분리</span>
-        <span data-i18n="care.c4">그루밍 · 목욕</span>
-        <span data-i18n="care.c5">안전한 집 만들기</span>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===================== 설채현 지식 ===================== -->
-  <section id="info">
-    <div class="sec-head">
-      <h2><span data-i18n="info.head.h2">지식·정보</span> <span class="pill amber" id="infoCount"></span></h2>
-      <p data-i18n="info.head.p">반려견 지식을 주제별 개념으로 정리한 사전 · 키워드 검색 · 각 항목 끝의 링크는 근거가 된 출처 영상</p>
-    </div>
-    <div class="gear-bar">
-      <input class="info-search" id="infoSearch" type="search" data-i18n-ph="info.search" placeholder="키워드 검색 (개념·내용)">
-      <div class="gear-stat" id="infoStat"></div>
-    </div>
-    <div class="gear-filters" id="infoFilters" style="margin-bottom:14px"></div>
-    <div id="infoList"></div>
-  </section>
-
-  <footer>
-    <span data-i18n="footer.l1">루카 LUCA 허브 · 마지막 업데이트 2026-06-24</span><br>
-    <span data-i18n="footer.l2">출처: AKC · Wikipedia · Paw Print Genetics · UC Davis VGL · ASHGI (멀/MDR1 자료)</span><br>
-    <span data-i18n="footer.l3">※ 의료 정보는 참고용 — 최종 판단은 브리더 검사 결과와 담당 수의사를 따르세요.</span>
-  </footer>
 </div>
 
 <script src="info_data.js"></script>
 <script>
-  // ============================================================
-  //  i18n — 한국어 / 日本語
-  // ============================================================
-  let LANG = localStorage.getItem('luca_lang') === 'ja' ? 'ja' : 'ko';
-  const LANGHOOKS = [];
-  const T = {
-    ko:{
-      'nav.breed':'견종 정보','nav.health':'건강','nav.train':'훈련','nav.gear':'제품','nav.care':'육아','nav.info':'지식·정보','nav.soon':'곧',
-      'breed.tag1':'미니어처 아메리칸 셰퍼드','breed.tag2':'블루멀 · 블루아이','breed.tag3':'수컷',
-      'breed.head.h2':'견종 정보 · 기초 지식','breed.head.p':'미니어처 아메리칸 셰퍼드(MAS) · 블루멀 · 블루아이 수컷 — 루카를 이해하기 위한 기본기',
-      'health.head.h2':'건강 관리','health.head.p':'일본 기준 · 예방접종 · 법적 의무 · 검진을 루카 날짜에 맞춰 관리',
-      'health.f.all':'전체','health.f.todo':'남은 항목','health.f.recur':'정기',
-      'gear.head.h2':'용품 관리','gear.head.p':'카테고리별 보유 현황 · 정기 보충 품목 관리 · 가격/링크는 일본 Amazon 기준',
-      'gear.f.all':'전체','gear.f.need':'구매·보충 필요','gear.f.recur':'정기 소모품',
-      'gear.hint':'체크 = 보유중 · 체크 해제 = 구매/보충 필요 · "정기"는 주기적으로 다시 사야 하는 소모품 (저장은 이 브라우저에 기록돼)',
-      'info.head.h2':'지식·정보','info.head.p':'반려견 지식을 주제별 개념으로 정리한 사전 · 키워드 검색 · 각 항목 끝의 링크는 근거가 된 출처 영상','info.search':'키워드 검색 (개념·내용)',
-      'train.h2':'훈련 계획','train.p':'똑똑한 MAS에 맞춘 시기별 훈련 로드맵.',
-      'train.c1':'배변 훈련','train.c2':'사회화','train.c3':'기본 명령 (앉아·기다려)','train.c4':'분리불안 예방','train.c5':'크레이트 적응',
-      'care.h2':'육아','care.p':'생후 2개월 아기 강아지와의 첫날부터의 일상 가이드.',
-      'care.c1':'첫날 · 첫주 적응','care.c2':'먹이기 (양 · 횟수)','care.c3':'수면 · 분리','care.c4':'그루밍 · 목욕','care.c5':'안전한 집 만들기',
-      'footer.l1':'루카 LUCA 허브 · 마지막 업데이트 2026-06-24',
-      'footer.l2':'출처: AKC · Wikipedia · Paw Print Genetics · UC Davis VGL · ASHGI (멀/MDR1 자료)',
-      'footer.l3':'※ 의료 정보는 참고용 — 최종 판단은 브리더 검사 결과와 담당 수의사를 따르세요.',
-      'dday.lbl':'입양일 2026.07.25','dday.today':'오늘 루카가 와요!','dday.together':'함께한 지','dday.dleft':'일',
-      'st.total':'전체','st.have':'보유','st.need':'필요','st.needsum':'필요 합계','st.recur':'정기','st.done':'완료','st.left':'남은','st.law':'법적','st.show':'표시',
-      'badge.recur':'정기','badge.law':'법적 의무','price.none':'가격 미정','buy.link':'구매 링크','buy.search':'검색',
-      'empty.none':'해당 항목이 없어요.','empty.data':'데이터 준비 중입니다.',
-      'info.all':'전체','info.items':'항목','info.src':'출처','info.video':'영상',
-      'tm.season':'시즌<br>월 1회',
-      'ha.title':d=>`입양 후 30일 내 (~${d}) 꼭 해야 할 법적 의무 — 일본`,
-      'ha.b1':'광견병 예방접종 + 자치체 등록 (狂犬病予防法 · 이후 매년)',
-      'ha.b2':'마이크로칩 소유자 변경등록 (환경성 등록 사이트)',
-      'hh':(b,a)=>`생일 추정 ${b} · 입양 ${a} · 날짜는 예상값(브리더 정보로 수정 가능) · 체크=완료, 저장은 이 브라우저에`,
-    },
-    ja:{
-      'nav.breed':'犬種情報','nav.health':'健康','nav.train':'しつけ','nav.gear':'用品','nav.care':'育児','nav.info':'知識・情報','nav.soon':'近日',
-      'breed.tag1':'ミニチュア・アメリカン・シェパード','breed.tag2':'ブルーマール・ブルーアイ','breed.tag3':'オス',
-      'breed.head.h2':'犬種情報・基礎知識','breed.head.p':'ミニチュア・アメリカン・シェパード（MAS）・ブルーマール・ブルーアイのオス — ルカを理解するための基礎',
-      'health.head.h2':'健康管理','health.head.p':'日本基準・予防接種・法的義務・健診をルカの日付に合わせて管理',
-      'health.f.all':'すべて','health.f.todo':'残りの項目','health.f.recur':'定期',
-      'gear.head.h2':'用品管理','gear.head.p':'カテゴリ別の保有状況・定期補充品の管理・価格/リンクは日本のAmazon基準',
-      'gear.f.all':'すべて','gear.f.need':'購入・補充が必要','gear.f.recur':'定期消耗品',
-      'gear.hint':'チェック=保有中・チェック解除=購入/補充が必要・「定期」は定期的に買い替える消耗品（保存はこのブラウザに記録）',
-      'info.head.h2':'知識・情報','info.head.p':'犬の知識をテーマ別の概念としてまとめた事典・キーワード検索・各項目末尾のリンクは根拠となった出典動画','info.search':'キーワード検索（概念・内容）',
-      'train.h2':'しつけ計画','train.p':'賢いMASに合わせた時期別のしつけロードマップ。',
-      'train.c1':'トイレトレーニング','train.c2':'社会化','train.c3':'基本コマンド（おすわり・まて）','train.c4':'分離不安の予防','train.c5':'クレートトレーニング',
-      'care.h2':'育児','care.p':'生後2ヶ月の子犬との初日からの日常ガイド。',
-      'care.c1':'初日・初週の慣らし','care.c2':'食事（量・回数）','care.c3':'睡眠・お留守番','care.c4':'グルーミング・お風呂','care.c5':'安全な家づくり',
-      'footer.l1':'ルカ LUCA ハブ・最終更新 2026-06-24',
-      'footer.l2':'出典: AKC · Wikipedia · Paw Print Genetics · UC Davis VGL · ASHGI（マール/MDR1資料）',
-      'footer.l3':'※ 医療情報は参考用 — 最終判断はブリーダーの検査結果と担当獣医に従ってください。',
-      'dday.lbl':'迎え入れ日 2026.07.25','dday.today':'今日ルカが来ます！','dday.together':'一緒に過ごして','dday.dleft':'日',
-      'st.total':'全体','st.have':'保有','st.need':'必要','st.needsum':'必要合計','st.recur':'定期','st.done':'完了','st.left':'残り','st.law':'法的','st.show':'表示',
-      'badge.recur':'定期','badge.law':'法的義務','price.none':'価格未定','buy.link':'購入リンク','buy.search':'検索',
-      'empty.none':'該当する項目がありません。','empty.data':'データを準備中です。',
-      'info.all':'すべて','info.items':'項目','info.src':'出典','info.video':'動画',
-      'tm.season':'シーズン<br>月1回',
-      'ha.title':d=>`迎え入れ後30日以内（~${d}）に必ず行う法的義務 — 日本`,
-      'ha.b1':'狂犬病予防接種＋自治体登録（狂犬病予防法・以降毎年）',
-      'ha.b2':'マイクロチップ所有者変更登録（環境省 登録サイト）',
-      'hh':(b,a)=>`誕生日推定 ${b}・迎え入れ ${a}・日付は予想値（ブリーダー情報で修正可）・チェック=完了、保存はこのブラウザに`,
-    }
-  };
-  const t = k => { const v = T[LANG][k]; return v!==undefined ? v : (T.ko[k]!==undefined ? T.ko[k] : k); };
-  // 주제(토픽) 일본어 라벨 — 사전 데이터와 독립
-  const TOPIC_JA = {
-    '건강·질병':'健康・病気','행동·문제행동':'行動・問題行動','훈련':'しつけ','산책·운동':'散歩・運動',
-    '식사·영양':'食事・栄養','견종 정보':'犬種情報','그루밍·미용':'グルーミング・美容','제품·용품':'製品・用品',
-    '입양·반려생활':'迎え入れ・ペットライフ','법·제도·이슈':'法律・制度・話題','브이로그·기타':'Vlog・その他'
-  };
+// ============================================================
+//  LUCA — 우리 아이들 (재설계)
+// ============================================================
+let LANG = localStorage.getItem('luca_lang')==='ja' ? 'ja' : 'ko';
+const LANGHOOKS = [];
 
-  // ---- 언어 적용 ----
-  function applyLang(){
-    document.documentElement.lang = LANG;
-    document.body.dataset.lang = LANG;
-    document.querySelectorAll('[data-i18n]').forEach(el=>{ el.textContent = t(el.dataset.i18n); });
-    document.querySelectorAll('[data-i18n-ph]').forEach(el=>{ el.placeholder = t(el.dataset.i18nPh); });
-    document.querySelectorAll('#langsw button').forEach(b=>b.classList.toggle('active', b.dataset.lang===LANG));
-    LANGHOOKS.forEach(fn=>{ try{ fn(); }catch(e){ console.warn('langhook', e); } });
+const T = {
+  ko:{
+    'home.title':'우리 아이들','home.sub':'Field Guide',
+    'nav.home':'홈','nav.cal':'달력','nav.health':'건강','nav.gear':'용품','nav.info':'지식',
+    'pf.kicker':'프로필','pf.basic':'기본 정보','pf.character':'성격·기질','pf.merle':'블루멀·유전',
+    'pf.health':'건강 주의','pf.viewHealth':'건강 일정 보기','pf.empty':'정보 준비 중',
+    'pf.emptyP':'아직 등록된 정보가 없어요. 나중에 채울 수 있어요.',
+    'sex.male':'수컷','sex.female':'암컷','sex.unknown':'미정',
+    'dm.birth':'생일','dm.age':'나이','dm.tbd':'정보 추가 예정',
+    'age.day':'일','age.week':'주','age.month':'개월','age.year':'살',
+    'g.f.all':'전체','g.f.need':'필요','g.f.recur':'정기',
+    'g.st.have':'보유','g.st.need':'필요','g.st.sum':'합계',
+    'g.recur':'정기','g.price.none':'가격 미정','g.buy':'구매','g.search':'검색','g.empty':'해당 항목이 없어요.',
+    'g.hint':'체크 = 보유중 · 정기 소모품은 구매 주기를 설정하면 달력에 다음 구매일이 떠요.',
+    'g.setBuy':'구매 주기 설정','g.nextBuy':'다음 구매','g.edit':'수정','g.over':'지남',
+    'g.mode.weight':'그램','g.mode.qty':'수량','g.mode.manual':'수동',
+    'g.total.g':'총 용량(g)','g.perday.g':'하루 급여(g)','g.open':'개봉일',
+    'g.total.q':'총 개수','g.perday.q':'하루 사용량','g.start':'시작일','g.nextdate':'다음 구매일',
+    'g.estDays':'예상 소진','g.days':'일','g.save':'저장','g.cancel':'취소','g.clear':'해제',
+    'h.st.done':'완료','h.st.left':'남은','h.st.law':'법적',
+    'h.f.all':'전체','h.f.todo':'남은','h.f.law':'법적',
+    'h.law':'법적','h.recur':'정기','h.tbd':'날짜<br>미정','h.season':'시즌<br>월 1회',
+    'h.hintTbd':'생일·입양일을 등록하면 시기별 날짜가 자동으로 잡혀요.','h.empty':'해당 항목이 없어요.',
+    'soon.body':'다음 단계에서 만들어집니다.','soon.cal.h':'달력','soon.health.h':'건강','soon.gear.h':'용품','soon.info.h':'지식',
+    'cal.today':'오늘','cal.upcoming':'다가오는 일정','cal.days30':'30일 이내',
+    'cal.add':'추가','cal.star':'중요','cal.f.health':'건강','cal.f.supply':'용품','cal.f.event':'이벤트',
+    'cal.k.health':'건강','cal.k.supply':'용품','cal.k.event':'이벤트',
+    'cal.empty':'이 날짜엔 일정이 없어요.','cal.emptyUp':'다가오는 일정이 없어요.',
+    'cal.addTitle':'일정 제목','cal.addNone':'공용','cal.save':'추가','cal.cancel':'취소','cal.delConfirm':'이 일정을 삭제할까요?',
+    'info.search':'개념·내용 검색','info.all':'전체','info.guideTitle':'무엇이 궁금하세요?','info.guide':'주제를 고르거나 위에서 검색해 보세요.','info.none':'검색 결과가 없어요.','info.src':'출처','info.video':'영상','info.no':'No.','info.count':'개',
+  },
+  ja:{
+    'home.title':'私たちの子','home.sub':'Field Guide',
+    'nav.home':'ホーム','nav.cal':'カレンダー','nav.health':'健康','nav.gear':'用品','nav.info':'知識',
+    'pf.kicker':'プロフィール','pf.basic':'基本情報','pf.character':'性格・気質','pf.merle':'ブルーマール・遺伝',
+    'pf.health':'健康の注意','pf.viewHealth':'健康スケジュールを見る','pf.empty':'情報は準備中',
+    'pf.emptyP':'まだ登録された情報がありません。あとで追加できます。',
+    'sex.male':'オス','sex.female':'メス','sex.unknown':'未定',
+    'dm.birth':'誕生日','dm.age':'年齢','dm.tbd':'情報は後で追加',
+    'age.day':'日','age.week':'週','age.month':'ヶ月','age.year':'歳',
+    'g.f.all':'すべて','g.f.need':'必要','g.f.recur':'定期',
+    'g.st.have':'保有','g.st.need':'必要','g.st.sum':'合計',
+    'g.recur':'定期','g.price.none':'価格未定','g.buy':'購入','g.search':'検索','g.empty':'該当する項目がありません。',
+    'g.hint':'チェック=保有中・定期消耗品は購入サイクルを設定するとカレンダーに次回購入日が表示されます。',
+    'g.setBuy':'購入サイクル設定','g.nextBuy':'次の購入','g.edit':'編集','g.over':'過ぎ',
+    'g.mode.weight':'グラム','g.mode.qty':'数量','g.mode.manual':'手動',
+    'g.total.g':'総容量(g)','g.perday.g':'1日の給与(g)','g.open':'開封日',
+    'g.total.q':'総数','g.perday.q':'1日の使用量','g.start':'開始日','g.nextdate':'次の購入日',
+    'g.estDays':'予想消費','g.days':'日','g.save':'保存','g.cancel':'キャンセル','g.clear':'解除',
+    'h.st.done':'完了','h.st.left':'残り','h.st.law':'法的',
+    'h.f.all':'すべて','h.f.todo':'残り','h.f.law':'法的',
+    'h.law':'法的','h.recur':'定期','h.tbd':'日付<br>未定','h.season':'シーズン<br>月1回',
+    'h.hintTbd':'誕生日・迎え入れ日を登録すると時期別の日付が自動で組まれます。','h.empty':'該当する項目がありません。',
+    'soon.body':'次のステップで作られます。','soon.cal.h':'カレンダー','soon.health.h':'健康','soon.gear.h':'用品','soon.info.h':'知識',
+    'cal.today':'今日','cal.upcoming':'近日の予定','cal.days30':'30日以内',
+    'cal.add':'追加','cal.star':'重要','cal.f.health':'健康','cal.f.supply':'用品','cal.f.event':'イベント',
+    'cal.k.health':'健康','cal.k.supply':'用品','cal.k.event':'イベント',
+    'cal.empty':'この日の予定はありません。','cal.emptyUp':'近日の予定はありません。',
+    'cal.addTitle':'予定のタイトル','cal.addNone':'共用','cal.save':'追加','cal.cancel':'キャンセル','cal.delConfirm':'この予定を削除しますか？',
+    'info.search':'用語・内容で検索','info.all':'すべて','info.guideTitle':'何が気になりますか？','info.guide':'トピックを選ぶか、上で検索してください。','info.none':'検索結果がありません。','info.src':'出典','info.video':'動画','info.no':'No.','info.count':'件',
   }
-  document.getElementById('langsw').addEventListener('click', e=>{
-    const b = e.target.closest('button'); if(!b) return;
-    LANG = b.dataset.lang === 'ja' ? 'ja' : 'ko';
-    localStorage.setItem('luca_lang', LANG);
-    applyLang();
-  });
+};
+const t = k => { const v=T[LANG][k]; return v!==undefined?v:(T.ko[k]!==undefined?T.ko[k]:k); };
+const F = (o,f) => LANG==='ja' ? (o[f+'_ja']!==undefined?o[f+'_ja']:o[f]) : o[f];
 
-  // ---- 클라우드 동기화 허브 (Firebase 모듈이 연결) ----
-  window.LucaHub = {
-    _cbs: [], _save: null,
-    onState(kind, applyFn){ this._cbs.push({kind, applyFn}); },
-    save(kind, id, val){ if(this._save) this._save(kind, id, val); },
-    push(state){ this._cbs.forEach(c=>{ if(state[c.kind]) c.applyFn(state[c.kind]); }); }
+// ---- 강아지 데이터 (로이 → 유나 → 루카) ----
+const DOGS = [
+  { id:'roy',  name:'로이', name_ja:'ロイ', sex:'', birth:'', photo:'' },
+  { id:'yuna', name:'유나', name_ja:'ユナ', sex:'', birth:'', photo:'' },
+  { id:'luca', name:'루카', name_ja:'ルカ', sex:'male', birth:'2026-05-25', arrival:'2026-07-25', photo:'luca.jpg',
+    breed:'미니어처 아메리칸 셰퍼드 (MAS)', breed_ja:'ミニチュア・アメリカン・シェパード (MAS)',
+    tags:['블루멀','블루아이','수컷'], tags_ja:['ブルーマール','ブルーアイ','オス'],
+    profile:{
+      spec:[
+        ['견종','犬種','미니어처 아메리칸 셰퍼드 (MAS)','ミニチュア・アメリカン・シェパード (MAS)'],
+        ['그룹','グループ','목축견 (Herding)','牧畜犬（ハーディング）'],
+        ['크기 (수컷)','体高（オス）','36–46 cm','36–46 cm'],
+        ['몸무게','体重','9–18 kg','9–18 kg'],
+        ['기대 수명','平均寿命','13–15 년','13–15 年'],
+        ['에너지','エネルギー','매우 높음','非常に高い'],
+      ],
+      traits:[
+        ['매우 똑똑하고 훈련을 잘 받음','非常に賢く、しつけが入りやすい'],
+        ['에너지 넘치고 자기주도적인 일꾼 기질','エネルギッシュで自発的な働き者気質'],
+        ['가족에게 충성, 낯선 사람엔 처음엔 경계','家族に忠実、見知らぬ人には最初やや警戒的'],
+        ['강한 목축 본능 — 몰이 성향이 나올 수 있음','強い牧畜本能 — 追い集める傾向が出ることも'],
+      ],
+      notes:[
+        { cls:'info', t:'블루멀 · 블루아이', t_ja:'ブルーマール・ブルーアイ',
+          b:'멀(merle) 유전자로 회색·검정이 얼룩진 무늬와 파란 눈이 생겨. <b>외모 특징일 뿐 그 자체는 시력 문제가 아님.</b>',
+          b_ja:'マール（merle）遺伝子でグレーと黒のまだら模様や青い目が生じる。<b>見た目の特徴で、それ自体は視力の問題ではない。</b>' },
+        { cls:'warn', t:'멀(Merle) 유전 — 알아둘 것', t_ja:'マール（Merle）遺伝 — 知っておくこと',
+          b:'싱글 멀(Mm)은 보통 건강하지만 난청 확률이 약간 올라가. <b>브리더에게 유전자 검사·청력(BAER) 결과 확인.</b>',
+          b_ja:'シングルマール(Mm)は通常健康だが難聴の確率がやや上がる。<b>ブリーダーに遺伝子検査・聴力(BAER)の結果を確認。</b>' },
+        { cls:'danger', t:'MDR1 (다약제 내성) — 가장 중요', t_ja:'MDR1（多剤耐性）— 最も重要',
+          b:'목축견에 흔한 변이로 <b>일부 약(구충제·마취·지사제)에 치명적 반응</b> 가능. 병원 갈 때마다 "MAS·MDR1 가능성"을 꼭 알리기.',
+          b_ja:'牧畜犬に多い変異で<b>一部の薬（駆虫薬・麻酔・止瀉薬）に致命的反応</b>の可能性。受診時は必ず「MAS・MDR1の可能性」を伝える。' },
+      ]
+    }
+  }
+];
+
+// ---- 클라우드 동기화 허브 (Firebase 모듈이 연결) ----
+window.LucaHub = { _cbs:[], _save:null,
+  onState(kind,fn){ this._cbs.push({kind,fn}); },
+  save(kind,id,val){ if(this._save) this._save(kind,id,val); },
+  push(state){ this._cbs.forEach(c=>{ if(state[c.kind]) c.fn(state[c.kind]); }); } };
+
+// ---- 나이 계산 ----
+function ymd(s){ const[y,m,d]=s.split('-').map(Number); return new Date(y,m-1,d); }
+function ageText(birth){
+  if(!birth) return '';
+  const b=ymd(birth), n=new Date(), t0=new Date(n.getFullYear(),n.getMonth(),n.getDate());
+  const days=Math.floor((t0-b)/864e5); if(days<0) return '';
+  if(days<7)  return days+t('age.day');
+  if(days<60){ return Math.floor(days/7)+t('age.week'); }
+  let mo=(t0.getFullYear()-b.getFullYear())*12+(t0.getMonth()-b.getMonth()); if(t0.getDate()<b.getDate())mo--;
+  if(mo<24) return mo+t('age.month');
+  return Math.floor(mo/12)+t('age.year');
+}
+function birthText(birth){ if(!birth) return '—'; const b=ymd(birth); return b.getFullYear()+'. '+(b.getMonth()+1)+'. '+b.getDate(); }
+const PAW='<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="6" cy="11" r="2"/><circle cx="10.5" cy="7.5" r="2"/><circle cx="15" cy="7.5" r="2"/><circle cx="19" cy="11" r="2"/><path d="M8.5 14.5c1.4-1.8 4.4-1.8 5.8 0 .7.9 1.7 1.6 1.7 2.8 0 1.5-1.3 2.2-2.7 1.9-1.2-.3-2.4-.3-3.6 0-1.4.3-2.7-.4-2.7-1.9 0-1.2 1-1.9 1.5-2.8Z"/></svg>';
+
+// ---- 홈: 강아지 카드 ----
+function renderDogs(){
+  const wrap=document.getElementById('dogList');
+  wrap.innerHTML = DOGS.map(d=>{
+    const empty=!d.birth && !d.photo;
+    const pic = d.photo ? `<img class="dpic" src="${d.photo}" alt="">` : `<div class="dpic-ph">${PAW}</div>`;
+    const sexCls = d.sex==='female'?'f':(d.sex===''?'m':'');
+    const sexLab = d.sex==='male'?t('sex.male'):d.sex==='female'?t('sex.female'):t('sex.unknown');
+    const meta = empty
+      ? `<div class="dm faint">${t('dm.tbd')}</div>`
+      : `<div class="dm">${t('dm.birth')} <b>${birthText(d.birth)}</b> · ${t('dm.age')} <b>${ageText(d.birth)}</b></div>`;
+    return `<button class="dog ${empty?'empty':''}" data-dog="${d.id}">
+      ${pic}
+      <div class="dinfo">
+        <div class="dn"><b>${F(d,'name')}</b><span class="sx ${sexCls}">${sexLab}</span></div>
+        ${meta}
+      </div>
+      <span class="dgo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
+    </button>`;
+  }).join('');
+  wrap.querySelectorAll('.dog').forEach(b=>b.addEventListener('click',()=>openProfile(b.dataset.dog)));
+}
+
+// ---- 프로필 ----
+let _curDog=null;
+function openProfile(id){
+  const d=DOGS.find(x=>x.id===id); if(!d) return;
+  _curDog=id;
+  const body=document.getElementById('pfBody');
+  if(!d.profile){
+    body.innerHTML=`<div class="pf-hero"><div class="dpic-ph" style="width:84px;height:84px;border-radius:14px">${PAW}</div>
+      <div><h1>${F(d,'name')}</h1><div class="breed">${t('dm.tbd')}</div></div></div>
+      <div class="pf-empty"><div class="mk">${PAW}</div><h2>${t('pf.empty')}</h2><p>${t('pf.emptyP')}</p></div>`;
+  } else {
+    const p=d.profile;
+    const pic = d.photo ? `<img class="pic" src="${d.photo}" alt="">` : `<div class="dpic-ph" style="width:84px;height:84px;border-radius:14px">${PAW}</div>`;
+    const tags = (F(d,'tags')||[]).map((x,i)=>`<span class="tag ${i===1?'eye':''}">${x}</span>`).join('');
+    const spec = p.spec.map(r=>`<div class="spec"><span class="k">${LANG==='ja'?r[1]:r[0]}</span><span class="v">${LANG==='ja'?r[3]:r[2]}</span></div>`).join('');
+    const traits = p.traits.map(r=>`<li>${LANG==='ja'?r[1]:r[0]}</li>`).join('');
+    const notes = p.notes.map(n=>`<div class="callout ${n.cls}"><div class="t">${F(n,'t')}</div><p>${F(n,'b')}</p></div>`).join('');
+    body.innerHTML=`
+      <div class="pf-hero">${pic}<div><h1>${F(d,'name')}</h1><div class="breed">${F(d,'breed')}</div><div class="tags">${tags}</div></div></div>
+      <div class="eyebrow"><span class="tick"></span><span class="k">${t('pf.basic')}</span><span class="rule"></span></div>
+      <div class="card">${spec}</div>
+      <div class="eyebrow"><span class="tick"></span><span class="k">${t('pf.character')}</span><span class="rule"></span></div>
+      <div class="card"><ul class="clean">${traits}</ul></div>
+      <div class="eyebrow"><span class="tick"></span><span class="k">${t('pf.merle')}</span><span class="rule"></span></div>
+      ${notes}
+      <button class="pf-link" data-goto="health"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l2-5 3 10 2.5-7 1.5 2H21"/></svg>${t('pf.viewHealth')}</button>`;
+    body.querySelector('[data-goto]')?.addEventListener('click',()=>window.openHealth(d.id));
+  }
+  showView('profile');
+}
+document.getElementById('pfBack').addEventListener('click',()=>showView('home'));
+
+// ---- 뷰/탭 전환 ----
+function showView(id){
+  document.querySelectorAll('.view').forEach(s=>s.classList.toggle('active', s.id===id));
+  window.scrollTo({top:0,behavior:'instant'in window?'instant':'auto'});
+}
+function showTab(id){
+  showView(id);
+  document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('on', b.dataset.tab===id));
+  if(id==='cal' && window._calRefresh) window._calRefresh();
+}
+document.getElementById('tabbar').addEventListener('click',e=>{
+  const b=e.target.closest('.tab'); if(!b) return; showTab(b.dataset.tab);
+});
+
+// ---- 언어 ----
+function applyLang(){
+  document.documentElement.lang=LANG; document.body.dataset.lang=LANG;
+  document.querySelectorAll('[data-i18n]').forEach(el=>{ el.textContent=t(el.dataset.i18n); });
+  document.querySelectorAll('[data-i18n-ph]').forEach(el=>{ el.placeholder=t(el.dataset.i18nPh); });
+  document.querySelectorAll('#toggle button').forEach(b=>b.classList.toggle('on', b.dataset.lang===LANG));
+  LANGHOOKS.forEach(fn=>{ try{fn();}catch(e){console.warn(e);} });
+}
+document.getElementById('toggle').addEventListener('click',e=>{
+  const b=e.target.closest('button'); if(!b) return;
+  LANG=b.dataset.lang==='ja'?'ja':'ko'; localStorage.setItem('luca_lang',LANG); applyLang();
+});
+
+// ---- 용품 (공용) ----
+const GCATS=['이동·외출','생활공간','배변','위생·청결','식사','그루밍','장난감'];
+const GCATS_JA={'이동·외출':'移動・外出','생활공간':'生活スペース','배변':'トイレ','위생·청결':'衛生・清潔','식사':'食事','그루밍':'グルーミング','장난감':'おもちゃ'};
+const GEAR=[
+ {cat:'이동·외출',name:'항공운송 대응 펫 캐리어',brand:'IATA 기준 · 캐스터·핸들',spec:'사이즈 M (70×53×48cm)',price:13800,asin:'B0F9P6G82X',name_ja:'航空輸送対応ペットキャリー',brand_ja:'IATA基準・キャスター',spec_ja:'サイズM (70×53×48cm)'},
+ {cat:'이동·외출',name:'하네스 · 리드줄',brand:'산책·외출용',spec:'소형견 퍼피',price:null,q:'犬 ハーネス リード 小型犬 子犬',name_ja:'ハーネス・リード',brand_ja:'散歩・外出用',spec_ja:'小型犬 子犬サイズ'},
+ {cat:'생활공간',name:'펫 사클 (울타리)',brand:'タンスのゲン',spec:'높이 60cm · 실내외 겸용',price:8999,asin:'B0CN2LKXM5',name_ja:'ペットサークル',brand_ja:'タンスのゲン',spec_ja:'高さ60cm・室内外兼用'},
+ {cat:'생활공간',name:'PVC 바닥 보호매트',brand:'방수·미끄럼방지',spec:'160×200cm · 4mm',price:9221,asin:'B0FDWXRLBJ',name_ja:'PVC床保護マット',brand_ja:'防水・滑り止め',spec_ja:'160×200cm・4mm'},
+ {cat:'생활공간',name:'방석 · 펫 베드',brand:'잠자리 · 세탁 가능',spec:'소형견용',price:null,q:'犬 ベッド 小型犬 クッション 洗える',name_ja:'クッション・ベッド',brand_ja:'寝床・洗濯可',spec_ja:'小型犬用'},
+ {cat:'배변',name:'배변 트레이 (와이드)',brand:'페티오(Petio)',spec:'와이드 · 한 손 개폐',price:1860,asin:'B00TWYLNV0',name_ja:'トイレトレー（ワイド）',brand_ja:'Petio',spec_ja:'ワイド・片手で開閉'},
+ {cat:'배변',name:'배변패드 (와이드)',brand:'아이리스오야마',spec:'와이드 42매 · 초흡수',price:1155,asin:'B0899W5G17',recur:true,name_ja:'トイレシート（ワイド）',brand_ja:'アイリスオーヤマ',spec_ja:'ワイド42枚・超吸収'},
+ {cat:'배변',name:'배변봉투 / 매너백',brand:'산책 배변 처리',spec:'롤 타입',price:null,q:'犬 うんち袋 マナー袋',recur:true,name_ja:'うんち袋・マナー袋',brand_ja:'散歩時の処理',spec_ja:'ロールタイプ'},
+ {cat:'위생·청결',name:'반려동물 물티슈 (대용량)',brand:'무향·무알콜',spec:'100매 × 6봉',price:2999,asin:'B0FK2JT4PQ',recur:true,name_ja:'ペット用ウェットティッシュ',brand_ja:'無香料・ノンアルコール',spec_ja:'100枚×6袋'},
+ {cat:'위생·청결',name:'장갑형 소취 물티슈',brand:'HICC PET',spec:'20매 · 끼워서 닦기',price:2999,asin:'B0GR5R2G5K',recur:true,name_ja:'手袋型 消臭ティッシュ',brand_ja:'HICC PET',spec_ja:'20枚・手にはめて'},
+ {cat:'위생·청결',name:'펫 소취 스프레이',brand:'일본제 · 무향',spec:'500ml · 제균',price:1880,asin:'B0D53KSD14',recur:true,name_ja:'ペット消臭スプレー',brand_ja:'日本製・無香',spec_ja:'500ml・除菌'},
+ {cat:'위생·청결',name:'강아지 샴푸',brand:'저자극 · 퍼피용',spec:'목욕용',price:null,q:'犬 シャンプー 低刺激 子犬',recur:true,name_ja:'犬用シャンプー',brand_ja:'低刺激・子犬用',spec_ja:'お風呂用'},
+ {cat:'식사',name:'사료 (퍼피용)',brand:'소형견 성장기',spec:'주식 · 성장기 영양',price:null,q:'子犬 ドッグフード パピー 小型犬',recur:true,name_ja:'ドッグフード（子犬用）',brand_ja:'小型犬 成長期',spec_ja:'主食・成長期'},
+ {cat:'식사',name:'간식 (트릿)',brand:'무첨가 · 훈련 보상',spec:'훈련·간식용',price:null,q:'犬 おやつ 無添加 子犬 トレーニング',recur:true,name_ja:'おやつ（トリーツ）',brand_ja:'無添加・ご褒美',spec_ja:'しつけ・おやつ用'},
+ {cat:'식사',name:'식기 (밥·물그릇)',brand:'미끄럼방지',spec:'2구 또는 세트',price:null,q:'犬 食器 フードボウル 滑り止め',name_ja:'食器（ボウル）',brand_ja:'滑り止め',spec_ja:'2連またはセット'},
+ {cat:'식사',name:'자동 급수기',brand:'상시 급수',spec:'정수·급수기',price:null,q:'犬 自動給水器 ペット',name_ja:'自動給水器',brand_ja:'常時給水',spec_ja:'浄水・給水器'},
+ {cat:'그루밍',name:'슬리커 브러시',brand:'더블코트 털관리',spec:'MAS 털빠짐 관리',price:null,q:'犬 スリッカーブラシ 換毛',name_ja:'スリッカーブラシ',brand_ja:'ダブルコートのケア',spec_ja:'MASの抜け毛ケア'},
+ {cat:'그루밍',name:'발톱깎이',brand:'소형견용',spec:'정기 발톱 관리',price:null,q:'犬 爪切り 小型犬',name_ja:'爪切り',brand_ja:'小型犬用',spec_ja:'定期的な爪のケア'},
+ {cat:'그루밍',name:'칫솔 · 치약',brand:'반려견 전용',spec:'치아 관리',price:null,q:'犬 歯ブラシ 歯磨き粉',recur:true,name_ja:'歯ブラシ・歯磨き粉',brand_ja:'犬専用',spec_ja:'歯のケア'},
+ {cat:'장난감',name:'노즈워크 매트',brand:'머리쓰기 놀이',spec:'두뇌 자극',price:null,q:'犬 ノーズワークマット',name_ja:'ノーズワークマット',brand_ja:'頭を使う遊び',spec_ja:'脳トレ'},
+ {cat:'장난감',name:'씹는 장난감',brand:'치발기',spec:'이갈이 시기용',price:null,q:'犬 噛むおもちゃ 子犬',name_ja:'噛むおもちゃ',brand_ja:'歯固め',spec_ja:'歯の生え替わり用'},
+ {cat:'장난감',name:'터그 / 로프 장난감',brand:'상호작용 놀이',spec:'함께 노는 용',price:null,q:'犬 ロープ おもちゃ タグ',name_ja:'タグ・ロープ',brand_ja:'ふれあい遊び',spec_ja:'一緒に遊ぶ用'},
+];
+window.GEAR=GEAR;
+(function(){
+  const yen=n=>'¥'+n.toLocaleString('ja-JP');
+  const gid=p=>p.asin||p.name;
+  const GF=(p,f)=>LANG==='ja'?(p[f+'_ja']||p[f]):p[f];
+  const catName=c=>LANG==='ja'?(GCATS_JA[c]||c):c;
+  let have={},cfg={},filter='all',openCfg=null,draft=null;
+  try{have=JSON.parse(localStorage.getItem('luca_gear_have'))||{};}catch(e){}
+  try{cfg=JSON.parse(localStorage.getItem('luca_gear_cfg'))||{};}catch(e){}
+  window.GEAR_CFG=cfg;
+  const list=document.getElementById('gList'),statEl=document.getElementById('gStats');
+  const pad2=n=>String(n).padStart(2,'0');
+  const iso=dt=>dt.getFullYear()+'-'+pad2(dt.getMonth()+1)+'-'+pad2(dt.getDate());
+  const ymd2=s=>{const[y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d);};
+  const estDays=d=>{const t=parseFloat(d.total),p=parseFloat(d.perDay);return(t>0&&p>0)?Math.ceil(t/p):0;};
+  function computeNext(d){if(!d)return'';if(d.mode==='manual')return d.nextDate||'';if(!d.start)return'';const n=estDays(d);if(!n)return'';const dt=ymd2(d.start);dt.setDate(dt.getDate()+n);return iso(dt);}
+  const dday=s=>{if(!s)return null;const n=new Date(),t0=new Date(n.getFullYear(),n.getMonth(),n.getDate());return Math.round((ymd2(s)-t0)/864e5);};
+  const mmdd=s=>{const d=ymd2(s);return(d.getMonth()+1)+'/'+d.getDate();};
+  const link=p=>p.asin?{u:'https://www.amazon.co.jp/dp/'+p.asin,c:'pbuy',l:t('g.buy')}:{u:'https://www.amazon.co.jp/s?k='+encodeURIComponent(p.q||p.name),c:'pbuy search',l:t('g.search')};
+  function buyNextLine(p){
+    const id=gid(p),c=cfg[id],nd=c?computeNext(c):'';
+    if(nd){const dd=dday(nd),over=dd<0;return `<div class="pbuyrow"><span class="pnext ${over?'over':''}">${t('g.nextBuy')} ${mmdd(nd)} · ${over?t('g.over'):'D-'+dd}</span><button class="pedit" data-edit="${id}">${t('g.edit')}</button></div>`;}
+    return `<div class="pbuyrow"><button class="pset" data-edit="${id}">+ ${t('g.setBuy')}</button></div>`;
+  }
+  function previewHTML(d){const nd=computeNext(d);if(!nd)return `${t('g.nextBuy')} —`;const est=(d.mode!=='manual'&&estDays(d))?`${t('g.estDays')} ${estDays(d)}${t('g.days')} · `:'';return `${est}${t('g.nextBuy')} ${mmdd(nd)} · D-${dday(nd)}`;}
+  function editor(id){
+    const d=draft;
+    const seg=['weight','qty','manual'].map(m=>`<button data-mode="${m}" class="${d.mode===m?'on':''}">${t('g.mode.'+m)}</button>`).join('');
+    let f='';
+    if(d.mode==='weight')f=`<div class="gfield"><label>${t('g.total.g')}</label><input type="number" inputmode="numeric" data-k="total" value="${d.total||''}"></div><div class="gfield"><label>${t('g.perday.g')}</label><input type="number" inputmode="numeric" data-k="perDay" value="${d.perDay||''}"></div><div class="gfield"><label>${t('g.open')}</label><input type="date" data-k="start" value="${d.start||''}"></div>`;
+    else if(d.mode==='qty')f=`<div class="gfield"><label>${t('g.total.q')}</label><input type="number" inputmode="numeric" data-k="total" value="${d.total||''}"></div><div class="gfield"><label>${t('g.perday.q')}</label><input type="number" inputmode="numeric" data-k="perDay" value="${d.perDay||''}"></div><div class="gfield"><label>${t('g.start')}</label><input type="date" data-k="start" value="${d.start||''}"></div>`;
+    else f=`<div class="gfield"><label>${t('g.nextdate')}</label><input type="date" data-k="nextDate" value="${d.nextDate||''}"></div>`;
+    const nd=computeNext(d);
+    return `<div class="gcfg"><div class="seg" data-seg>${seg}</div>${f}<div class="gest" id="gPrev" style="${nd?'':'opacity:.5'}">${previewHTML(d)}</div><div class="gbtns"><button class="cancel" data-cfg="cancel">${t('g.cancel')}</button>${cfg[id]?`<button class="clear" data-cfg="clear">${t('g.clear')}</button>`:''}<button class="save" data-cfg="save">${t('g.save')}</button></div></div>`;
+  }
+  function row(p){
+    const id=gid(p),on=!!have[id],l=link(p);
+    const bdg=p.recur?`<span class="bdg">${t('g.recur')}</span>`:'';
+    const price=p.price!=null?`<span class="pprice">${yen(p.price)}</span>`:`<span class="pprice none">${t('g.price.none')}</span>`;
+    const bn=p.recur?buyNextLine(p):'';
+    return `<div class="prow ${on?'have':''}" data-id="${id}"><input type="checkbox" class="pchk" ${on?'checked':''} aria-label="have"><div class="pinfo"><div class="ptop"><span class="pname">${GF(p,'name')}</span>${bdg}</div><div class="pmeta">${GF(p,'brand')} · ${GF(p,'spec')}</div>${bn}</div>${price}<a class="${l.c}" href="${l.u}" target="_blank" rel="noopener">${l.l}</a></div>${openCfg===id?editor(id):''}`;
+  }
+  const passes=p=>filter==='need'?!have[gid(p)]:filter==='recur'?!!p.recur:true;
+  function render(){
+    let html='';
+    GCATS.forEach(cat=>{const items=GEAR.filter(p=>p.cat===cat&&passes(p));if(!items.length)return;
+      html+=`<div class="cat"><div class="cathead">${catName(cat)} <span class="cnt">${items.length}</span></div>${items.map(row).join('')}</div>`;});
+    list.innerHTML=html||`<div class="ghint" style="text-align:center;padding:30px 0">${t('g.empty')}</div>`;bind();
+  }
+  function stats(){
+    const total=GEAR.length,haveN=GEAR.filter(p=>have[gid(p)]).length;
+    const sum=GEAR.reduce((a,p)=>a+(have[gid(p)]?0:(p.price||0)),0);
+    statEl.innerHTML=`<div class="gstat">${t('g.st.have')} <b>${haveN}</b></div><div class="gstat need">${t('g.st.need')} <b>${total-haveN}</b></div><div class="gstat need">${t('g.st.sum')} <b>${yen(sum)}</b></div>`;
+  }
+  function bind(){
+    list.querySelectorAll('.pchk').forEach(c=>c.addEventListener('change',e=>{
+      const k=e.target.closest('.prow').dataset.id;have[k]=e.target.checked;
+      localStorage.setItem('luca_gear_have',JSON.stringify(have));window.LucaHub.save('gear',k,e.target.checked);
+      if(filter==='need')render();else e.target.closest('.prow').classList.toggle('have',e.target.checked);stats();
+    }));
+    list.querySelectorAll('[data-edit]').forEach(b=>b.addEventListener('click',()=>{openCfg=b.dataset.edit;draft=Object.assign({mode:'weight',total:'',perDay:'',start:'',nextDate:''},cfg[openCfg]||{});render();}));
+    const ed=list.querySelector('.gcfg');if(ed){
+      ed.querySelectorAll('[data-seg] button').forEach(b=>b.addEventListener('click',()=>{draft.mode=b.dataset.mode;render();}));
+      ed.querySelectorAll('input').forEach(inp=>inp.addEventListener('input',()=>{draft[inp.dataset.k]=inp.value;const pv=ed.querySelector('#gPrev');if(pv){pv.textContent=previewHTML(draft);pv.style.opacity=computeNext(draft)?1:.5;}}));
+      ed.querySelector('[data-cfg="cancel"]').addEventListener('click',()=>{openCfg=null;draft=null;render();});
+      const clr=ed.querySelector('[data-cfg="clear"]');if(clr)clr.addEventListener('click',()=>{const id=openCfg;delete cfg[id];localStorage.setItem('luca_gear_cfg',JSON.stringify(cfg));window.GEAR_CFG=cfg;window.LucaHub.save('gearcfg',id,null);openCfg=null;draft=null;render();});
+      ed.querySelector('[data-cfg="save"]').addEventListener('click',()=>{const id=openCfg,nd=computeNext(draft);
+        cfg[id]={mode:draft.mode,total:draft.total,perDay:draft.perDay,start:draft.start,nextDate:draft.mode==='manual'?draft.nextDate:nd};
+        localStorage.setItem('luca_gear_cfg',JSON.stringify(cfg));window.GEAR_CFG=cfg;window.LucaHub.save('gearcfg',id,cfg[id]);openCfg=null;draft=null;render();});
+    }
+  }
+  document.getElementById('gFilters').addEventListener('click',e=>{const b=e.target.closest('.fbtn');if(!b)return;document.querySelectorAll('#gFilters .fbtn').forEach(x=>x.classList.remove('on'));b.classList.add('on');filter=b.dataset.f;render();});
+  LANGHOOKS.push(()=>{render();stats();});
+  window.LucaHub.onState('gear',g=>{have=Object.assign({},have,g);localStorage.setItem('luca_gear_have',JSON.stringify(have));render();stats();});
+  window.LucaHub.onState('gearcfg',c=>{Object.keys(c).forEach(k=>{if(c[k]===null)delete cfg[k];else cfg[k]=c[k];});localStorage.setItem('luca_gear_cfg',JSON.stringify(cfg));window.GEAR_CFG=cfg;render();});
+})();
+
+// ---- 건강 (아이별) ----
+const HCATS=['법적 의무','예방접종','기생충 예방','건강검진','중성화','치아·성장'];
+const HCATS_JA={'법적 의무':'法的義務','예방접종':'予防接種','기생충 예방':'寄生虫予防','건강검진':'健康診断','중성화':'去勢・避妊','치아·성장':'歯・成長'};
+const HEALTH=[
+ {cat:'법적 의무',name:'마이크로칩 소유자 변경등록',when:{type:'deadline',base:'arrival',days:30},law:true,links:[],
+   note:'입양 후 30일 내. 환경성 「犬と猫のマイクロチップ情報登録」에서 소유자 변경.',
+   name_ja:'マイクロチップ所有者変更登録',note_ja:'迎え入れ後30日以内。環境省「犬と猫のマイクロチップ情報登録」で変更。'},
+ {cat:'법적 의무',name:'광견병 예방접종 + 자치체 등록',when:{type:'deadline',base:'arrival',days:30},law:true,recur:true,cycle:'매년 1회',links:[],
+   note:'생후 91일↑ 의무. 注射済証 제출 → 注射済票. 이후 매년.',
+   name_ja:'狂犬病予防接種＋自治体登録',cycle_ja:'毎年1回',note_ja:'生後91日以上で義務。注射済証を提出→注射済票。以降毎年。'},
+ {cat:'예방접종',name:'혼합백신 1차',when:{type:'week',week:6},links:[],
+   note:'보통 분양 전 브리더 접종. 증명서 확인.',name_ja:'混合ワクチン1回目',note_ja:'通常は分譲前にブリーダー接種。証明書を確認。'},
+ {cat:'예방접종',name:'혼합백신 2차',when:{type:'week',week:9},links:[],
+   note:'1차 후 3~4주 간격.',name_ja:'混合ワクチン2回目',note_ja:'1回目から3~4週間隔。'},
+ {cat:'예방접종',name:'혼합백신 3차 (최종)',when:{type:'week',week:14},links:[],
+   note:'생후 14~16주. 산책은 최종 접종 후.',name_ja:'混合ワクチン3回目（最終）',note_ja:'生後14~16週。散歩は最終接種後。'},
+ {cat:'기생충 예방',name:'심장사상충(필라리아) 예방',when:{type:'season'},recur:true,cycle:'월 1회',links:[],
+   note:'5~12월 매월. MDR1 — 약 선택 시 MAS 고지.',name_ja:'フィラリア予防',cycle_ja:'月1回',note_ja:'5~12月に毎月。MDR1 — 薬の選択時にMASを伝える。'},
+ {cat:'기생충 예방',name:'벼룩·진드기 예방',when:{type:'season'},recur:true,cycle:'월 1회',links:[],
+   note:'3월 중순~12월, 실내는 통년.',name_ja:'ノミ・マダニ予防',cycle_ja:'月1回',note_ja:'3月中旬~12月、室内は通年。'},
+ {cat:'기생충 예방',name:'내부기생충 구충 (분변검사)',when:{type:'label',label:'입양 직후~자견기',label_ja:'迎え入れ直後~子犬期'},links:[],
+   note:'분변검사 후 구충. 자견기 수 회.',name_ja:'内部寄生虫の駆虫（検便）',note_ja:'検便後に駆虫。子犬期に数回。'},
+ {cat:'건강검진',name:'첫 건강검진',when:{type:'deadline',base:'arrival',days:7},links:[],
+   note:'입양 후 1주 내. 전반 상태·분변검사.',name_ja:'初回の健康診断',note_ja:'迎え入れ後1週間以内。全身状態・検便。'},
+ {cat:'건강검진',name:'유전질환 체크 (눈·청력·MDR1)',when:{type:'label',label:'자견기',label_ja:'子犬期'},links:[],
+   note:'안과·청력(BAER)·MDR1 검사 확인.',name_ja:'遺伝性疾患チェック（目・聴力・MDR1）',note_ja:'眼科・聴力(BAER)・MDR1検査を確認。'},
+ {cat:'건강검진',name:'정기 건강검진',when:{type:'label',label:'연 1회~',label_ja:'年1回~'},recur:true,cycle:'연 1회',links:[],
+   note:'성견 연 1회 이상.',name_ja:'定期健康診断',cycle_ja:'年1回',note_ja:'成犬は年1回以上。'},
+ {cat:'중성화',name:'중성화 수술',when:{type:'month',month:6},links:[],
+   note:'보통 생후 6개월 전후. 수의사 상담.',name_ja:'去勢・避妊手術',note_ja:'通常は生後6ヶ月前後。獣医に相談。'},
+ {cat:'치아·성장',name:'유치→영구치 교환 확인',when:{type:'label',label:'생후 4~7개월',label_ja:'生後4~7ヶ月'},links:[],
+   note:'잔존유치 있으면 상담. 양치 습관.',name_ja:'乳歯→永久歯の確認',note_ja:'残存乳歯があれば相談。歯磨き習慣。'},
+];
+window.HEALTH=HEALTH; window.HEALTH_DONE={};
+(function(){
+  const hid=p=>p.name;
+  const HF=(p,f)=>LANG==='ja'?(p[f+'_ja']||p[f]):p[f];
+  const catName=c=>LANG==='ja'?(HCATS_JA[c]||c):c;
+  let selDog='luca',done={},filter='all';
+  try{done=JSON.parse(localStorage.getItem('luca_health_done'))||{};}catch(e){}
+  window.HEALTH_DONE=done;
+  const list=document.getElementById('hList'),selEl=document.getElementById('hSel'),statEl=document.getElementById('hStats'),hintEl=document.getElementById('hHint');
+  const ymdH=s=>{const[y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d);};
+  const addD=(dt,n)=>{const x=new Date(dt);x.setDate(x.getDate()+n);return x;};
+  const addM=(dt,n)=>{const x=new Date(dt);x.setMonth(x.getMonth()+n);return x;};
+  const fmt=dt=>(dt.getMonth()+1)+'/'+dt.getDate();
+  const key=(dog,p)=>dog+'|'+hid(p);
+  const getDog=()=>DOGS.find(d=>d.id===selDog);
+  function timing(p,dog){
+    const b=dog.birth?ymdH(dog.birth):null,a=dog.arrival?ymdH(dog.arrival):null,w=p.when,ja=LANG==='ja';
+    if(w.type==='week'){if(!b)return t('h.tbd');return (ja?`生後${w.week}週`:`생후 ${w.week}주`)+'<br>~'+fmt(addD(b,w.week*7));}
+    if(w.type==='month'){if(!b)return t('h.tbd');return (ja?`生後${w.month}ヶ月`:`생후 ${w.month}개월`)+'<br>~'+fmt(addM(b,w.month));}
+    if(w.type==='deadline'){const base=w.base==='arrival'?a:b;if(!base)return t('h.tbd');return (ja?`${w.days}日以内`:`${w.days}일 내`)+'<br>~'+fmt(addD(base,w.days));}
+    if(w.type==='season')return t('h.season');
+    return ja?(w.label_ja||w.label):w.label;
+  }
+  function selector(){
+    selEl.innerHTML=DOGS.map(d=>`<button data-dog="${d.id}" class="${selDog===d.id?'on':''}">${F(d,'name')}</button>`).join('');
+    selEl.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{selDog=b.dataset.dog;render();stats();}));
+  }
+  const passes=p=>filter==='todo'?!done[key(selDog,p)]:filter==='law'?!!p.law:true;
+  function hrow(p,dog){
+    const on=!!done[key(dog.id,p)];
+    const tags=(p.law?`<span class="bdg law">${t('h.law')}</span>`:'')+(p.recur?`<span class="bdg">${t('h.recur')}</span>`:'');
+    const cyc=(p.recur&&HF(p,'cycle'))?' · '+HF(p,'cycle'):'';
+    return `<div class="prow ${on?'have':''}" data-id="${hid(p)}"><input type="checkbox" class="pchk" ${on?'checked':''} aria-label="done"><div class="pinfo"><div class="ptop"><span class="pname">${HF(p,'name')}</span>${tags}</div><div class="pmeta">${HF(p,'note')}${cyc}</div></div><span class="htime">${timing(p,dog)}</span></div>`;
+  }
+  function render(){
+    const dog=getDog(); selector();
+    hintEl.style.display=dog.birth?'none':'block'; if(!dog.birth) hintEl.innerHTML=t('h.hintTbd');
+    let html='';
+    HCATS.forEach(cat=>{const items=HEALTH.filter(p=>p.cat===cat&&passes(p));if(!items.length)return;
+      html+=`<div class="cat"><div class="cathead">${catName(cat)} <span class="cnt">${items.length}</span></div>${items.map(p=>hrow(p,dog)).join('')}</div>`;});
+    list.innerHTML=html||`<div class="ghint" style="text-align:center;padding:30px 0">${t('h.empty')}</div>`;
+    list.querySelectorAll('.pchk').forEach(c=>c.addEventListener('change',e=>{
+      const nm=e.target.closest('.prow').dataset.id,k=selDog+'|'+nm;
+      done[k]=e.target.checked;localStorage.setItem('luca_health_done',JSON.stringify(done));window.LucaHub.save('health',k,e.target.checked);
+      if(filter==='todo')render();else e.target.closest('.prow').classList.toggle('have',e.target.checked);stats();
+    }));
+  }
+  function stats(){
+    const dog=getDog(),total=HEALTH.length,doneN=HEALTH.filter(p=>done[key(dog.id,p)]).length,lawN=HEALTH.filter(p=>p.law).length;
+    statEl.innerHTML=`<div class="gstat">${t('h.st.done')} <b>${doneN}</b></div><div class="gstat need">${t('h.st.left')} <b>${total-doneN}</b></div><div class="gstat">${t('h.st.law')} <b>${lawN}</b></div>`;
+  }
+  document.getElementById('hFilters').addEventListener('click',e=>{const b=e.target.closest('.fbtn');if(!b)return;document.querySelectorAll('#hFilters .fbtn').forEach(x=>x.classList.remove('on'));b.classList.add('on');filter=b.dataset.f;render();});
+  window.openHealth=function(dogId){if(dogId&&DOGS.find(d=>d.id===dogId))selDog=dogId;showTab('health');render();stats();};
+  LANGHOOKS.push(()=>{render();stats();});
+  window.LucaHub.onState('health',h=>{done=Object.assign({},done,h);window.HEALTH_DONE=done;localStorage.setItem('luca_health_done',JSON.stringify(done));render();stats();});
+})();
+
+// ---- 달력 (통합: 건강·용품 파생 + 이벤트 + 사용자추가 + ★) ----
+const DOW={ko:['일','월','화','수','목','금','토'],ja:['日','月','火','水','木','金','土']};
+const EVENTS=[
+  {id:'ev-visit', date:'2026-07-18', title:'브리더 견학', title_ja:'ブリーダー見学', dogId:'luca'},
+  {id:'ev-adopt', date:'2026-07-25', title:'루카 입양 예정', title_ja:'ルカお迎え（予定）', dogId:'luca'},
+];
+const JP_PET_EVENTS=[]; // 일본 반려동물 이벤트 큐레이션 — 수집 방식 확정 후 채움
+window.EVENTS=EVENTS;
+(function(){
+  const pad2=n=>String(n).padStart(2,'0');
+  const iso=dt=>dt.getFullYear()+'-'+pad2(dt.getMonth()+1)+'-'+pad2(dt.getDate());
+  const ymdC=s=>{const[y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d);};
+  const addD=(dt,n)=>{const x=new Date(dt);x.setDate(x.getDate()+n);return x;};
+  const addM=(dt,n)=>{const x=new Date(dt);x.setMonth(x.getMonth()+n);return x;};
+  const CF=(o,f)=>LANG==='ja'?(o[f+'_ja']||o[f]):o[f];
+  const now=new Date(), today=new Date(now.getFullYear(),now.getMonth(),now.getDate()), todayISO=iso(today);
+  const dday=s=>Math.round((ymdC(s)-today)/864e5);
+  const mmdd=s=>{const d=ymdC(s);return(d.getMonth()+1)+'/'+d.getDate();};
+  const fmtFull=s=>{const d=ymdC(s);return LANG==='ja'?`${d.getMonth()+1}月${d.getDate()}日`:`${d.getMonth()+1}월 ${d.getDate()}일`;};
+  const dogName=id=>{const d=DOGS.find(x=>x.id===id);return d?F(d,'name'):'';};
+  const ORD={health:0,supply:1,event:2};
+  let viewY=today.getFullYear(), viewM=today.getMonth(), sel=null;
+  let selDogs=new Set(), selTypes=new Set(), adding=false, draft={title:'',dogId:''};
+  let userEvents={}, stars={};
+  try{userEvents=JSON.parse(localStorage.getItem('luca_user_events'))||{};}catch(e){}
+  try{stars=JSON.parse(localStorage.getItem('luca_stars'))||{};}catch(e){}
+  const persistUser=()=>localStorage.setItem('luca_user_events',JSON.stringify(userEvents));
+  const persistStars=()=>localStorage.setItem('luca_stars',JSON.stringify(stars));
+
+  function healthDate(p,dog){
+    const b=dog.birth?ymdC(dog.birth):null,a=dog.arrival?ymdC(dog.arrival):null,w=p.when;
+    if(w.type==='week')return b?addD(b,w.week*7):null;
+    if(w.type==='month')return b?addM(b,w.month):null;
+    if(w.type==='deadline'){const base=w.base==='arrival'?a:b;return base?addD(base,w.days):null;}
+    return null; // season·label은 고정날짜 없음 → 달력 미표시
+  }
+  function collect(){
+    const items=[];
+    (window.HEALTH||[]).forEach(p=>DOGS.forEach(dog=>{
+      const dt=healthDate(p,dog); if(!dt)return;
+      const done=!!(window.HEALTH_DONE||{})[dog.id+'|'+p.name];
+      items.push({date:iso(dt),type:'health',title:CF(p,'name'),dogId:dog.id,done,source:'derived'});
+    }));
+    (window.GEAR||[]).forEach(p=>{
+      if(!p.recur)return; const id=p.asin||p.name; const c=(window.GEAR_CFG||{})[id];
+      if(c&&c.nextDate) items.push({date:c.nextDate,type:'supply',title:CF(p,'name'),source:'derived'});
+    });
+    EVENTS.concat(JP_PET_EVENTS).forEach(e=>items.push({date:e.date,type:'event',title:CF(e,'title'),dogId:e.dogId||'',source:'event'}));
+    Object.keys(userEvents).forEach(k=>{const e=userEvents[k];if(!e||!e.date)return;
+      items.push({date:e.date,type:e.type||'event',title:e.title,dogId:e.dogId||'',source:'user',uid:k});});
+    return items;
+  }
+  const passes=it=>{
+    if(selDogs.size){ if(!it.dogId||!selDogs.has(it.dogId))return false; }
+    if(selTypes.size){ if(!selTypes.has(it.type))return false; }
+    return true;
   };
+  function rowHTML(it,showDate){
+    const kind=`<span class="ckind ${it.type}">${t('cal.k.'+it.type)}</span>`;
+    const dn=it.dogId?`<span>${dogName(it.dogId)}</span>`:'';
+    const done=(it.type==='health'&&it.done)?'done':'';
+    const tap=(it.type==='health'||it.type==='supply')?'tap':'';
+    const when=showDate?`<span class="when ${dday(it.date)<0?'over':''}">${mmdd(it.date)}</span>`:'';
+    const del=it.source==='user'?`<button class="del" data-del="${it.uid}" aria-label="del"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>`:'';
+    const go=tap?`<span class="go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>`:'';
+    return `<div class="cprow ${tap}" data-type="${it.type}" data-dog="${it.dogId||''}">${when}<div class="ci"><div class="ct ${done}">${it.title}</div><div class="cm">${kind}${dn}</div></div>${del}${go}</div>`;
+  }
+  function addForm(){
+    const opts=`<option value="">${t('cal.addNone')}</option>`+DOGS.map(d=>`<option value="${d.id}" ${draft.dogId===d.id?'selected':''}>${F(d,'name')}</option>`).join('');
+    return `<div class="cadd"><input type="text" data-df="title" placeholder="${t('cal.addTitle')}" value="${(draft.title||'').replace(/"/g,'&quot;')}"><select data-df="dogId">${opts}</select><div class="gbtns"><button class="cancel" data-add-cancel>${t('cal.cancel')}</button><button class="save" data-add-save>${t('cal.save')}</button></div></div>`;
+  }
+  function renderFilters(){
+    const el=document.getElementById('calFilters');
+    const dogs=DOGS.map(d=>`<button class="cchip cdog ${selDogs.has(d.id)?'on':''}" data-dog="${d.id}">${F(d,'name')}</button>`).join('');
+    const types=['health','supply','event'].map(tp=>`<button class="cchip ${selTypes.has(tp)?'on':''}" data-type="${tp}">${t('cal.f.'+tp)}</button>`).join('');
+    el.innerHTML=dogs+types;
+  }
+  function renderGrid(){
+    document.getElementById('calMo').textContent=LANG==='ja'?`${viewY}年 ${viewM+1}月`:`${viewY}. ${viewM+1}`;
+    document.getElementById('calDow').innerHTML=DOW[LANG].map((d,i)=>`<span class="${i===0?'sun':''}">${d}</span>`).join('');
+    const byDate={}; collect().filter(passes).forEach(it=>{(byDate[it.date]=byDate[it.date]||[]).push(it);});
+    const startDow=new Date(viewY,viewM,1).getDay(), daysIn=new Date(viewY,viewM+1,0).getDate();
+    let cells='';
+    for(let i=0;i<startDow;i++)cells+='<button class="cell pad"></button>';
+    for(let d=1;d<=daysIn;d++){
+      const dISO=viewY+'-'+pad2(viewM+1)+'-'+pad2(d), dow=new Date(viewY,viewM,d).getDay(), cls=[];
+      if(dow===0)cls.push('sun'); if(dISO===todayISO)cls.push('today'); if(dISO===sel)cls.push('sel');
+      const star=stars[dISO]?'<span class="st">★</span>':'';
+      const mk=(byDate[dISO]&&byDate[dISO].length)?'<span class="mk"><span class="dot"></span></span>':'<span class="mk"></span>';
+      cells+=`<button class="cell ${cls.join(' ')}" data-d="${dISO}">${star}<span class="d">${d}</span>${mk}</button>`;
+    }
+    document.getElementById('calCells').innerHTML=cells;
+  }
+  function renderBody(){
+    const body=document.getElementById('calBody'), all=collect().filter(passes);
+    let html='';
+    if(sel){
+      const day=all.filter(it=>it.date===sel).sort((a,b)=>(ORD[a.type]-ORD[b.type])||(a.title<b.title?-1:1));
+      const on=!!stars[sel];
+      html+=`<div class="cphead"><span class="lab">${fmtFull(sel)}</span><div class="acts"><button class="star ${on?'on':''}" data-star="${sel}">★ ${t('cal.star')}</button><button data-add>+ ${t('cal.add')}</button></div></div>`;
+      if(adding)html+=addForm();
+      html+=day.length?day.map(it=>rowHTML(it,false)).join(''):`<div class="cpempty">${t('cal.empty')}</div>`;
+    }else{
+      const end=addD(today,30);
+      const up=all.filter(it=>{const d=ymdC(it.date);return d>=today&&d<=end;}).sort((a,b)=>a.date<b.date?-1:a.date>b.date?1:(ORD[a.type]-ORD[b.type]));
+      html+=`<div class="cphead"><span class="lab">${t('cal.upcoming')}</span><span class="sub">${t('cal.days30')}</span></div>`;
+      html+=up.length?up.map(it=>rowHTML(it,true)).join(''):`<div class="cpempty">${t('cal.emptyUp')}</div>`;
+    }
+    body.innerHTML=html;
+  }
+  function renderAll(){renderFilters();renderGrid();renderBody();}
+  window._calRefresh=renderAll;
 
-  // ---- 탭 전환 ----
-  const nav = document.getElementById('nav');
-  nav.addEventListener('click', e=>{
-    const btn = e.target.closest('.navbtn');
-    if(!btn) return;
-    document.querySelectorAll('.navbtn').forEach(b=>b.classList.remove('active'));
-    document.querySelectorAll('section').forEach(s=>s.classList.remove('active'));
-    btn.classList.add('active');
-    document.getElementById(btn.dataset.sec).classList.add('active');
-    window.scrollTo({top:0,behavior:'smooth'});
+  function saveUser(){
+    const title=(draft.title||'').trim(); if(!title||!sel)return;
+    const id='u'+Date.now().toString(36)+Math.floor(Math.random()*1296).toString(36);
+    const ev={date:sel,title,type:'event',dogId:draft.dogId||''};
+    userEvents[id]=ev; persistUser(); window.LucaHub.save('userEvents',id,ev);
+    adding=false; draft={title:'',dogId:''}; renderGrid(); renderBody();
+  }
+  function delUser(uid){
+    if(!confirm(t('cal.delConfirm')))return;
+    delete userEvents[uid]; persistUser(); window.LucaHub.save('userEvents',uid,null); renderGrid(); renderBody();
+  }
+  function toggleStar(ds){
+    if(stars[ds])delete stars[ds];else stars[ds]=true;
+    persistStars(); window.LucaHub.save('stars',ds,stars[ds]||false); renderGrid(); renderBody();
+  }
+
+  document.getElementById('calPrev').addEventListener('click',()=>{if(--viewM<0){viewM=11;viewY--;}renderGrid();});
+  document.getElementById('calNext').addEventListener('click',()=>{if(++viewM>11){viewM=0;viewY++;}renderGrid();});
+  document.getElementById('calToday').addEventListener('click',()=>{viewY=today.getFullYear();viewM=today.getMonth();sel=todayISO;adding=false;renderGrid();renderBody();});
+  document.getElementById('calFilters').addEventListener('click',e=>{
+    const c=e.target.closest('.cchip'); if(!c)return;
+    const s=c.dataset.dog?selDogs:selTypes, v=c.dataset.dog||c.dataset.type;
+    s.has(v)?s.delete(v):s.add(v); renderAll();
   });
+  document.getElementById('calCells').addEventListener('click',e=>{
+    const c=e.target.closest('.cell'); if(!c||!c.dataset.d)return;
+    sel=(sel===c.dataset.d)?null:c.dataset.d; adding=false; renderGrid(); renderBody();
+  });
+  const bodyEl=document.getElementById('calBody');
+  bodyEl.addEventListener('click',e=>{
+    const star=e.target.closest('[data-star]'); if(star){toggleStar(star.dataset.star);return;}
+    const ac=e.target.closest('[data-add-cancel]'); if(ac){adding=false;draft={title:'',dogId:''};renderBody();return;}
+    const as=e.target.closest('[data-add-save]'); if(as){saveUser();return;}
+    const add=e.target.closest('[data-add]'); if(add){adding=true;renderBody();return;}
+    const del=e.target.closest('[data-del]'); if(del){delUser(del.dataset.del);return;}
+    const row=e.target.closest('.cprow.tap'); if(row){ if(row.dataset.type==='health')window.openHealth(row.dataset.dog||'luca'); else if(row.dataset.type==='supply')showTab('gear'); }
+  });
+  bodyEl.addEventListener('input',e=>{const f=e.target.closest('[data-df]');if(f)draft[f.dataset.df]=f.value;});
+  bodyEl.addEventListener('change',e=>{const f=e.target.closest('[data-df]');if(f)draft[f.dataset.df]=f.value;});
 
-  // ---- D-day 계산 (입양일 2026-07-25) ----
-  (function(){
-    const el = document.getElementById('dday');
-    const lbl = document.getElementById('ddayLbl');
-    function paint(){
-      const target = new Date(2026,6,25); // month is 0-based → 6 = July
-      const now = new Date();
-      const t0 = new Date(now.getFullYear(),now.getMonth(),now.getDate());
-      const diff = Math.round((target - t0)/86400000);
-      if(diff > 0){ el.textContent = 'D-'+diff; lbl.textContent = t('dday.lbl'); }
-      else if(diff === 0){ el.textContent = 'D-DAY'; lbl.textContent = t('dday.today'); }
-      else { el.textContent = '+'+(-diff)+t('dday.dleft'); lbl.textContent = t('dday.together'); }
-    }
-    LANGHOOKS.push(paint);
-  })();
+  LANGHOOKS.push(renderAll);
+  window.LucaHub.onState('userEvents',ue=>{Object.keys(ue).forEach(k=>{if(ue[k]===null)delete userEvents[k];else userEvents[k]=ue[k];});persistUser();renderAll();});
+  window.LucaHub.onState('stars',s=>{Object.keys(s).forEach(k=>{if(s[k]===false||s[k]===null)delete stars[k];else stars[k]=s[k];});persistStars();renderAll();});
+  renderAll();
+})();
 
-  // ---- 용품 데이터 ----
-  // 필드: cat(카테고리) name brand spec price(엔/없으면 null) asin(있으면 직접링크)
-  //       q(없을 때 Amazon 검색어, 일본어) recur(정기 소모품) cycle(주기) note(주의)
-  //       *_ja 는 일본어 라벨 (id 는 항상 한국어 name/asin 기준 — 언어 무관)
-  const CATS = ['이동·외출','생활공간','배변','위생·청결','식사','그루밍','장난감'];
-  const CATS_JA = {'이동·외출':'移動・外出','생활공간':'生活スペース','배변':'トイレ','위생·청결':'衛生・清潔','식사':'食事','그루밍':'グルーミング','장난감':'おもちゃ'};
-  const GEAR = [
-    // 이동·외출
-    {cat:'이동·외출', name:'항공운송 대응 펫 캐리어', brand:'IATA 기준 / 캐스터·핸들 / 물그릇 포함', spec:'사이즈 M (70×53×48cm)', price:13800, asin:'B0F9P6G82X',
-      name_ja:'航空輸送対応ペットキャリー', brand_ja:'IATA基準 / キャスター・ハンドル / 水皿付き', spec_ja:'サイズM (70×53×48cm)'},
-    {cat:'이동·외출', name:'하네스 · 리드줄', brand:'산책·외출용', spec:'소형견 퍼피 사이즈', price:null, q:'犬 ハーネス リード 小型犬 子犬',
-      name_ja:'ハーネス・リード', brand_ja:'散歩・外出用', spec_ja:'小型犬 子犬サイズ'},
-    // 생활공간
-    {cat:'생활공간', name:'펫 사클(울타리)', brand:'타ンス의겐(タンスのゲン)', spec:'높이 60cm · 실내외 겸용 · 더블락', price:8999, asin:'B0CN2LKXM5',
-      name_ja:'ペットサークル', brand_ja:'タンスのゲン', spec_ja:'高さ60cm・室内外兼用・ダブルロック'},
-    {cat:'생활공간', name:'PVC 바닥 보호매트', brand:'TranzAnSfure / 화이트', spec:'160×200cm · 4mm · 방수·미끄럼방지', price:9221, asin:'B0FDWXRLBJ',
-      name_ja:'PVC床保護マット', brand_ja:'TranzAnSfure / ホワイト', spec_ja:'160×200cm・4mm・防水・滑り止め'},
-    {cat:'생활공간', name:'방석 · 펫 베드', brand:'잠자리용', spec:'소형견용 · 세탁 가능', price:null, q:'犬 ベッド 小型犬 クッション 洗える',
-      name_ja:'クッション・ペットベッド', brand_ja:'寝床用', spec_ja:'小型犬用・洗濯可'},
-    // 배변
-    {cat:'배변', name:'도그 배변 트레이 (와이드)', brand:'페티오(Petio) / 그레이', spec:'와이드 · 한 손 개폐', price:1860, asin:'B00TWYLNV0',
-      name_ja:'ドッグトイレトレー（ワイド）', brand_ja:'Petio / グレー', spec_ja:'ワイド・片手で開閉'},
-    {cat:'배변', name:'배변패드 (와이드)', brand:'아이리스오야마', spec:'와이드 42매 · 초흡수·항균', price:1155, asin:'B0899W5G17', recur:true, cycle:'약 월 1~2팩',
-      name_ja:'トイレシート（ワイド）', brand_ja:'アイリスオーヤマ', spec_ja:'ワイド42枚・超吸収・抗菌', cycle_ja:'約月1~2パック'},
-    {cat:'배변', name:'배변봉투 / 매너백', brand:'산책 배변 처리', spec:'롤 타입', price:null, q:'犬 うんち袋 マナー袋', recur:true, cycle:'약 분기 1회',
-      name_ja:'うんち袋・マナー袋', brand_ja:'散歩時の排泄処理', spec_ja:'ロールタイプ', cycle_ja:'約四半期に1回'},
-    // 위생·청결
-    {cat:'위생·청결', name:'반려동물 물티슈 (대용량)', brand:'유기농·수의사 감수 / 무향·무알콜', spec:'100매 × 6봉 (600매)', price:2999, asin:'B0FK2JT4PQ', recur:true, cycle:'약 1~2개월',
-      name_ja:'ペット用ウェットティッシュ（大容量）', brand_ja:'オーガニック・獣医監修 / 無香料・ノンアルコール', spec_ja:'100枚×6袋（600枚）', cycle_ja:'約1~2ヶ月'},
-    {cat:'위생·청결', name:'장갑형 소취 물티슈', brand:'HICC PET / 코코넛향', spec:'20매 · 손에 끼워 닦기', price:2999, asin:'B0GR5R2G5K', recur:true, cycle:'약 1개월',
-      name_ja:'手袋型 消臭ウェットティッシュ', brand_ja:'HICC PET / ココナッツの香り', spec_ja:'20枚・手にはめて拭く', cycle_ja:'約1ヶ月'},
-    {cat:'위생·청결', name:'펫 소취 스프레이', brand:'0mistPro / 일본제 · 무향', spec:'500ml · 제균', price:1880, asin:'B0D53KSD14', recur:true, cycle:'약 1~2개월',
-      name_ja:'ペット消臭スプレー', brand_ja:'0mistPro / 日本製・無香', spec_ja:'500ml・除菌', cycle_ja:'約1~2ヶ月'},
-    {cat:'위생·청결', name:'강아지 샴푸', brand:'저자극 · 퍼피용', spec:'목욕용', price:null, q:'犬 シャンプー 低刺激 子犬', recur:true, cycle:'약 2~3개월',
-      name_ja:'犬用シャンプー', brand_ja:'低刺激・子犬用', spec_ja:'お風呂用', cycle_ja:'約2~3ヶ月'},
-    // 식사
-    {cat:'식사', name:'사료 (퍼피용)', brand:'생후 2개월~ · 소형견 성장기', spec:'주식 · 성장기 영양', price:null, q:'子犬 ドッグフード パピー 小型犬', recur:true, cycle:'약 월 1회',
-      name_ja:'ドッグフード（子犬用）', brand_ja:'生後2ヶ月~・小型犬 成長期', spec_ja:'主食・成長期の栄養', cycle_ja:'約月1回'},
-    {cat:'식사', name:'간식 (트릿)', brand:'무첨가 · 훈련 보상용', spec:'훈련·간식용', price:null, q:'犬 おやつ 無添加 子犬 トレーニング', recur:true, cycle:'약 월 1회',
-      name_ja:'おやつ（トリーツ）', brand_ja:'無添加・しつけのご褒美用', spec_ja:'しつけ・おやつ用', cycle_ja:'約月1回'},
-    {cat:'식사', name:'식기 (밥그릇·물그릇)', brand:'미끄럼방지', spec:'2구 또는 세트', price:null, q:'犬 食器 フードボウル 滑り止め',
-      name_ja:'食器（フードボウル・水皿）', brand_ja:'滑り止め', spec_ja:'2連またはセット'},
-    {cat:'식사', name:'자동 급수기', brand:'상시 급수', spec:'정수·급수기', price:null, q:'犬 自動給水器 ペット',
-      name_ja:'自動給水器', brand_ja:'常時給水', spec_ja:'浄水・給水器'},
-    // 그루밍
-    {cat:'그루밍', name:'슬리커 브러시 (빗)', brand:'더블코트 털관리', spec:'MAS 털빠짐 관리용', price:null, q:'犬 スリッカーブラシ 換毛',
-      name_ja:'スリッカーブラシ', brand_ja:'ダブルコートの被毛ケア', spec_ja:'MASの抜け毛ケア用'},
-    {cat:'그루밍', name:'발톱깎이', brand:'소형견용', spec:'정기 발톱 관리', price:null, q:'犬 爪切り 小型犬',
-      name_ja:'爪切り', brand_ja:'小型犬用', spec_ja:'定期的な爪のケア'},
-    {cat:'그루밍', name:'칫솔 · 치약', brand:'반려견 전용', spec:'치아 관리', price:null, q:'犬 歯ブラシ 歯磨き粉', recur:true, cycle:'치약 약 분기',
-      name_ja:'歯ブラシ・歯磨き粉', brand_ja:'犬専用', spec_ja:'歯のケア', cycle_ja:'歯磨き粉 約四半期'},
-    // 장난감
-    {cat:'장난감', name:'노즈워크 매트', brand:'머리쓰기 놀이', spec:'똑똑한 MAS 두뇌 자극', price:null, q:'犬 ノーズワークマット',
-      name_ja:'ノーズワークマット', brand_ja:'頭を使う遊び', spec_ja:'賢いMASの脳トレ'},
-    {cat:'장난감', name:'씹는 장난감', brand:'치발기', spec:'이갈이 시기용', price:null, q:'犬 噛むおもちゃ 子犬',
-      name_ja:'噛むおもちゃ', brand_ja:'歯固め', spec_ja:'歯の生え替わり時期用'},
-    {cat:'장난감', name:'터그 / 로프 장난감', brand:'상호작용 놀이', spec:'함께 노는 용', price:null, q:'犬 ロープ おもちゃ タグ',
-      name_ja:'タグ・ロープのおもちゃ', brand_ja:'ふれあい遊び', spec_ja:'一緒に遊ぶ用'},
-  ];
+// ---- 지식 (644 도감: 검색 우선 + 주제칩 + 아코디언) ----
+(function(){
+  const data=window.INFO;
+  const listEl=document.getElementById('iList'),chipsEl=document.getElementById('iChips'),countEl=document.getElementById('iCount'),searchEl=document.getElementById('iSearch');
+  const esc=s=>(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  if(!data||!Array.isArray(data.entries)||!data.entries.length){LANGHOOKS.push(()=>{listEl.innerHTML=`<div class="iguide"><p>—</p></div>`;});return;}
+  const entries=data.entries; entries.forEach((e,i)=>e._no=i+1);
+  const topics=data.topics||[], TJA=data.topics_ja||{};
+  const eterm=e=>LANG==='ja'?(e.term_ja||e.term):e.term;
+  const ebody=e=>LANG==='ja'?(e.body_ja||e.body):e.body;
+  const tlabel=tp=>LANG==='ja'?(TJA[tp]||tp):tp;
+  let topic=null, q='', open=new Set();
+  function md(src){const inline=s=>esc(s).replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>');let html='',inList=false;
+    (src||'').split('\n').forEach(raw=>{const line=raw.trim();
+      if(line.startsWith('- ')){if(!inList){html+='<ul class="info-ul">';inList=true;}html+=`<li>${inline(line.slice(2))}</li>`;}
+      else{if(inList){html+='</ul>';inList=false;}if(line)html+=`<p>${inline(line)}</p>`;}});
+    if(inList)html+='</ul>'; return html;}
+  function chips(){
+    const all=`<button class="ichip ${topic==='all'?'on':''}" data-tp="all">${t('info.all')}<span class="c">${entries.length}</span></button>`;
+    const tp=topics.map(tp=>{const c=entries.filter(e=>e.topic===tp).length;return c?`<button class="ichip ${topic===tp?'on':''}" data-tp="${esc(tp)}">${esc(tlabel(tp))}<span class="c">${c}</span></button>`:'';}).join('');
+    chipsEl.innerHTML=all+tp;
+  }
+  const match=e=>{ if(topic&&topic!=='all'&&e.topic!==topic)return false; if(q){const hay=(eterm(e)+' '+ebody(e)+' '+tlabel(e.topic)).toLowerCase();if(!hay.includes(q))return false;} return true; };
+  function itemHTML(e){
+    const opened=open.has(e._no);
+    const src=(e.sources&&e.sources.length)?`<div class="isrc"><span class="lab">${t('info.src')}</span>${e.sources.map((u,i)=>`<a href="${esc(u)}" target="_blank" rel="noopener">${t('info.video')}${e.sources.length>1?' '+(i+1):''}</a>`).join('')}</div>`:'';
+    return `<div class="iitem ${opened?'open':''}" data-no="${e._no}"><button class="ihead"><span class="no">${t('info.no')}${e._no}</span><span class="tm">${esc(eterm(e))}</span><span class="tg">${esc(tlabel(e.topic))}</span><span class="cv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span></button><div class="ibody">${md(ebody(e))}${src}</div></div>`;
+  }
+  function render(){
+    if(topic===null && !q){ countEl.textContent='';
+      listEl.innerHTML=`<div class="iguide"><div class="mk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3-3"/></svg></div><h2>${t('info.guideTitle')}</h2><p>${t('info.guide')}</p></div>`; return; }
+    const items=entries.filter(match);
+    countEl.textContent=items.length+t('info.count');
+    listEl.innerHTML=items.length?items.map(itemHTML).join(''):`<div class="iguide"><p>${t('info.none')}</p></div>`;
+  }
+  chipsEl.addEventListener('click',e=>{const b=e.target.closest('.ichip');if(!b)return;topic=(topic===b.dataset.tp)?null:b.dataset.tp;open.clear();chips();render();});
+  listEl.addEventListener('click',e=>{const h=e.target.closest('.ihead');if(!h)return;const it=h.closest('.iitem'),no=+it.dataset.no;if(open.has(no))open.delete(no);else open.add(no);it.classList.toggle('open');});
+  searchEl.addEventListener('input',e=>{q=e.target.value.trim().toLowerCase();open.clear();render();});
+  LANGHOOKS.push(()=>{chips();render();});
+})();
 
-  (function(){
-    const yen = n => '¥'+n.toLocaleString('ja-JP');
-    const KEY = 'luca_gear_have';
-    let have = {};
-    try{ have = JSON.parse(localStorage.getItem(KEY)) || {}; }catch(e){}
-    const id = p => p.asin || p.name;                        // 한국어 name 기준 — 언어 무관 고정 ID
-    const F = (p,f) => LANG==='ja' ? (p[f+'_ja']||p[f]) : p[f];
-    const catName = c => LANG==='ja' ? (CATS_JA[c]||c) : c;
-    const list = document.getElementById('gearList');
-    const statEl = document.getElementById('gearStat');
-    let filter = 'all';
-
-    const link = p => p.asin
-      ? {url:'https://www.amazon.co.jp/dp/'+p.asin, cls:'pbuy', label:t('buy.link')}
-      : {url:'https://www.amazon.co.jp/s?k='+encodeURIComponent(p.q||p.name), cls:'pbuy search', label:t('buy.search')};
-
-    function row(p){
-      const on = !!have[id(p)], l = link(p);
-      const badge = p.recur ? `<span class="badge recur">${t('badge.recur')}</span>` : '';
-      const cyc = (p.recur && F(p,'cycle')) ? ` · <span class="cyc">${F(p,'cycle')}</span>` : '';
-      const note = p.note ? `<div class="pnote">${F(p,'note')}</div>` : '';
-      const price = p.price!=null ? `<span class="pprice">${yen(p.price)}</span>` : `<span class="pprice none">${t('price.none')}</span>`;
-      return `<div class="prow ${on?'have':''}" data-id="${id(p).replace(/"/g,'')}">
-        <input type="checkbox" class="pchk" ${on?'checked':''} aria-label="have">
-        <div class="pinfo">
-          <div class="ptop"><span class="pname">${F(p,'name')}</span>${badge}</div>
-          <div class="pmeta">${F(p,'brand')} · ${F(p,'spec')}${cyc}</div>
-          ${note}
-        </div>
-        ${price}
-        <a class="${l.cls}" href="${l.url}" target="_blank" rel="noopener">${l.label}</a>
-      </div>`;
-    }
-    const passes = p => filter==='need' ? !have[id(p)] : filter==='recur' ? !!p.recur : true;
-
-    function render(){
-      let html = '';
-      CATS.forEach(cat=>{
-        const items = GEAR.filter(p=>p.cat===cat && passes(p));
-        if(!items.length) return;
-        html += `<div class="cat-group"><div class="cat-head">${catName(cat)} <span class="cnt">${items.length}</span></div>`+
-                `<div class="prod-list">${items.map(row).join('')}</div></div>`;
-      });
-      list.innerHTML = html || `<div class="gear-hint" style="text-align:center;padding:34px 0">${t('empty.none')}</div>`;
-      list.querySelectorAll('.pchk').forEach(chk=>chk.addEventListener('change',e=>{
-        const k = e.target.closest('.prow').dataset.id;
-        have[k] = e.target.checked;
-        localStorage.setItem(KEY, JSON.stringify(have));
-        window.LucaHub.save('gear', k, e.target.checked);
-        if(filter==='need') render(); else e.target.closest('.prow').classList.toggle('have', e.target.checked);
-        stats();
-      }));
-    }
-    function stats(){
-      const total = GEAR.length;
-      const haveN = GEAR.filter(p=>have[id(p)]).length;
-      const needSum = GEAR.reduce((a,p)=> a + (have[id(p)]?0:(p.price||0)), 0);
-      const recurN = GEAR.filter(p=>p.recur).length;
-      statEl.innerHTML =
-        `<div class="stat">${t('st.total')} <b>${total}</b></div>`+
-        `<div class="stat">${t('st.have')} <b>${haveN}</b></div>`+
-        `<div class="stat need">${t('st.need')} <b>${total-haveN}</b></div>`+
-        `<div class="stat need">${t('st.needsum')} <b>${yen(needSum)}</b></div>`+
-        `<div class="stat">${t('st.recur')} <b>${recurN}</b></div>`;
-    }
-    document.getElementById('gearFilters').addEventListener('click',e=>{
-      const b = e.target.closest('.fbtn'); if(!b) return;
-      document.querySelectorAll('#gearFilters .fbtn').forEach(x=>x.classList.remove('active'));
-      b.classList.add('active'); filter = b.dataset.f; render();
-    });
-    LANGHOOKS.push(()=>{ render(); stats(); });
-    window.LucaHub.onState('gear', g => {
-      have = Object.assign({}, have, g);
-      localStorage.setItem(KEY, JSON.stringify(have));
-      render(); stats();
-    });
-  })();
-
-  // ---- 건강 관리 데이터 (일본 기준) ----
-  // when.type: week(생후 N주) / month(생후 N개월) / deadline(base+days 내) / season / label
-  const BIRTH = '2026-05-25';   // 추정 생일 (브리더 확인 후 수정)
-  const ARRIVAL = '2026-07-25'; // 입양일
-  const HCATS = ['법적 의무 (일본)','예방접종 (混合ワクチン)','기생충 예방','건강검진','중성화','치아·성장'];
-  const HCATS_JA = {'법적 의무 (일본)':'法的義務（日本）','예방접종 (混合ワクチン)':'予防接種（混合ワクチン）','기생충 예방':'寄生虫予防','건강검진':'健康診断','중성화':'去勢・避妊','치아·성장':'歯・成長'};
-  const HEALTH = [
-    {cat:'법적 의무 (일본)', name:'마이크로칩 소유자 변경등록', when:{type:'deadline',base:'arrival',days:30}, law:true,
-      note:'2022.6~ 의무. 펫샵·브리더 분양견은 칩 장착됨 → 환경성 「犬と猫のマイクロチップ情報登録」에서 30일 내 소유자 정보 변경등록.',
-      name_ja:'マイクロチップ所有者変更登録',
-      note_ja:'2022.6~義務。ペットショップ・ブリーダーの分譲犬はチップ装着済み → 環境省「犬と猫のマイクロチップ情報登録」で30日以内に所有者情報を変更登録。'},
-    {cat:'법적 의무 (일본)', name:'광견병 예방접종 + 자치체 등록', when:{type:'deadline',base:'arrival',days:30}, law:true, recur:true, cycle:'매년 1회',
-      note:'狂犬病予防法: 생후 91일↑ 의무. 90일 넘겨 입양 시 입양 후 30일 내 접종. 注射済証을 자치체 제출 → 注射済票 발급. 이후 매년 1회.',
-      name_ja:'狂犬病予防接種＋自治体登録', cycle_ja:'毎年1回',
-      note_ja:'狂犬病予防法: 生後91日以上で義務。90日を過ぎて迎え入れた場合は迎え入れ後30日以内に接種。注射済証を自治体に提出 → 注射済票が発行される。以降は毎年1回。'},
-
-    {cat:'예방접종 (混合ワクチン)', name:'혼합백신 1차', when:{type:'week',week:6},
-      note:'보통 분양 전 브리더가 접종. 접종 이력·증명서 꼭 확인.',
-      name_ja:'混合ワクチン1回目', note_ja:'通常は分譲前にブリーダーが接種。接種歴・証明書を必ず確認。'},
-    {cat:'예방접종 (混合ワクチン)', name:'혼합백신 2차', when:{type:'week',week:9},
-      note:'1차 후 3~4주 간격. 동물병원에서.',
-      name_ja:'混合ワクチン2回目', note_ja:'1回目から3~4週間隔。動物病院で。'},
-    {cat:'예방접종 (混合ワクチン)', name:'혼합백신 3차 (최종)', when:{type:'week',week:14},
-      note:'생후 14~16주 최종 권장. 산책은 최종 접종 후 시작.',
-      name_ja:'混合ワクチン3回目（最終）', note_ja:'生後14~16週で最終接種が推奨。散歩は最終接種後に開始。'},
-
-    {cat:'기생충 예방', name:'심장사상충(필라리아) 예방', when:{type:'season'}, recur:true, cycle:'월 1회(시즌)',
-      note:'일본: 보통 5월~12월 매월(지역 따라 통년). 시작 전 수의사 상담. 주의: MDR1 — 약 선택 시 MAS 고지.',
-      name_ja:'フィラリア（犬糸状虫）予防', cycle_ja:'月1回（シーズン中）',
-      note_ja:'日本: 通常5月~12月に毎月（地域により通年）。開始前に獣医に相談。注意: MDR1 — 薬の選択時にMASであることを伝える。'},
-    {cat:'기생충 예방', name:'벼룩·진드기 예방', when:{type:'season'}, recur:true, cycle:'월 1회',
-      note:'3월 중순~12월, 실내는 통년 권장. 월 1회 투여.',
-      name_ja:'ノミ・マダニ予防', cycle_ja:'月1回',
-      note_ja:'3月中旬~12月、室内飼いは通年が推奨。月1回投与。'},
-    {cat:'기생충 예방', name:'내부기생충 구충 (분변검사)', when:{type:'label',label:'입양 직후~자견기',label_ja:'迎え入れ直後~子犬期'},
-      note:'분변검사 후 구충. 자견기에 수 회 반복.',
-      name_ja:'内部寄生虫の駆虫（検便）', note_ja:'検便後に駆虫。子犬期に数回繰り返す。'},
-
-    {cat:'건강검진', name:'첫 건강검진', when:{type:'deadline',base:'arrival',days:7},
-      note:'입양 후 1주 내 권장. 전반 상태·분변검사. 브리더 접종/검사 기록 지참.',
-      name_ja:'初回の健康診断', note_ja:'迎え入れ後1週間以内が推奨。全身状態・検便。ブリーダーの接種/検査記録を持参。'},
-    {cat:'건강검진', name:'유전질환 체크 (눈·청력·MDR1)', when:{type:'label',label:'자견기',label_ja:'子犬期'},
-      note:'MAS·블루멀 관련: 안과 검진, 청력(BAER), MDR1 유전자 검사 결과 확인.',
-      name_ja:'遺伝性疾患チェック（目・聴力・MDR1）', note_ja:'MAS・ブルーマール関連: 眼科検診、聴力（BAER）、MDR1遺伝子検査の結果を確認。'},
-    {cat:'건강검진', name:'정기 건강검진', when:{type:'label',label:'연 1회~',label_ja:'年1回~'}, recur:true, cycle:'연 1회',
-      note:'성견 연 1회 이상. 백신·필라리아 검사와 함께.',
-      name_ja:'定期健康診断', cycle_ja:'年1回', note_ja:'成犬は年1回以上。ワクチン・フィラリア検査と併せて。'},
-
-    {cat:'중성화', name:'去勢수술 (수컷)', when:{type:'month',month:6},
-      note:'보통 생후 6개월 전후. 시기·찬반은 수의사 상담.',
-      name_ja:'去勢手術（オス）', note_ja:'通常は生後6ヶ月前後。時期・賛否は獣医に相談。'},
-
-    {cat:'치아·성장', name:'유치→영구치 교환 확인', when:{type:'label',label:'생후 4~7개월',label_ja:'生後4~7ヶ月'},
-      note:'잔존유치 있으면 수의사 상담. 어릴 때 양치 습관 들이기.',
-      name_ja:'乳歯→永久歯の生え替わり確認', note_ja:'残存乳歯があれば獣医に相談。幼いうちに歯磨きの習慣をつける。'},
-  ];
-
-  (function(){
-    const KEY='luca_health_done';
-    let done={}; try{ done=JSON.parse(localStorage.getItem(KEY))||{}; }catch(e){}
-    const ymd=s=>{const[y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d);};
-    const addD=(dt,n)=>{const x=new Date(dt);x.setDate(x.getDate()+n);return x;};
-    const addM=(dt,n)=>{const x=new Date(dt);x.setMonth(x.getMonth()+n);return x;};
-    const fmt=dt=>(dt.getMonth()+1)+'/'+dt.getDate();
-    const birth=ymd(BIRTH), arrival=ymd(ARRIVAL);
-    const hid=p=>p.name;                                     // 한국어 name 기준 — 언어 무관 고정 ID
-    const F=(p,f)=>LANG==='ja' ? (p[f+'_ja']||p[f]) : p[f];
-    const catName=c=>LANG==='ja' ? (HCATS_JA[c]||c) : c;
-    let filter='all';
-    const list=document.getElementById('healthList');
-    const statEl=document.getElementById('healthStat');
-
-    function timing(p){
-      const w=p.when, ja=LANG==='ja';
-      if(w.type==='week')  return (ja?`生後${w.week}週`:`생후 ${w.week}주`)+`<br>~${fmt(addD(birth,w.week*7))}`;
-      if(w.type==='month') return (ja?`生後${w.month}ヶ月`:`생후 ${w.month}개월`)+`<br>~${fmt(addM(birth,w.month))}`;
-      if(w.type==='deadline'){const d=addD(w.base==='arrival'?arrival:birth,w.days);return (ja?`${w.days}日以内`:`${w.days}일 내`)+`<br>~${fmt(d)}`;}
-      if(w.type==='season') return t('tm.season');
-      return ja ? (w.label_ja||w.label||'—') : (w.label||'—');
-    }
-    function hrow(p){
-      const on=!!done[hid(p)];
-      const badges=(p.law?`<span class="badge law">${t('badge.law')}</span>`:'')+(p.recur?`<span class="badge recur">${t('badge.recur')}</span>`:'');
-      const cyc=(p.recur && F(p,'cycle')) ? ` · <span class="cyc">${F(p,'cycle')}</span>` : '';
-      return `<div class="prow ${on?'have':''}" data-id="${hid(p)}">
-        <input type="checkbox" class="pchk" ${on?'checked':''} aria-label="done">
-        <div class="pinfo">
-          <div class="ptop"><span class="pname">${F(p,'name')}</span>${badges}</div>
-          <div class="pmeta">${F(p,'note')}${cyc}</div>
-        </div>
-        <span class="ptime">${timing(p)}</span>
-      </div>`;
-    }
-    const passes=p=>filter==='todo'?!done[hid(p)]:filter==='recur'?!!p.recur:true;
-
-    function render(){
-      let html='';
-      HCATS.forEach(cat=>{
-        const items=HEALTH.filter(p=>p.cat===cat&&passes(p));
-        if(!items.length)return;
-        html+=`<div class="cat-group"><div class="cat-head">${catName(cat)} <span class="cnt">${items.length}</span></div>`+
-              `<div class="prod-list">${items.map(hrow).join('')}</div></div>`;
-      });
-      list.innerHTML=html||`<div class="gear-hint" style="text-align:center;padding:34px 0">${t('empty.none')}</div>`;
-      list.querySelectorAll('.pchk').forEach(chk=>chk.addEventListener('change',e=>{
-        const k=e.target.closest('.prow').dataset.id;
-        done[k]=e.target.checked;
-        localStorage.setItem(KEY,JSON.stringify(done));
-        window.LucaHub.save('health', k, e.target.checked);
-        if(filter==='todo')render();else e.target.closest('.prow').classList.toggle('have',e.target.checked);
-        stats();
-      }));
-    }
-    function stats(){
-      const total=HEALTH.length, doneN=HEALTH.filter(p=>done[hid(p)]).length;
-      const lawN=HEALTH.filter(p=>p.law).length, recurN=HEALTH.filter(p=>p.recur).length;
-      statEl.innerHTML=
-        `<div class="stat">${t('st.total')} <b>${total}</b></div>`+
-        `<div class="stat">${t('st.done')} <b>${doneN}</b></div>`+
-        `<div class="stat need">${t('st.left')} <b>${total-doneN}</b></div>`+
-        `<div class="stat need">${t('st.law')} <b>${lawN}</b></div>`+
-        `<div class="stat">${t('st.recur')} <b>${recurN}</b></div>`;
-    }
-    function banners(){
-      const d=addD(arrival,30);
-      const ds=`${d.getFullYear()}.${d.getMonth()+1}.${d.getDate()}`;
-      document.getElementById('healthAlerts').innerHTML=
-        `<div class="callout danger compact"><div class="t">${t('ha.title')(ds)}</div><ul>`+
-        `<li>${t('ha.b1')}</li>`+
-        `<li>${t('ha.b2')}</li></ul></div>`;
-      document.getElementById('healthHint').textContent=t('hh')(BIRTH,ARRIVAL);
-    }
-    document.getElementById('healthFilters').addEventListener('click',e=>{
-      const b=e.target.closest('.fbtn');if(!b)return;
-      document.querySelectorAll('#healthFilters .fbtn').forEach(x=>x.classList.remove('active'));
-      b.classList.add('active');filter=b.dataset.f;render();
-    });
-    LANGHOOKS.push(()=>{ banners(); render(); stats(); });
-    window.LucaHub.onState('health', h => {
-      done = Object.assign({}, done, h);
-      localStorage.setItem(KEY, JSON.stringify(done));
-      render(); stats();
-    });
-  })();
-
-  // ---- 지식·정보 (개념 사전) ----
-  (function(){
-    const data = window.INFO;
-    const list = document.getElementById('infoList');
-    const esc = s => (s||'').replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-    if(!data || !Array.isArray(data.entries) || !data.entries.length){
-      LANGHOOKS.push(()=>{ list.innerHTML = `<div class="info-empty">${t('empty.data')}</div>`; });
-      return;
-    }
-    const entries = data.entries;
-    const topics = data.topics || [];
-    let filter='all', q='';
-    const statEl = document.getElementById('infoStat');
-    const filtersEl = document.getElementById('infoFilters');
-    const searchEl = document.getElementById('infoSearch');
-    const countEl = document.getElementById('infoCount');
-    const eterm = e => LANG==='ja' ? (e.term_ja||e.term) : e.term;
-    const ebody = e => LANG==='ja' ? (e.body_ja||e.body) : e.body;
-    const topicLabel = tp => LANG==='ja' ? (TOPIC_JA[tp]||tp) : tp;
-
-    function buildFilters(){
-      countEl.textContent = entries.length + t('info.items');
-      filtersEl.innerHTML =
-        `<button class="fbtn ${filter==='all'?'active':''}" data-f="all">${t('info.all')} <span class="cnt2">${entries.length}</span></button>` +
-        topics.map(tp=>{
-          const c = entries.filter(e=>e.topic===tp).length;
-          return c ? `<button class="fbtn ${filter===tp?'active':''}" data-f="${esc(tp)}">${esc(topicLabel(tp))} <span class="cnt2">${c}</span></button>` : '';
-        }).join('');
-    }
-
-    // 간단 마크다운 렌더: **굵게**, '- ' 불릿, 줄바꿈
-    function md(src){
-      const inline = s => esc(s).replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-      let html='', inList=false;
-      (src||'').split('\n').forEach(raw=>{
-        const line = raw.trim();
-        if(line.startsWith('- ')){
-          if(!inList){ html+='<ul class="info-ul">'; inList=true; }
-          html += `<li>${inline(line.slice(2))}</li>`;
-        } else {
-          if(inList){ html+='</ul>'; inList=false; }
-          if(line) html += `<p>${inline(line)}</p>`;
-        }
-      });
-      if(inList) html+='</ul>';
-      return html;
-    }
-    function card(e){
-      const src = (e.sources&&e.sources.length)
-        ? `<div class="info-src">${t('info.src')}${e.sources.map((u,i)=>` <a href="${esc(u)}" target="_blank" rel="noopener">${t('info.video')}${e.sources.length>1?(i+1):''}</a>`).join('')}</div>`
-        : '';
-      return `<div class="info-card">
-        <span class="info-term">${esc(eterm(e))}</span><span class="info-tag">${esc(topicLabel(e.topic))}</span>
-        <div class="info-body">${md(ebody(e))}</div>
-        ${src}
-      </div>`;
-    }
-    function match(e){
-      if(filter!=='all' && e.topic!==filter) return false;
-      if(q){
-        const hay = (eterm(e)+' '+ebody(e)+' '+e.topic+' '+topicLabel(e.topic)).toLowerCase();
-        if(!hay.includes(q)) return false;
-      }
-      return true;
-    }
-    function render(){
-      const items = entries.filter(match);
-      statEl.innerHTML = `<div class="stat">${t('st.show')} <b>${items.length}</b></div>`;
-      list.innerHTML = items.length ? items.map(card).join('') : `<div class="info-empty">${t('empty.none')}</div>`;
-    }
-    filtersEl.addEventListener('click', e=>{
-      const b = e.target.closest('.fbtn'); if(!b) return;
-      filtersEl.querySelectorAll('.fbtn').forEach(x=>x.classList.remove('active'));
-      b.classList.add('active'); filter = b.dataset.f; render();
-    });
-    searchEl.addEventListener('input', e=>{ q = e.target.value.trim().toLowerCase(); render(); });
-    LANGHOOKS.push(()=>{ buildFilters(); render(); });
-  })();
-
-  // ---- 최초 1회 언어 적용 (모든 hook 등록 후) ----
-  applyLang();
+LANGHOOKS.push(renderDogs);
+LANGHOOKS.push(()=>{ if(document.getElementById('profile').classList.contains('active') && _curDog) openProfile(_curDog); });
+applyLang();
 </script>
+
 <script type="module">
-  // ---- Firebase 실시간 동기화 (체크 상태를 모든 기기에 즉시 반영) ----
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
   import { getFirestore, doc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
   const firebaseConfig = {
-    apiKey: "AIzaSyCW3PnwOzKJhR24O-wH4pZLmYfxcvzMk2A",
-    authDomain: "luca-2ec6c.firebaseapp.com",
-    projectId: "luca-2ec6c",
-    storageBucket: "luca-2ec6c.firebasestorage.app",
-    messagingSenderId: "174572149580",
-    appId: "1:174572149580:web:c47b6e1fb0c147aba74de9"
-  };
-  try {
-    const db = getFirestore(initializeApp(firebaseConfig));
-    const ref = doc(db, "luca", "state");
-    window.LucaHub._save = (kind, id, val) =>
-      setDoc(ref, { [kind]: { [id]: !!val } }, { merge: true }).catch(e => console.warn('cloud save', e));
-    onSnapshot(ref, snap => {
-      const d = snap.data() || {};
-      window.LucaHub.push({ gear: d.gear || {}, health: d.health || {} });
-    }, e => console.warn('cloud sync', e));
-  } catch (e) { console.warn('firebase init', e); }
+    apiKey:"AIzaSyCW3PnwOzKJhR24O-wH4pZLmYfxcvzMk2A", authDomain:"luca-2ec6c.firebaseapp.com",
+    projectId:"luca-2ec6c", storageBucket:"luca-2ec6c.firebasestorage.app",
+    messagingSenderId:"174572149580", appId:"1:174572149580:web:c47b6e1fb0c147aba74de9" };
+  try{
+    const db=getFirestore(initializeApp(firebaseConfig));
+    const ref=doc(db,"luca","state");
+    window.LucaHub._save=(kind,id,val)=>setDoc(ref,{[kind]:{[id]:val}},{merge:true}).catch(e=>console.warn('save',e));
+    onSnapshot(ref,snap=>{ const d=snap.data()||{}; window.LucaHub.push(d); }, e=>console.warn('sync',e));
+  }catch(e){ console.warn('firebase',e); }
 </script>
 </body>
 </html>
