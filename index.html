@@ -4,12 +4,15 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>우리 아이들 — LUCA</title>
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<meta name="theme-color" content="#F2EEE5">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
 <style>
   :root{
     --paper:#F2EEE5; --paper-edge:#E8E2D4; --card:#FBF8F1;
-    --ink:#2A2620; --ink-soft:#6E665A; --ink-faint:#A79D8C;
+    --ink:#2A2620; --ink-soft:#6E665A; --ink-faint:#7F7563;
     --line:#E4DCCC; --line-soft:#EEE8DA;
     --copper:#A6562F; --copper-ink:#8A4622; --copper-soft:#F0E3D6;
     --slate:#4F6B82; --slate-soft:#E2E8EE; --slate-line:#CFDAE3;
@@ -287,6 +290,7 @@
       <div class="mast-line"><span class="lab" data-i18n="home.sub">Field Guide</span><span class="rule"></span><span class="yr">2026</span></div>
     </div>
     <div class="dogs" id="dogList"></div>
+    <div id="homeNext"></div>
   </section>
 
   <!-- ===== PROFILE (reached from a dog card) ===== -->
@@ -352,7 +356,7 @@
   <!-- ===== INFO / 지식 (phase 5) ===== -->
   <section id="info" class="view pad">
     <div class="mast"><div class="mast-top"><div><span class="t" data-i18n="nav.info">지식</span><span class="e">Field Guide</span></div></div>
-      <div class="mast-line"><span class="lab">644 Entries</span><span class="rule"></span><span class="yr">2026</span></div></div>
+      <div class="mast-line"><span class="lab" id="infoLab">644 Entries</span><span class="rule"></span><span class="yr">2026</span></div></div>
     <div class="isearch-wrap"><div class="isearch">
       <svg class="mag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3-3"/></svg>
       <input id="iSearch" type="search" data-i18n-ph="info.search" placeholder="개념·내용 검색" autocomplete="off">
@@ -373,7 +377,6 @@
 
 </div>
 
-<script src="info_data.js"></script>
 <script>
 // ============================================================
 //  LUCA — 우리 아이들 (재설계)
@@ -410,6 +413,7 @@ const T = {
     'cal.k.health':'건강','cal.k.supply':'용품','cal.k.event':'이벤트',
     'cal.empty':'이 날짜엔 일정이 없어요.','cal.emptyUp':'다가오는 일정이 없어요.',
     'cal.addTitle':'일정 제목','cal.addNone':'공용','cal.save':'추가','cal.cancel':'취소','cal.delConfirm':'이 일정을 삭제할까요?',
+    'home.next':'다음 일정','g.bought':'구매함','g.resetConfirm':'오늘 구매한 것으로 보고 새 주기를 시작할까요?','info.loading':'도감 불러오는 중…',
     'info.search':'개념·내용 검색','info.all':'전체','info.guideTitle':'무엇이 궁금하세요?','info.guide':'주제를 고르거나 위에서 검색해 보세요.','info.none':'검색 결과가 없어요.','info.src':'출처','info.video':'영상','info.no':'No.','info.count':'개',
   },
   ja:{
@@ -440,11 +444,17 @@ const T = {
     'cal.k.health':'健康','cal.k.supply':'用品','cal.k.event':'イベント',
     'cal.empty':'この日の予定はありません。','cal.emptyUp':'近日の予定はありません。',
     'cal.addTitle':'予定のタイトル','cal.addNone':'共用','cal.save':'追加','cal.cancel':'キャンセル','cal.delConfirm':'この予定を削除しますか？',
+    'home.next':'次の予定','g.bought':'購入済み','g.resetConfirm':'今日購入したものとして新しいサイクルを始めますか？','info.loading':'図鑑を読み込み中…',
     'info.search':'用語・内容で検索','info.all':'すべて','info.guideTitle':'何が気になりますか？','info.guide':'トピックを選ぶか、上で検索してください。','info.none':'検索結果がありません。','info.src':'出典','info.video':'動画','info.no':'No.','info.count':'件',
   }
 };
 const t = k => { const v=T[LANG][k]; return v!==undefined?v:(T.ko[k]!==undefined?T.ko[k]:k); };
 const F = (o,f) => LANG==='ja' ? (o[f+'_ja']!==undefined?o[f+'_ja']:o[f]) : o[f];
+const esc = s => String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function monthsSince(birth){ const b=ymd(birth), n=new Date(), t0=new Date(n.getFullYear(),n.getMonth(),n.getDate());
+  let mo=(t0.getFullYear()-b.getFullYear())*12+(t0.getMonth()-b.getMonth()); if(t0.getDate()<b.getDate())mo--; return mo; }
+// 퍼피 전용 항목(stage:'puppy')은 생일이 등록된 성견(12개월 이상)에게는 숨김
+function stageOk(p,dog){ return p.stage!=='puppy' || !dog.birth || monthsSince(dog.birth)<12; }
 
 // ---- 강아지 데이터 (로이 → 유나 → 루카) ----
 const DOGS = [
@@ -527,6 +537,22 @@ function renderDogs(){
   wrap.querySelectorAll('.dog').forEach(b=>b.addEventListener('click',()=>openProfile(b.dataset.dog)));
 }
 
+// ---- 홈: 다음 일정 (지난 미완료 + 30일 이내, 달력에서 계산) ----
+function renderGlance(){
+  const el=document.getElementById('homeNext');
+  const items=window._calUpcoming?window._calUpcoming(3):[];
+  if(!items.length){ el.innerHTML=''; return; }
+  const dogName=id=>{const d=DOGS.find(x=>x.id===id);return d?F(d,'name'):'';};
+  el.innerHTML=`<div class="eyebrow"><span class="tick"></span><span class="k">${t('home.next')}</span><span class="rule"></span></div>`+
+    items.map(it=>{
+      const kind=`<span class="ckind ${it.type}">${t('cal.k.'+it.type)}</span>`;
+      const dn=it.dogId?`<span>${dogName(it.dogId)}</span>`:'';
+      return `<div class="cprow tap"><span class="when ${it._dd<0?'over':''}">${it._mmdd}</span><div class="ci"><div class="ct">${esc(it.title)}</div><div class="cm">${kind}${dn}</div></div><span class="go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span></div>`;
+    }).join('');
+}
+window._renderGlance=renderGlance;
+document.getElementById('homeNext').addEventListener('click',e=>{ if(e.target.closest('.cprow')) showTab('cal'); });
+
 // ---- 프로필 ----
 let _curDog=null;
 function openProfile(id){
@@ -562,12 +588,14 @@ document.getElementById('pfBack').addEventListener('click',()=>showView('home'))
 // ---- 뷰/탭 전환 ----
 function showView(id){
   document.querySelectorAll('.view').forEach(s=>s.classList.toggle('active', s.id===id));
-  window.scrollTo({top:0,behavior:'instant'in window?'instant':'auto'});
+  window.scrollTo(0,0);
 }
 function showTab(id){
   showView(id);
   document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('on', b.dataset.tab===id));
   if(id==='cal' && window._calRefresh) window._calRefresh();
+  if(id==='home' && window._renderGlance) window._renderGlance();
+  if(id==='info') ensureInfo();
 }
 document.getElementById('tabbar').addEventListener('click',e=>{
   const b=e.target.closest('.tab'); if(!b) return; showTab(b.dataset.tab);
@@ -634,7 +662,7 @@ window.GEAR=GEAR;
   const link=p=>p.asin?{u:'https://www.amazon.co.jp/dp/'+p.asin,c:'pbuy',l:t('g.buy')}:{u:'https://www.amazon.co.jp/s?k='+encodeURIComponent(p.q||p.name),c:'pbuy search',l:t('g.search')};
   function buyNextLine(p){
     const id=gid(p),c=cfg[id],nd=c?computeNext(c):'';
-    if(nd){const dd=dday(nd),over=dd<0;return `<div class="pbuyrow"><span class="pnext ${over?'over':''}">${t('g.nextBuy')} ${mmdd(nd)} · ${over?t('g.over'):'D-'+dd}</span><button class="pedit" data-edit="${id}">${t('g.edit')}</button></div>`;}
+    if(nd){const dd=dday(nd),over=dd<0;return `<div class="pbuyrow"><span class="pnext ${over?'over':''}">${t('g.nextBuy')} ${mmdd(nd)} · ${over?t('g.over'):'D-'+dd}</span><button class="pedit" data-bought="${id}">${t('g.bought')}</button><button class="pedit" data-edit="${id}">${t('g.edit')}</button></div>`;}
     return `<div class="pbuyrow"><button class="pset" data-edit="${id}">+ ${t('g.setBuy')}</button></div>`;
   }
   function previewHTML(d){const nd=computeNext(d);if(!nd)return `${t('g.nextBuy')} —`;const est=(d.mode!=='manual'&&estDays(d))?`${t('g.estDays')} ${estDays(d)}${t('g.days')} · `:'';return `${est}${t('g.nextBuy')} ${mmdd(nd)} · D-${dday(nd)}`;}
@@ -674,20 +702,29 @@ window.GEAR=GEAR;
       if(filter==='need')render();else e.target.closest('.prow').classList.toggle('have',e.target.checked);stats();
     }));
     list.querySelectorAll('[data-edit]').forEach(b=>b.addEventListener('click',()=>{openCfg=b.dataset.edit;const td=iso(new Date());draft=Object.assign({mode:'weight',total:'',perDay:'',start:td,nextDate:td},cfg[openCfg]||{});render();}));
+    list.querySelectorAll('[data-bought]').forEach(b=>b.addEventListener('click',()=>{
+      const id=b.dataset.bought,c=cfg[id]; if(!c)return;
+      const td=iso(new Date());
+      if(c.mode==='manual'){openCfg=id;draft=Object.assign({mode:'manual',total:'',perDay:'',start:td,nextDate:td},c);render();return;}
+      if(!confirm(t('g.resetConfirm')))return;
+      c.start=td; c.nextDate=computeNext(c);
+      localStorage.setItem('luca_gear_cfg',JSON.stringify(cfg));window.GEAR_CFG=cfg;window.LucaHub.save('gearcfg',id,c);
+      render();if(window._calRefresh)window._calRefresh();
+    }));
     const ed=list.querySelector('.gcfg');if(ed){
       ed.querySelectorAll('[data-seg] button').forEach(b=>b.addEventListener('click',()=>{draft.mode=b.dataset.mode;render();}));
       ed.querySelectorAll('input').forEach(inp=>inp.addEventListener('input',()=>{draft[inp.dataset.k]=inp.value;const pv=ed.querySelector('#gPrev');if(pv){pv.textContent=previewHTML(draft);pv.style.opacity=computeNext(draft)?1:.5;}}));
       ed.querySelector('[data-cfg="cancel"]').addEventListener('click',()=>{openCfg=null;draft=null;render();});
-      const clr=ed.querySelector('[data-cfg="clear"]');if(clr)clr.addEventListener('click',()=>{const id=openCfg;delete cfg[id];localStorage.setItem('luca_gear_cfg',JSON.stringify(cfg));window.GEAR_CFG=cfg;window.LucaHub.save('gearcfg',id,null);openCfg=null;draft=null;render();});
+      const clr=ed.querySelector('[data-cfg="clear"]');if(clr)clr.addEventListener('click',()=>{const id=openCfg;delete cfg[id];localStorage.setItem('luca_gear_cfg',JSON.stringify(cfg));window.GEAR_CFG=cfg;window.LucaHub.save('gearcfg',id,null);openCfg=null;draft=null;render();if(window._calRefresh)window._calRefresh();});
       ed.querySelector('[data-cfg="save"]').addEventListener('click',()=>{const id=openCfg,nd=computeNext(draft);
         cfg[id]={mode:draft.mode,total:draft.total,perDay:draft.perDay,start:draft.start,nextDate:draft.mode==='manual'?draft.nextDate:nd};
-        localStorage.setItem('luca_gear_cfg',JSON.stringify(cfg));window.GEAR_CFG=cfg;window.LucaHub.save('gearcfg',id,cfg[id]);openCfg=null;draft=null;render();});
+        localStorage.setItem('luca_gear_cfg',JSON.stringify(cfg));window.GEAR_CFG=cfg;window.LucaHub.save('gearcfg',id,cfg[id]);openCfg=null;draft=null;render();if(window._calRefresh)window._calRefresh();});
     }
   }
   document.getElementById('gFilters').addEventListener('click',e=>{const b=e.target.closest('.fbtn');if(!b)return;document.querySelectorAll('#gFilters .fbtn').forEach(x=>x.classList.remove('on'));b.classList.add('on');filter=b.dataset.f;render();});
   LANGHOOKS.push(()=>{render();stats();});
   window.LucaHub.onState('gear',g=>{have=Object.assign({},have,g);localStorage.setItem('luca_gear_have',JSON.stringify(have));render();stats();});
-  window.LucaHub.onState('gearcfg',c=>{Object.keys(c).forEach(k=>{if(c[k]===null)delete cfg[k];else cfg[k]=c[k];});localStorage.setItem('luca_gear_cfg',JSON.stringify(cfg));window.GEAR_CFG=cfg;render();});
+  window.LucaHub.onState('gearcfg',c=>{Object.keys(c).forEach(k=>{if(c[k]===null)delete cfg[k];else cfg[k]=c[k];});localStorage.setItem('luca_gear_cfg',JSON.stringify(cfg));window.GEAR_CFG=cfg;render();if(window._calRefresh)window._calRefresh();});
 })();
 
 // ---- 건강 (아이별) ----
@@ -700,27 +737,27 @@ const HEALTH=[
  {cat:'법적 의무',name:'광견병 예방접종 + 자치체 등록',when:{type:'deadline',base:'arrival',days:30},law:true,recur:true,cycle:'매년 1회',links:[],
    note:'생후 91일↑ 의무. 注射済証 제출 → 注射済票. 이후 매년.',
    name_ja:'狂犬病予防接種＋自治体登録',cycle_ja:'毎年1回',note_ja:'生後91日以上で義務。注射済証を提出→注射済票。以降毎年。'},
- {cat:'예방접종',name:'혼합백신 1차',when:{type:'week',week:6},links:[],
+ {cat:'예방접종',name:'혼합백신 1차',when:{type:'week',week:6},stage:'puppy',links:[],
    note:'보통 분양 전 브리더 접종. 증명서 확인.',name_ja:'混合ワクチン1回目',note_ja:'通常は分譲前にブリーダー接種。証明書を確認。'},
- {cat:'예방접종',name:'혼합백신 2차',when:{type:'week',week:9},links:[],
+ {cat:'예방접종',name:'혼합백신 2차',when:{type:'week',week:9},stage:'puppy',links:[],
    note:'1차 후 3~4주 간격.',name_ja:'混合ワクチン2回目',note_ja:'1回目から3~4週間隔。'},
- {cat:'예방접종',name:'혼합백신 3차 (최종)',when:{type:'week',week:14},links:[],
+ {cat:'예방접종',name:'혼합백신 3차 (최종)',when:{type:'week',week:14},stage:'puppy',links:[],
    note:'생후 14~16주. 산책은 최종 접종 후.',name_ja:'混合ワクチン3回目（最終）',note_ja:'生後14~16週。散歩は最終接種後。'},
  {cat:'기생충 예방',name:'심장사상충(필라리아) 예방',when:{type:'season'},recur:true,cycle:'월 1회',links:[],
    note:'5~12월 매월. MDR1 — 약 선택 시 MAS 고지.',name_ja:'フィラリア予防',cycle_ja:'月1回',note_ja:'5~12月に毎月。MDR1 — 薬の選択時にMASを伝える。'},
  {cat:'기생충 예방',name:'벼룩·진드기 예방',when:{type:'season'},recur:true,cycle:'월 1회',links:[],
    note:'3월 중순~12월, 실내는 통년.',name_ja:'ノミ・マダニ予防',cycle_ja:'月1回',note_ja:'3月中旬~12月、室内は通年。'},
- {cat:'기생충 예방',name:'내부기생충 구충 (분변검사)',when:{type:'label',label:'입양 직후~자견기',label_ja:'迎え入れ直後~子犬期'},links:[],
+ {cat:'기생충 예방',name:'내부기생충 구충 (분변검사)',when:{type:'label',label:'입양 직후~자견기',label_ja:'迎え入れ直後~子犬期'},stage:'puppy',links:[],
    note:'분변검사 후 구충. 자견기 수 회.',name_ja:'内部寄生虫の駆虫（検便）',note_ja:'検便後に駆虫。子犬期に数回。'},
  {cat:'건강검진',name:'첫 건강검진',when:{type:'deadline',base:'arrival',days:7},links:[],
    note:'입양 후 1주 내. 전반 상태·분변검사.',name_ja:'初回の健康診断',note_ja:'迎え入れ後1週間以内。全身状態・検便。'},
- {cat:'건강검진',name:'유전질환 체크 (눈·청력·MDR1)',when:{type:'label',label:'자견기',label_ja:'子犬期'},links:[],
+ {cat:'건강검진',name:'유전질환 체크 (눈·청력·MDR1)',when:{type:'label',label:'자견기',label_ja:'子犬期'},stage:'puppy',links:[],
    note:'안과·청력(BAER)·MDR1 검사 확인.',name_ja:'遺伝性疾患チェック（目・聴力・MDR1）',note_ja:'眼科・聴力(BAER)・MDR1検査を確認。'},
  {cat:'건강검진',name:'정기 건강검진',when:{type:'label',label:'연 1회~',label_ja:'年1回~'},recur:true,cycle:'연 1회',links:[],
    note:'성견 연 1회 이상.',name_ja:'定期健康診断',cycle_ja:'年1回',note_ja:'成犬は年1回以上。'},
- {cat:'중성화',name:'중성화 수술',when:{type:'month',month:6},links:[],
+ {cat:'중성화',name:'중성화 수술',when:{type:'month',month:6},stage:'puppy',links:[],
    note:'보통 생후 6개월 전후. 수의사 상담.',name_ja:'去勢・避妊手術',note_ja:'通常は生後6ヶ月前後。獣医に相談。'},
- {cat:'치아·성장',name:'유치→영구치 교환 확인',when:{type:'label',label:'생후 4~7개월',label_ja:'生後4~7ヶ月'},links:[],
+ {cat:'치아·성장',name:'유치→영구치 교환 확인',when:{type:'label',label:'생후 4~7개월',label_ja:'生後4~7ヶ月'},stage:'puppy',links:[],
    note:'잔존유치 있으면 상담. 양치 습관.',name_ja:'乳歯→永久歯の確認',note_ja:'残存乳歯があれば相談。歯磨き習慣。'},
 ];
 window.HEALTH=HEALTH; window.HEALTH_DONE={};
@@ -761,23 +798,24 @@ window.HEALTH=HEALTH; window.HEALTH_DONE={};
     const dog=getDog(); selector();
     hintEl.style.display=dog.birth?'none':'block'; if(!dog.birth) hintEl.innerHTML=t('h.hintTbd');
     let html='';
-    HCATS.forEach(cat=>{const items=HEALTH.filter(p=>p.cat===cat&&passes(p));if(!items.length)return;
+    HCATS.forEach(cat=>{const items=HEALTH.filter(p=>p.cat===cat&&stageOk(p,dog)&&passes(p));if(!items.length)return;
       html+=`<div class="cat"><div class="cathead">${catName(cat)} <span class="cnt">${items.length}</span></div>${items.map(p=>hrow(p,dog)).join('')}</div>`;});
     list.innerHTML=html||`<div class="ghint" style="text-align:center;padding:30px 0">${t('h.empty')}</div>`;
     list.querySelectorAll('.pchk').forEach(c=>c.addEventListener('change',e=>{
       const nm=e.target.closest('.prow').dataset.id,k=selDog+'|'+nm;
       done[k]=e.target.checked;localStorage.setItem('luca_health_done',JSON.stringify(done));window.LucaHub.save('health',k,e.target.checked);
       if(filter==='todo')render();else e.target.closest('.prow').classList.toggle('have',e.target.checked);stats();
+      if(window._calRefresh)window._calRefresh();
     }));
   }
   function stats(){
-    const dog=getDog(),total=HEALTH.length,doneN=HEALTH.filter(p=>done[key(dog.id,p)]).length,lawN=HEALTH.filter(p=>p.law).length;
+    const dog=getDog(),apply=HEALTH.filter(p=>stageOk(p,dog)),total=apply.length,doneN=apply.filter(p=>done[key(dog.id,p)]).length,lawN=apply.filter(p=>p.law).length;
     statEl.innerHTML=`<div class="gstat">${t('h.st.done')} <b>${doneN}</b></div><div class="gstat need">${t('h.st.left')} <b>${total-doneN}</b></div><div class="gstat">${t('h.st.law')} <b>${lawN}</b></div>`;
   }
   document.getElementById('hFilters').addEventListener('click',e=>{const b=e.target.closest('.fbtn');if(!b)return;document.querySelectorAll('#hFilters .fbtn').forEach(x=>x.classList.remove('on'));b.classList.add('on');filter=b.dataset.f;render();});
   window.openHealth=function(dogId){if(dogId&&DOGS.find(d=>d.id===dogId))selDog=dogId;showTab('health');render();stats();};
   LANGHOOKS.push(()=>{render();stats();});
-  window.LucaHub.onState('health',h=>{done=Object.assign({},done,h);window.HEALTH_DONE=done;localStorage.setItem('luca_health_done',JSON.stringify(done));render();stats();});
+  window.LucaHub.onState('health',h=>{done=Object.assign({},done,h);window.HEALTH_DONE=done;localStorage.setItem('luca_health_done',JSON.stringify(done));render();stats();if(window._calRefresh)window._calRefresh();});
 })();
 
 // ---- 달력 (통합: 건강·용품 파생 + 이벤트 + 사용자추가 + ★) ----
@@ -795,7 +833,9 @@ window.EVENTS=EVENTS;
   const addD=(dt,n)=>{const x=new Date(dt);x.setDate(x.getDate()+n);return x;};
   const addM=(dt,n)=>{const x=new Date(dt);x.setMonth(x.getMonth()+n);return x;};
   const CF=(o,f)=>LANG==='ja'?(o[f+'_ja']||o[f]):o[f];
-  const now=new Date(), today=new Date(now.getFullYear(),now.getMonth(),now.getDate()), todayISO=iso(today);
+  let today=(()=>{const n=new Date();return new Date(n.getFullYear(),n.getMonth(),n.getDate());})(), todayISO=iso(today);
+  // 페이지를 며칠씩 열어둬도 '오늘'이 어긋나지 않게 렌더 때마다 재계산
+  function syncToday(){const n=new Date(),t2=new Date(n.getFullYear(),n.getMonth(),n.getDate()),i2=iso(t2);if(i2!==todayISO){today=t2;todayISO=i2;}}
   const dday=s=>Math.round((ymdC(s)-today)/864e5);
   const mmdd=s=>{const d=ymdC(s);return(d.getMonth()+1)+'/'+d.getDate();};
   const fmtFull=s=>{const d=ymdC(s);return LANG==='ja'?`${d.getMonth()+1}月${d.getDate()}日`:`${d.getMonth()+1}월 ${d.getDate()}일`;};
@@ -819,6 +859,7 @@ window.EVENTS=EVENTS;
   function collect(){
     const items=[];
     (window.HEALTH||[]).forEach(p=>DOGS.forEach(dog=>{
+      if(!stageOk(p,dog))return;
       const dt=healthDate(p,dog); if(!dt)return;
       const done=!!(window.HEALTH_DONE||{})[dog.id+'|'+p.name];
       items.push({date:iso(dt),type:'health',title:CF(p,'name'),dogId:dog.id,done,source:'derived'});
@@ -845,11 +886,11 @@ window.EVENTS=EVENTS;
     const when=showDate?`<span class="when ${dday(it.date)<0?'over':''}">${mmdd(it.date)}</span>`:'';
     const del=it.source==='user'?`<button class="del" data-del="${it.uid}" aria-label="del"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>`:'';
     const go=tap?`<span class="go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>`:'';
-    return `<div class="cprow ${tap}" data-type="${it.type}" data-dog="${it.dogId||''}">${when}<div class="ci"><div class="ct ${done}">${it.title}</div><div class="cm">${kind}${dn}</div></div>${del}${go}</div>`;
+    return `<div class="cprow ${tap}" data-type="${it.type}" data-dog="${it.dogId||''}">${when}<div class="ci"><div class="ct ${done}">${esc(it.title)}</div><div class="cm">${kind}${dn}</div></div>${del}${go}</div>`;
   }
   function addForm(){
     const opts=`<option value="">${t('cal.addNone')}</option>`+DOGS.map(d=>`<option value="${d.id}" ${draft.dogId===d.id?'selected':''}>${F(d,'name')}</option>`).join('');
-    return `<div class="cadd"><input type="text" data-df="title" placeholder="${t('cal.addTitle')}" value="${(draft.title||'').replace(/"/g,'&quot;')}"><select data-df="dogId">${opts}</select><div class="gbtns"><button class="cancel" data-add-cancel>${t('cal.cancel')}</button><button class="save" data-add-save>${t('cal.save')}</button></div></div>`;
+    return `<div class="cadd"><input type="text" data-df="title" placeholder="${t('cal.addTitle')}" value="${esc(draft.title||'')}"><select data-df="dogId">${opts}</select><div class="gbtns"><button class="cancel" data-add-cancel>${t('cal.cancel')}</button><button class="save" data-add-save>${t('cal.save')}</button></div></div>`;
   }
   function renderFilters(){
     const el=document.getElementById('calFilters');
@@ -858,6 +899,7 @@ window.EVENTS=EVENTS;
     el.innerHTML=dogs+types;
   }
   function renderGrid(){
+    syncToday();
     document.getElementById('calMo').textContent=LANG==='ja'?`${viewY}年 ${viewM+1}月`:`${viewY}. ${viewM+1}`;
     document.getElementById('calDow').innerHTML=DOW[LANG].map((d,i)=>`<span class="${i===0?'sun':''}">${d}</span>`).join('');
     const byDate={}; collect().filter(passes).forEach(it=>{(byDate[it.date]=byDate[it.date]||[]).push(it);});
@@ -873,6 +915,17 @@ window.EVENTS=EVENTS;
     }
     document.getElementById('calCells').innerHTML=cells;
   }
+  // 지난 미완료(over: 건강 미체크·용품 구매일 경과)는 사라지지 않고 목록 맨 위에 고정
+  function upcomingItems(){
+    syncToday();
+    const all=collect();
+    const isDone=it=>it.type==='health'&&it.done;
+    const actionable=it=>it.type==='health'||it.type==='supply';
+    const over=all.filter(it=>ymdC(it.date)<today&&actionable(it)&&!isDone(it)).sort((a,b)=>a.date<b.date?-1:1);
+    const end=addD(today,30);
+    const up=all.filter(it=>{const d=ymdC(it.date);return d>=today&&d<=end;}).sort((a,b)=>a.date<b.date?-1:a.date>b.date?1:((ORD[a.type]??9)-(ORD[b.type]??9)));
+    return {over,up};
+  }
   function renderBody(){
     const body=document.getElementById('calBody'), all=collect().filter(passes);
     let html='';
@@ -883,15 +936,16 @@ window.EVENTS=EVENTS;
       if(adding)html+=addForm();
       html+=day.length?day.map(it=>rowHTML(it,false)).join(''):`<div class="cpempty">${t('cal.empty')}</div>`;
     }else{
-      const end=addD(today,30);
-      const up=all.filter(it=>{const d=ymdC(it.date);return d>=today&&d<=end;}).sort((a,b)=>a.date<b.date?-1:a.date>b.date?1:(ORD[a.type]-ORD[b.type]));
+      const {over,up}=upcomingItems();
+      const rows=over.filter(passes).concat(up.filter(passes));
       html+=`<div class="cphead"><span class="lab">${t('cal.upcoming')}</span><span class="sub">${t('cal.days30')}</span></div>`;
-      html+=up.length?up.map(it=>rowHTML(it,true)).join(''):`<div class="cpempty">${t('cal.emptyUp')}</div>`;
+      html+=rows.length?rows.map(it=>rowHTML(it,true)).join(''):`<div class="cpempty">${t('cal.emptyUp')}</div>`;
     }
     body.innerHTML=html;
   }
-  function renderAll(){renderFilters();renderGrid();renderBody();}
+  function renderAll(){syncToday();renderFilters();renderGrid();renderBody();if(window._renderGlance)window._renderGlance();}
   window._calRefresh=renderAll;
+  window._calUpcoming=n=>{const {over,up}=upcomingItems();return over.concat(up.filter(it=>!(it.type==='health'&&it.done))).slice(0,n).map(it=>Object.assign({},it,{_dd:dday(it.date),_mmdd:mmdd(it.date)}));};
 
   function saveUser(){
     const title=(draft.title||'').trim(); if(!title||!sel)return;
@@ -911,7 +965,9 @@ window.EVENTS=EVENTS;
 
   document.getElementById('calPrev').addEventListener('click',()=>{if(--viewM<0){viewM=11;viewY--;}renderGrid();});
   document.getElementById('calNext').addEventListener('click',()=>{if(++viewM>11){viewM=0;viewY++;}renderGrid();});
-  document.getElementById('calToday').addEventListener('click',()=>{viewY=today.getFullYear();viewM=today.getMonth();sel=todayISO;adding=false;renderGrid();renderBody();});
+  document.getElementById('calToday').addEventListener('click',()=>{syncToday();viewY=today.getFullYear();viewM=today.getMonth();sel=todayISO;adding=false;renderGrid();renderBody();});
+  document.addEventListener('visibilitychange',()=>{ if(document.visibilityState!=='visible')return;
+    const n=new Date(); if(iso(new Date(n.getFullYear(),n.getMonth(),n.getDate()))!==todayISO) applyLang(); });
   document.getElementById('calFilters').addEventListener('click',e=>{
     const c=e.target.closest('.cchip'); if(!c)return;
     const s=c.dataset.dog?selDogs:selTypes, v=c.dataset.dog||c.dataset.type;
@@ -940,17 +996,31 @@ window.EVENTS=EVENTS;
 })();
 
 // ---- 지식 (644 도감: 검색 우선 + 주제칩 + 아코디언) ----
-(function(){
+// info_data.js(1.4MB)는 첫 화면을 막지 않게 지연 로드 — 지식 탭 진입 시 또는 로드 1.5초 후
+function ensureInfo(){
+  if(ensureInfo._done) return;
+  if(window.INFO){ ensureInfo._done=true; initInfo(); return; }
+  const listEl=document.getElementById('iList');
+  if(document.getElementById('info').classList.contains('active')) listEl.innerHTML=`<div class="iguide"><p>${t('info.loading')}</p></div>`;
+  if(ensureInfo._loading) return; ensureInfo._loading=true;
+  const s=document.createElement('script'); s.src='info_data.js';
+  s.onload=()=>{ensureInfo._loading=false;ensureInfo();};
+  s.onerror=()=>{ensureInfo._loading=false;listEl.innerHTML=`<div class="iguide"><p>—</p></div>`;};
+  document.head.appendChild(s);
+}
+setTimeout(ensureInfo,1500);
+function initInfo(){
   const data=window.INFO;
   const listEl=document.getElementById('iList'),chipsEl=document.getElementById('iChips'),countEl=document.getElementById('iCount'),searchEl=document.getElementById('iSearch');
-  const esc=s=>(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-  if(!data||!Array.isArray(data.entries)||!data.entries.length){LANGHOOKS.push(()=>{listEl.innerHTML=`<div class="iguide"><p>—</p></div>`;});return;}
-  const entries=data.entries; entries.forEach((e,i)=>e._no=i+1);
+  if(!data||!Array.isArray(data.entries)||!data.entries.length){listEl.innerHTML=`<div class="iguide"><p>—</p></div>`;return;}
+  const entries=data.entries;
   const topics=data.topics||[], TJA=data.topics_ja||{};
+  entries.forEach((e,i)=>{e._no=i+1;e._hay=((e.term||'')+' '+(e.term_ja||'')+' '+(e.body||'')+' '+(e.body_ja||'')+' '+(e.topic||'')+' '+(TJA[e.topic]||'')).toLowerCase();});
+  document.getElementById('infoLab').textContent=entries.length+' Entries';
   const eterm=e=>LANG==='ja'?(e.term_ja||e.term):e.term;
   const ebody=e=>LANG==='ja'?(e.body_ja||e.body):e.body;
   const tlabel=tp=>LANG==='ja'?(TJA[tp]||tp):tp;
-  let topic=null, q='', open=new Set();
+  let topic=null, q=(searchEl.value||'').trim().toLowerCase(), open=new Set();
   function md(src){const inline=s=>esc(s).replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>');let html='',inList=false;
     (src||'').split('\n').forEach(raw=>{const line=raw.trim();
       if(line.startsWith('- ')){if(!inList){html+='<ul class="info-ul">';inList=true;}html+=`<li>${inline(line.slice(2))}</li>`;}
@@ -961,7 +1031,7 @@ window.EVENTS=EVENTS;
     const tp=topics.map(tp=>{const c=entries.filter(e=>e.topic===tp).length;return c?`<button class="ichip ${topic===tp?'on':''}" data-tp="${esc(tp)}">${esc(tlabel(tp))}<span class="c">${c}</span></button>`:'';}).join('');
     chipsEl.innerHTML=all+tp;
   }
-  const match=e=>{ if(topic&&topic!=='all'&&e.topic!==topic)return false; if(q){const hay=(eterm(e)+' '+ebody(e)+' '+tlabel(e.topic)).toLowerCase();if(!hay.includes(q))return false;} return true; };
+  const match=e=>{ if(topic&&topic!=='all'&&e.topic!==topic)return false; if(q&&!e._hay.includes(q))return false; return true; };
   function itemHTML(e){
     const opened=open.has(e._no);
     const src=(e.sources&&e.sources.length)?`<div class="isrc"><span class="lab">${t('info.src')}</span>${e.sources.map((u,i)=>`<a href="${esc(u)}" target="_blank" rel="noopener">${t('info.video')}${e.sources.length>1?' '+(i+1):''}</a>`).join('')}</div>`:'';
@@ -976,13 +1046,18 @@ window.EVENTS=EVENTS;
   }
   chipsEl.addEventListener('click',e=>{const b=e.target.closest('.ichip');if(!b)return;topic=(topic===b.dataset.tp)?null:b.dataset.tp;open.clear();chips();render();});
   listEl.addEventListener('click',e=>{const h=e.target.closest('.ihead');if(!h)return;const it=h.closest('.iitem'),no=+it.dataset.no;if(open.has(no))open.delete(no);else open.add(no);it.classList.toggle('open');});
-  searchEl.addEventListener('input',e=>{q=e.target.value.trim().toLowerCase();open.clear();render();});
+  let deb=null;
+  searchEl.addEventListener('input',()=>{clearTimeout(deb);deb=setTimeout(()=>{q=searchEl.value.trim().toLowerCase();open.clear();render();},120);});
   LANGHOOKS.push(()=>{chips();render();});
-})();
+  chips();render();
+}
 
 LANGHOOKS.push(renderDogs);
 LANGHOOKS.push(()=>{ if(document.getElementById('profile').classList.contains('active') && _curDog) openProfile(_curDog); });
 applyLang();
+
+// PWA: 홈 화면 설치·오프라인 캐시
+if('serviceWorker' in navigator) addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{});});
 </script>
 
 <script type="module">
